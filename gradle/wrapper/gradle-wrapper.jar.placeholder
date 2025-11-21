@@ -1,0 +1,5 @@
+This is a placeholder for gradle-wrapper.jar
+You need to either:
+1. Run ./gradlew wrapper from a machine with Gradle installed
+2. Copy gradle-wrapper.jar from another Gradle project
+3. Download it manually from a Gradle distribution

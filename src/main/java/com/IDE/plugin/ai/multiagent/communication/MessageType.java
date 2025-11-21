@@ -1,0 +1,69 @@
+package com.IDE.plugin.ai.multiagent.communication;
+
+/**
+ * MessageType: Enumeration of all possible message types in the system
+ */
+public enum MessageType {
+    // System messages
+    SYSTEM_BROADCAST,
+    SYSTEM_COMMAND,
+    EMERGENCY_STOP,
+    STATUS_UPDATE,
+    HEARTBEAT,
+    
+    // Architecture messages
+    DESIGN_REQUEST,
+    DESIGN_PROPOSAL,
+    ARCHITECTURE_REVIEW,
+    PATTERN_SUGGESTION,
+    PATTERN_RECOMMENDATION,
+    REVIEW_RESULT,
+    SYSTEM_ANALYSIS,
+    
+    // Observer messages
+    MONITOR_REQUEST,
+    MONITORING_STARTED,
+    ANALYSIS_REQUEST,
+    ANALYSIS_RESULT,
+    ANALYSIS_COMPLETE,
+    ANOMALY_REPORT,
+    METRICS_QUERY,
+    METRICS_RESPONSE,
+    PERFORMANCE_ANALYSIS,
+    CRITICAL_ALERT,
+    CRITICAL_FINDINGS,
+    
+    // Code Editor messages
+    CODE_EDIT_REQUEST,
+    EDIT_COMPLETE,
+    REFACTORING_REQUEST,
+    REFACTORING_COMPLETE,
+    OPTIMIZATION_REQUEST,
+    OPTIMIZATION_COMPLETE,
+    CODE_ANALYSIS_REQUEST,
+    AUTOFIX_REQUEST,
+    AUTOFIX_APPLIED,
+    CODE_REVIEW_REQUEST,
+    REVIEW_COMPLETE,
+    CODE_CHANGED,
+    CRITICAL_CODE_ISSUES,
+    MANUAL_FIX_REQUIRED,
+    
+    // Trust and security messages
+    TRUST_UPDATE,
+    TRUST_VIOLATION,
+    SECURITY_ALERT,
+    AUTHENTICATION_REQUEST,
+    AUTHENTICATION_RESPONSE,
+    
+    // Collaboration messages
+    APPROVAL_REQUEST,
+    APPROVAL_RESPONSE,
+    COLLABORATION_REQUEST,
+    COLLABORATION_RESPONSE,
+    
+    // Error and exception messages
+    ERROR,
+    EXCEPTION,
+    VALIDATION_ERROR
+}

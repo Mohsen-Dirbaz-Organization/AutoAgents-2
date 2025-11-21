@@ -1,0 +1,548 @@
+{
+  "project_name": "src",
+  "analysis_date": "2025-05-29 14:35:18",
+  "version": 9,
+  "analysis_mode": "sorted_by_file_count",
+  "src": {
+    "subdirectories": {
+      "main": {
+        "subdirectories": {
+          "java": {
+            "subdirectories": {
+              "com": {
+                "subdirectories": {
+                  "IDE": {
+                    "subdirectories": {
+                      "plugin": {
+                        "subdirectories": {
+                          "ai": {
+                            "subdirectories": {
+                              "multiagent": {
+                                "subdirectories": {
+                                  "mechanical": {
+                                    "subdirectories": {
+                                      "protocol": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "MechanicalSignalComposer.java",
+                                          "MechanicalSignalingProtocol.java",
+                                          "MechanicalSignalReceiver.java",
+                                          "ProtocolCoordinator.java",
+                                          "ProtocolModels.java"
+                                        ]
+                                      },
+                                      "transmission": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "MechanicalSignalQueue.java",
+                                          "MechanicalSignalRouter.java",
+                                          "MechanicalSignalTransmitter.java",
+                                          "TransmissionCoordinator.java",
+                                          "TransmissionModels.java"
+                                        ]
+                                      },
+                                      "validation": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "MechanicalSignal.java",
+                                          "MechanicalSignalAnalyzer.java",
+                                          "MechanicalSignalValidator.java",
+                                          "SignalValidationCoordinator.java",
+                                          "ValidationModels.java"
+                                        ]
+                                      },
+                                      "persistence": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "PersistenceModels.java",
+                                          "SignalMultiplexer.java",
+                                          "SignalPersistence.java"
+                                        ]
+                                      },
+                                      "integration": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "MechanicalMessageBridge.java"
+                                        ]
+                                      }
+                                    },
+                                    "files": []
+                                  },
+                                  "core": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "AgentEvent.java",
+                                      "AgentMetrics.java",
+                                      "AgentRegistrationRequest.java",
+                                      "AgentRole.java",
+                                      "AgentState.java",
+                                      "EventBus.java",
+                                      "GroupTaskRequest.java",
+                                      "HealthSeverity.java",
+                                      "ServiceException.java",
+                                      "SharedContext.java",
+                                      "SystemHealthStatus.java",
+                                      "SystemMonitor.java",
+                                      "Task.java",
+                                      "TaskResult.java",
+                                      "TaskScheduler.java"
+                                    ]
+                                  },
+                                  "trust": {
+                                    "subdirectories": {
+                                      "consensus": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "ByzantineFaultTolerance.java",
+                                          "RAFTConsensus.java"
+                                        ]
+                                      },
+                                      "authorization": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "ThresholdSignature.java"
+                                        ]
+                                      },
+                                      "reputation": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "ReputationManager.java"
+                                        ]
+                                      },
+                                      "evaluation": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "learning": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "model": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "network": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "persistence": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "visualization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "TrustLevel.java",
+                                      "TrustManager.java",
+                                      "TrustMetrics.java",
+                                      "TrustScore.java"
+                                    ]
+                                  },
+                                  "agent": {
+                                    "subdirectories": {
+                                      "factories": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "AgentFactory.java"
+                                        ]
+                                      },
+                                      "behavior": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "communication": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "coordination": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "learning": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "lifecycle": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "types": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "Agent.java",
+                                      "ArchitectAgent.java",
+                                      "BaseAgent.java",
+                                      "CodeEditorAgent.java",
+                                      "EnhancedBaseAgent.java",
+                                      "ObserverAgent.java"
+                                    ]
+                                  },
+                                  "memory": {
+                                    "subdirectories": {
+                                      "core": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "EpisodicMemory.java",
+                                          "MemoryStateManager.java",
+                                          "SemanticMemory.java",
+                                          "WorkingMemory.java"
+                                        ]
+                                      },
+                                      "persistence": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "StatePersistenceService.java"
+                                        ]
+                                      },
+                                      "sync": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "MemorySynchronizer.java"
+                                        ]
+                                      },
+                                      "integration": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "learning": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "optimization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "retrieval": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "storage": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "types": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "MemoryManager.java"
+                                    ]
+                                  },
+                                  "model": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "Agent.java",
+                                      "AgentCapability.java",
+                                      "AgentMessage.java",
+                                      "AgentRole.java",
+                                      "AgentState.java",
+                                      "Task.java",
+                                      "TaskResult.java"
+                                    ]
+                                  },
+                                  "communication": {
+                                    "subdirectories": {
+                                      "channels": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "messages": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "optimization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "protocols": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "security": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "Message.java",
+                                      "MessageBus.java",
+                                      "MessageHandler.java",
+                                      "MessageType.java",
+                                      "TrustedMessageBus.java"
+                                    ]
+                                  },
+                                  "station": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "Station.java",
+                                      "StationConfiguration.java",
+                                      "StationManager.java",
+                                      "StationStatus.java"
+                                    ]
+                                  },
+                                  "collision": {
+                                    "subdirectories": {
+                                      "core": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "EnhancedCollisionHandler.java"
+                                        ]
+                                      },
+                                      "detection": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "optimization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "prevention": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "resolution": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "Collision.java",
+                                      "CollisionResolution.java"
+                                    ]
+                                  },
+                                  "event": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "AgentEvent.java",
+                                      "EventBus.java"
+                                    ]
+                                  },
+                                  "history": {
+                                    "subdirectories": {
+                                      "core": {
+                                        "subdirectories": {},
+                                        "files": [
+                                          "HistoryManager.java"
+                                        ]
+                                      },
+                                      "analysis": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "integration": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "optimization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "persistence": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "storage": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "visualization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "AdministrativeHistoryManager.java"
+                                    ]
+                                  },
+                                  "services": {
+                                    "subdirectories": {
+                                      "configuration": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "discovery": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "integration": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "monitoring": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "registry": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "AgentCoordinatorService.java",
+                                      "AgentManagementService.java"
+                                    ]
+                                  },
+                                  "context": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "SharedContext.java"
+                                    ]
+                                  },
+                                  "coordination": {
+                                    "subdirectories": {
+                                      "algorithms": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "metrics": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "optimization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "strategies": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      },
+                                      "synchronization": {
+                                        "subdirectories": {},
+                                        "files": []
+                                      }
+                                    },
+                                    "files": [
+                                      "GroupCoordinationFramework.java"
+                                    ]
+                                  },
+                                  "integration": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "ClaudeCodeIntegration.java"
+                                    ]
+                                  },
+                                  "monitor": {
+                                    "subdirectories": {},
+                                    "files": [
+                                      "PerformanceMetrics.java"
+                                    ]
+                                  }
+                                },
+                                "files": []
+                              },
+                              "services": {
+                                "subdirectories": {},
+                                "files": [
+                                  "ClaudeCodeBridge.java",
+                                  "ClaudeCodeIntegrationService.java",
+                                  "ClaudeRequest.java",
+                                  "ClaudeResponse.java",
+                                  "ClaudeResponseHandler.java",
+                                  "ClaudeTaskAdapter.java",
+                                  "ConversationMessage.java",
+                                  "ToolCall.java"
+                                ]
+                              }
+                            },
+                            "files": []
+                          },
+                          "ui": {
+                            "subdirectories": {
+                              "station": {
+                                "subdirectories": {},
+                                "files": [
+                                  "AgentDeploymentPanel.java",
+                                  "StationControlPanel.java",
+                                  "StationManagementPanel.java",
+                                  "StationMonitoringPanel.java",
+                                  "StationViewManager.java"
+                                ]
+                              }
+                            },
+                            "files": [
+                              "AgentStatusBar.java",
+                              "AutoAgentsToolWindowFactory.java"
+                            ]
+                          },
+                          "settings": {
+                            "subdirectories": {},
+                            "files": [
+                              "AutoAgentsSettings.java"
+                            ]
+                          }
+                        },
+                        "files": []
+                      }
+                    },
+                    "files": []
+                  }
+                },
+                "files": []
+              }
+            },
+            "files": []
+          },
+          "resources": {
+            "subdirectories": {
+              "META-INF": {
+                "subdirectories": {},
+                "files": [
+                  "plugin.xml"
+                ]
+              }
+            },
+            "files": []
+          }
+        },
+        "files": []
+      }
+    },
+    "files": []
+  },
+  "files_by_extension": {
+    "js": {
+      "subdirectories": {}
+    },
+    "css": {
+      "subdirectories": {}
+    },
+    "jsx": {
+      "subdirectories": {}
+    }
+  }
+}

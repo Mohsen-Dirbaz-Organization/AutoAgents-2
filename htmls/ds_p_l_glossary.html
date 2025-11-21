@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS-P-L Technical Glossary: Cognitive Continuity & Mechanical Signaling Architecture</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '🧠⚙️🔐';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 1.8em;
+            opacity: 0.4;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 12px;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .header .subtitle {
+            font-size: 1.0em;
+            opacity: 0.8;
+            font-style: italic;
+            font-weight: 300;
+        }
+
+        .controls {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-bottom: 3px solid #dee2e6;
+        }
+
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 50px 14px 18px;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.2em;
+        }
+
+        .filter-select {
+            padding: 14px 18px;
+            border: 2px solid #ced4da;
+            border-radius: 10px;
+            font-size: 15px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .word-frequency-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .word-freq-input {
+            width: 85px;
+            padding: 10px 12px;
+            border: 2px solid #ced4da;
+            border-radius: 8px;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .analyze-btn:hover {
+            background: linear-gradient(135deg, #218838, #1e7e34);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .stat-item.trust {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .stat-item.cognitive {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .stat-item.mechanical {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+
+        .clear-filters {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .clear-filters:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .content {
+            padding: 35px;
+        }
+
+        .word-frequency-panel {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid #dee2e6;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        .word-frequency-panel.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .word-frequency-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .word-frequency-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .close-frequency {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .close-frequency:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .word-frequency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .word-item {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .word-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .word-count {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .term-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 30px;
+        }
+
+        .term-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+
+        .term-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+
+        .term-card.trust-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .term-card.cognitive-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        }
+
+        .term-card.mechanical-enhanced::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+        }
+
+        .term-card:not(.trust-enhanced):not(.cognitive-enhanced):not(.mechanical-enhanced)::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .term-header {
+            margin-bottom: 18px;
+        }
+
+        .term-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.3;
+        }
+
+        .trust-indicator {
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .cognitive-indicator {
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .mechanical-indicator {
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .term-category {
+            display: inline-block;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            padding: 6px 14px;
+            border-radius: 18px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .term-category.trust-enhanced {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #c62828;
+        }
+
+        .term-category.cognitive-enhanced {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            color: #7b1fa2;
+        }
+
+        .term-category.mechanical-enhanced {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #ef6c00;
+        }
+
+        .term-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .meta-badge {
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .meta-lines {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #f57c00;
+        }
+
+        .meta-complexity {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            color: #2e7d32;
+        }
+
+        .meta-complexity.high {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: #c62828;
+        }
+
+        .meta-complexity.medium {
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            color: #f57c00;
+        }
+
+        .term-purpose {
+            margin-bottom: 18px;
+        }
+
+        .term-purpose h4 {
+            color: #37474f;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .term-purpose p {
+            color: #546e7a;
+            line-height: 1.6;
+            font-size: 1.0em;
+        }
+
+        .term-logic {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .term-logic.trust-enhanced {
+            border-left-color: #e74c3c;
+        }
+
+        .term-logic.cognitive-enhanced {
+            border-left-color: #9b59b6;
+        }
+
+        .term-logic.mechanical-enhanced {
+            border-left-color: #f39c12;
+        }
+
+        .term-logic h4 {
+            color: #37474f;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .logic-breakdown {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logic-item {
+            background: white;
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 0.9em;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            cursor: help;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .logic-item:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            white-space: normal;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            max-width: 320px;
+            text-align: center;
+            line-height: 1.4;
+            font-weight: 400;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #2c3e50;
+        }
+
+        .logic-item:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-5px);
+        }
+
+        .term-definition {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .term-definition p {
+            font-size: 0.95em;
+            color: #6c757d;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            color: #6c757d;
+        }
+
+        .no-results-icon {
+            font-size: 5em;
+            margin-bottom: 24px;
+            opacity: 0.3;
+        }
+
+        .no-results h3 {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+            color: #495057;
+        }
+
+        .no-results p {
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+
+            .header {
+                padding: 25px 20px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .controls {
+                padding: 20px;
+            }
+
+            .control-group {
+                grid-template-columns: 1fr;
+            }
+
+            .term-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stats {
+                justify-content: center;
+            }
+
+            .tooltip {
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                transform: none;
+                white-space: normal;
+                text-align: center;
+                max-width: none;
+            }
+
+            .tooltip::after {
+                display: none;
+            }
+
+            .word-frequency-container {
+                justify-content: center;
+            }
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #ffeb3b, #fbc02d);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DS-P-L Technical Glossary</h1>
+            <p>Context-Aware Multi-Agent Collaborative Application Builder Plugin</p>
+            <p class="subtitle">Featuring Cognitive Continuity, Mechanical Signaling & Distributed Trust Architecture</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search technical terms and definitions...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <select id="purposeFilter" class="filter-select">
+                    <option value="">All Component Categories</option>
+                </select>
+                <select id="subdirectoryFilter" class="filter-select">
+                    <option value="">All System Subdirectories</option>
+                </select>
+                <select id="complexityFilter" class="filter-select">
+                    <option value="">All Complexity Levels</option>
+                    <option value="h">High Complexity</option>
+                    <option value="m">Medium Complexity</option>
+                    <option value="l">Low Complexity</option>
+                </select>
+                <select id="enhancementFilter" class="filter-select">
+                    <option value="">All System Components</option>
+                    <option value="trust">Trust-Enhanced Components</option>
+                    <option value="cognitive">Cognitive Continuity Systems</option>
+                    <option value="mechanical">Mechanical Signaling Infrastructure</option>
+                    <option value="core">Core Foundation Components</option>
+                </select>
+                <div class="word-frequency-container">
+                    <label for="wordFreqInput" style="font-size: 15px; color: #495057; font-weight: 600;">Word Analysis:</label>
+                    <input type="number" id="wordFreqInput" class="word-freq-input" placeholder="50" min="1" max="200">
+                    <button id="analyzeBtn" class="analyze-btn">Analyze Content</button>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item" id="totalCount">Total: 0 components</div>
+                <div class="stat-item" id="filteredCount">Displaying: 0 components</div>
+                <div class="stat-item trust" id="trustCount">Trust-Enhanced: 0 components</div>
+                <div class="stat-item cognitive" id="cognitiveCount">Cognitive Continuity: 0 components</div>
+                <div class="stat-item mechanical" id="mechanicalCount">Mechanical Signaling: 0 components</div>
+                <button class="clear-filters" onclick="clearAllFilters()">Reset All Filters</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="wordFrequencyPanel" class="word-frequency-panel">
+                <div class="word-frequency-header">
+                    <div class="word-frequency-title">Content Word Frequency Analysis</div>
+                    <button id="closeFrequency" class="close-frequency">Close Analysis</button>
+                </div>
+                <div id="wordFrequencyGrid" class="word-frequency-grid">
+                    <!-- Word frequency analysis results populate here -->
+                </div>
+            </div>
+
+            <div id="termGrid" class="term-grid">
+                <!-- Technical component cards populate here -->
+            </div>
+            <div id="noResults" class="no-results" style="display: none;">
+                <div class="no-results-icon">🔍</div>
+                <h3>No matching components found</h3>
+                <p>Please adjust your search criteria or filter selections to find relevant technical components</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const logicExplanations = {
+            "cognitive state preservation": "Capturing and maintaining complete cognitive states to ensure intellectual continuity during system operations and agent transitions",
+            "continuity validation": "Verifying that cognitive continuity is maintained throughout all system operations, state changes, and memory transitions",
+            "transition management": "Managing transitions between different system states while preserving cognitive awareness, context, and decision-making capabilities",
+            "awareness tracking": "Monitoring and tracking cognitive awareness levels to ensure intellectual coherence and prevent cognitive fragmentation",
+            "signal transmission optimization": "Optimizing the transmission of mechanical signals between agents to ensure reliable, high-performance inter-agent communication",
+            "protocol standardization": "Establishing standardized protocols for consistent mechanical signaling across the distributed agent network",
+            "integrity verification": "Verifying the integrity of signals, data, and operations to prevent tampering and ensure authenticity throughout system processes",
+            "backward compatibility": "Ensuring new signaling protocols and system enhancements remain compatible with existing system components and legacy operations",
+            "state capture": "Capturing complete system states including cognitive context, operational parameters, and environmental conditions for preservation and restoration",
+            "context serialization": "Converting cognitive context and system state into serializable format for efficient storage, transmission, and reconstruction",
+            "restoration validation": "Validating that restored states maintain proper cognitive continuity, system integrity, and operational consistency",
+            "continuity verification": "Verifying that cognitive continuity is preserved throughout system operations, ensuring unbroken intellectual awareness",
+            "routing optimization": "Optimizing signal routing paths for maximum efficiency, minimum latency, and optimal resource utilization across the network",
+            "failure detection": "Detecting communication failures, system anomalies, and operational disruptions with implementation of appropriate recovery mechanisms",
+            "load balancing": "Distributing communication load, processing tasks, and system resources evenly across available channels and components",
+            "signal integrity": "Maintaining signal quality, authenticity, and completeness throughout transmission processes and inter-agent communications",
+            "context mapping": "Mapping cognitive contexts between different system states, operational modes, and agent configurations to maintain continuity",
+            "state transition": "Managing transitions between different cognitive and operational states while preserving system stability and intellectual coherence",
+            "error recovery": "Recovering from errors, system failures, and operational disruptions while maintaining cognitive continuity and system stability",
+            "authenticity validation": "Validating the authenticity of data, signals, operations, and agent communications to prevent forgery and impersonation attacks",
+            "performance monitoring": "Continuously monitoring system performance metrics, communication characteristics, and operational efficiency indicators",
+            "error reporting": "Reporting detected errors, anomalies, and system issues to appropriate components for analysis and resolution",
+            "coherence analysis": "Analyzing cognitive coherence patterns to ensure intellectual continuity, consistency, and proper decision-making capabilities",
+            "validation protocols": "Implementing standardized protocols for validating system operations, data integrity, and cognitive continuity maintenance",
+            "error detection": "Detecting errors, anomalies, inconsistencies, and potential threats in system operations, data, and agent behaviors",
+            "repair mechanisms": "Implementing mechanisms to repair detected errors, restore system functionality, and maintain operational continuity",
+            "priority management": "Managing priority levels for tasks, signals, operations, and resource allocation to ensure optimal system performance",
+            "queue optimization": "Optimizing queue operations for maximum efficiency, minimal latency, and optimal throughput across system components",
+            "starvation prevention": "Preventing resource starvation by ensuring fair access to system resources, communication channels, and processing capabilities",
+            "throughput monitoring": "Monitoring system throughput, processing rates, and communication efficiency to identify bottlenecks and optimization opportunities",
+            "transition orchestration": "Orchestrating complex transitions between system states while maintaining stability, continuity, and operational integrity",
+            "state preservation": "Preserving system states, cognitive contexts, and operational parameters to enable recovery and maintain operational continuity",
+            "error handling": "Handling errors gracefully while maintaining system stability, cognitive continuity, and operational reliability",
+            "cognitive continuity integration": "Integrating cognitive continuity considerations into all system operations, ensuring intellectual coherence throughout processes",
+            "pattern analysis": "Analyzing patterns in data, behavior, and system operations for optimization, security assessment, and performance improvement",
+            "performance optimization": "Optimizing system performance through analysis, strategic improvements, and resource allocation enhancements",
+            "anomaly detection": "Detecting unusual patterns, behaviors, or conditions that may indicate problems, security threats, or system degradation",
+            "reporting": "Generating comprehensive reports on system status, performance metrics, operational statistics, and security assessments",
+            "snapshot scheduling": "Scheduling system snapshots and state captures to optimize performance while ensuring comprehensive data preservation",
+            "integrity validation": "Validating the integrity of data, operations, and system states to prevent corruption, tampering, and unauthorized modifications",
+            "failure recovery": "Recovering from system failures, operational disruptions, and error conditions while restoring full functionality and data integrity",
+            "cognitive performance tracking": "Tracking cognitive performance metrics, intellectual efficiency indicators, and decision-making quality measurements",
+            "behavior scoring algorithms": "Algorithms for evaluating and scoring agent behavior patterns, performance metrics, and operational compliance",
+            "consensus-based updates": "Implementing system updates through distributed consensus mechanisms to ensure system-wide agreement and coordination",
+            "fraud detection": "Detecting fraudulent activities, malicious behavior patterns, and security threats in system operations and agent interactions",
+            "protocol enforcement": "Enforcing compliance with established protocols, operational standards, and security requirements across system components",
+            "conflict mitigation": "Mitigating conflicts between system components, agent operations, and resource allocation through intelligent resolution strategies",
+            "boundary control": "Controlling access boundaries and maintaining proper isolation between system components, memory contexts, and operational domains",
+            "malicious agent detection": "Detecting agents exhibiting malicious, harmful, or non-compliant behavior patterns that threaten system integrity",
+            "cryptographic verification": "Using cryptographic methods to verify authenticity, integrity, and authorization of operations, data, and communications",
+            "consensus protocols": "Implementing distributed consensus mechanisms for system-wide decision making, coordination, and conflict resolution",
+            "fraud prevention": "Preventing fraudulent activities through proactive detection, countermeasures, and security protocol enforcement",
+            "relevance scoring": "Scoring the relevance of information, operations, and resources based on context, requirements, and operational priorities",
+            "permission checks": "Verifying permissions, authorization levels, and access rights before allowing system operations and resource access",
+            "transmission queuing": "Managing transmission queues for optimal communication performance, priority handling, and resource efficiency",
+            "differential analysis": "Analyzing differences between system states, configurations, and operational parameters to identify changes and conflicts",
+            "conflict classification": "Classifying different types of conflicts, disputes, and operational disagreements to enable appropriate resolution strategies",
+            "resolution prep": "Preparing for conflict resolution by gathering necessary information, resources, and stakeholder input for effective mediation",
+            "consensus triggering": "Triggering consensus processes when system-wide agreement is required for critical decisions and operational changes",
+            "checksum validation": "Validating data integrity using checksum verification techniques to detect corruption and unauthorized modifications",
+            "consistency rules": "Enforcing consistency rules and operational standards to maintain system stability, data coherence, and operational reliability",
+            "repair initiation": "Initiating repair processes when errors, inconsistencies, or system degradation are detected through monitoring systems",
+            "zk proof verification": "Verifying zero-knowledge proofs to maintain privacy and confidentiality while ensuring authenticity and authorization",
+            "access control": "Managing access permissions, restrictions, and authorization levels for system resources, operations, and sensitive information",
+            "exception handling": "Handling exceptional conditions, errors, and unexpected situations to maintain system stability and operational continuity",
+            "audit logging": "Logging system operations, user activities, and security events for audit, compliance, and forensic analysis purposes",
+            "behavioral baseline modeling": "Creating models of normal behavioral patterns for anomaly detection, security assessment, and performance optimization",
+            "deviation scoring": "Scoring deviations from normal patterns, expected behaviors, and operational baselines to identify potential issues",
+            "automated quarantine triggers": "Automatically triggering quarantine procedures when security threats, malicious behavior, or system violations are detected",
+            "context retrieval": "Retrieving relevant contextual information, historical data, and environmental conditions to support system operations",
+            "pattern matching": "Matching observed patterns against known templates, signatures, and behavioral models for classification and analysis",
+            "confidence scoring": "Assigning confidence scores to results, decisions, and assessments based on reliability metrics and validation criteria",
+            "consensus validation": "Validating results, decisions, and operations through distributed consensus mechanisms and multi-party agreement",
+            "temporal analysis": "Analyzing temporal patterns, trends, and time-based relationships in system behavior and performance data",
+            "cluster detection": "Detecting clusters, groupings, and relationships in data for analysis, optimization, and pattern recognition",
+            "alert generation": "Generating alerts, notifications, and warnings for significant events, conditions, and security threats",
+            "similarity scoring": "Scoring similarity between items, patterns, behaviors, and system states for comparison and classification",
+            "cross-tier lookup": "Looking up information across different system tiers, memory layers, and architectural components for comprehensive analysis",
+            "caching": "Implementing caching mechanisms for improved performance, resource efficiency, and rapid data access",
+            "usage tracking": "Tracking system usage patterns, resource utilization statistics, and operational metrics for optimization and planning",
+            "predictive weighting": "Applying predictive models and algorithms to weight decisions, resource allocation, and operational priorities",
+            "tier allocation": "Allocating resources across different system tiers, memory layers, and operational levels based on requirements and priorities",
+            "event handling": "Processing and responding to system events, notifications, and operational triggers according to established protocols",
+            "task processing": "Processing assigned tasks, operations, and computational workloads according to system requirements and priorities",
+            "memory integration": "Integrating with memory management systems for optimal data handling, storage efficiency, and access performance",
+            "trust protocol compliance": "Ensuring compliance with established trust protocols, security standards, and authentication requirements",
+            "memory-augmented logic": "Enhancing logic operations with memory-based information, historical context, and learned behavioral patterns",
+            "collaboration protocols": "Implementing protocols for effective collaboration, coordination, and information sharing between system components",
+            "self-monitoring": "Monitoring own performance, behavior, and operational status for optimization, error detection, and quality assurance",
+            "trust verification": "Verifying trust relationships, credentials, and reputation scores throughout system operations and agent interactions",
+            "behavioral monitoring": "Monitoring behavioral patterns, operational compliance, and performance metrics to ensure system standards",
+            "consensus participation": "Participating in distributed consensus processes for system decisions, conflict resolution, and coordination",
+            "state persistence": "Persisting system states, configurations, and operational parameters for durability, recovery, and continuity",
+            "context switching": "Switching between different operational contexts, system states, and processing modes while maintaining continuity",
+            "synchronization": "Synchronizing operations, data, and system states across distributed components and architectural layers",
+            "plan generation": "Generating operational plans, strategies, and execution sequences based on requirements and system constraints",
+            "validation": "Validating operations, data integrity, and system compliance to ensure correctness and adherence to standards",
+            "metric collection": "Collecting performance metrics, operational statistics, and system health indicators for analysis and optimization",
+            "trend detection": "Detecting trends, patterns, and changes in system behavior and performance over time for predictive analysis",
+            "alert propagation": "Propagating alerts, notifications, and critical information throughout the system hierarchy and stakeholder network",
+            "malicious behavior detection": "Detecting malicious behavioral patterns, security threats, and system violations through advanced monitoring",
+            "syntax analysis": "Analyzing syntax, structure, and format of code, data, and communications for validation and processing",
+            "undo/redo management": "Managing undo and redo operations for user actions, system changes, and operational modifications",
+            "ui integration": "Integrating with user interface components for optimal user experience, accessibility, and operational efficiency",
+            "change verification": "Verifying the correctness, safety, and compliance of system changes before implementation and deployment",
+            "isolation protocols": "Implementing protocols for isolating components, containing threats, and maintaining system security boundaries",
+            "recovery procedures": "Implementing procedures for system recovery, restoration, and business continuity following disruptions",
+            "evidence preservation": "Preserving evidence of operations, events, and system activities for analysis, compliance, and forensic investigation",
+            "initialization": "Initializing system components, operational parameters, and configuration settings for proper system startup",
+            "configuration binding": "Binding configuration parameters, settings, and operational preferences to system components and operations",
+            "identity verification": "Verifying identity credentials, authentication information, and user authorization levels for system access",
+            "capability injection": "Injecting capabilities, permissions, and operational authorities into system components and agent configurations",
+            "trust initialization": "Initializing trust relationships, security credentials, and reputation systems for system operation",
+            "cognitive continuity maintenance": "Maintaining cognitive continuity throughout all system operations, ensuring unbroken intellectual awareness",
+            "cognitive continuity coordination": "Coordinating cognitive continuity across multiple system components, agents, and operational domains",
+            "cognitive continuity validation": "Validating that cognitive continuity is preserved in system operations, state changes, and agent interactions",
+            "cognitive continuity integration": "Integrating cognitive continuity considerations into system design, operations, and architectural decisions",
+            "cognitive state management": "Managing cognitive states, intellectual contexts, and decision-making frameworks to ensure operational coherence",
+            "cognitive performance tracking": "Tracking cognitive performance metrics, intellectual efficiency indicators, and decision-making quality measures",
+            "cognitive continuity monitoring": "Monitoring cognitive continuity across system operations to ensure intellectual coherence and awareness preservation",
+            "cognitive impact assessment": "Assessing the impact of operations, changes, and system events on cognitive continuity and intellectual coherence",
+            "cognitive impact forecasting": "Forecasting potential cognitive impacts of planned operations, system changes, and architectural modifications",
+            "cognitive disruption detection": "Detecting patterns, events, and conditions that may disrupt cognitive continuity and intellectual coherence",
+            "cognitive context preservation": "Preserving cognitive context, intellectual frameworks, and decision-making continuity during system operations"
+        };
+
+        const termsData = [
+            {
+                name: "CognitiveContinuityManager",
+                category: "Cognitive Continuity Core Systems",
+                subdirectory: "memory/core",
+                purpose: "Central orchestrator ensuring unbroken cognitive awareness across agent suspend/resume cycles and memory transitions",
+                logic: ["35% cognitive state preservation", "30% continuity validation", "20% transition management", "15% awareness tracking"],
+                lines: 750,
+                complexity: "h",
+                cognitiveEnhanced: true,
+                definition: "The primary system responsible for maintaining cognitive continuity across all agent operations. This critical component ensures that agents retain contextual awareness, decision-making coherence, and memory consistency throughout system transitions, preventing cognitive fragmentation that could compromise multi-agent coordination effectiveness."
+            },
+            {
+                name: "MechanicalSignalingProtocol",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Standardized signaling mechanisms for inter-agent communication through structured mechanical interfaces",
+                logic: ["40% signal transmission optimization", "30% protocol standardization", "20% integrity verification", "10% backward compatibility"],
+                lines: 680,
+                complexity: "h",
+                mechanicalEnhanced: true,
+                definition: "Comprehensive signaling protocol that establishes standardized mechanical communication pathways between agents. This system enables reliable, high-performance inter-agent coordination through structured signaling mechanisms that ensure consistent message delivery and response patterns across the distributed agent network."
+            },
+            {
+                name: "CognitiveStatePreservationEngine",
+                category: "Cognitive Continuity Core Systems",
+                subdirectory: "memory/cognitive",
+                purpose: "Preserves complete cognitive context during agent suspension with seamless restoration capabilities",
+                logic: ["45% state capture", "25% context serialization", "20% restoration validation", "10% continuity verification"],
+                lines: 620,
+                complexity: "h",
+                cognitiveEnhanced: true,
+                definition: "Advanced preservation engine that captures and maintains complete cognitive states during agent suspension periods. This system ensures that cognitive processes, decision trees, and contextual awareness are perfectly preserved and restored, maintaining the agent's intellectual continuity across operational interruptions."
+            },
+            {
+                name: "MechanicalSignalRouter",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Routes mechanical signals between agents with optimized delivery paths and failure handling",
+                logic: ["35% routing optimization", "30% failure detection", "20% load balancing", "15% signal integrity"],
+                lines: 550,
+                complexity: "h",
+                mechanicalEnhanced: true,
+                definition: "Intelligent routing system that manages mechanical signal distribution across the agent network. This component optimizes signal delivery paths, handles transmission failures gracefully, and ensures that mechanical communication maintains high reliability and performance standards throughout the system."
+            },
+            {
+                name: "MemoryStateManager",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "Central coordinator for tiered memory operations with consensus-based state validation and cognitive continuity preservation",
+                logic: ["25% state lifecycle", "30% tier coordination", "25% cross-agent synchronization", "20% cognitive continuity preservation"],
+                lines: 650,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Enhanced central coordinator that orchestrates the three-tier memory architecture with Byzantine fault tolerance while ensuring cognitive continuity. This system manages working, episodic, and semantic memory layers with consensus-based validation, preventing cognitive fragmentation during memory operations and maintaining seamless intellectual flow across agent activities."
+            },
+            {
+                name: "CognitiveContextBridge",
+                category: "Cognitive Continuity Core Systems",
+                subdirectory: "memory/cognitive",
+                purpose: "Bridges cognitive contexts between different agent states and operational modes",
+                logic: ["40% context mapping", "30% state transition", "20% continuity validation", "10% error recovery"],
+                lines: 480,
+                complexity: "h",
+                cognitiveEnhanced: true,
+                definition: "Specialized bridging system that maintains cognitive continuity during agent state transitions. This component ensures that cognitive context, decision history, and awareness levels are seamlessly transferred between different operational modes, preventing intellectual disruption during system changes."
+            },
+            {
+                name: "MechanicalSignalValidator",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Validates mechanical signal integrity and authenticity using cryptographic verification",
+                logic: ["50% signal integrity verification", "30% authenticity validation", "15% performance monitoring", "5% error reporting"],
+                lines: 420,
+                complexity: "h",
+                mechanicalEnhanced: true,
+                trustEnhanced: true,
+                definition: "Comprehensive validation system that ensures mechanical signals maintain integrity and authenticity throughout transmission. This component uses cryptographic verification methods to prevent signal tampering while monitoring performance characteristics to ensure optimal mechanical communication reliability."
+            },
+            {
+                name: "TrustedMemoryValidator",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "Multi-signature verification of memory state changes using threshold cryptography with cognitive continuity validation",
+                logic: ["40% cryptographic proof verification", "25% consensus tracking", "20% reputation scoring", "15% cognitive continuity preservation"],
+                lines: 400,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Advanced cryptographic verification system that ensures memory state changes maintain both security and cognitive continuity. This component validates state modifications through threshold signatures and consensus mechanisms while preserving the cognitive coherence necessary for effective agent operation."
+            },
+            {
+                name: "WorkingMemory",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "High-speed volatile memory with Merkle tree integrity verification and cognitive flow optimization",
+                logic: ["40% access optimization", "25% priority-based eviction", "20% tier promotion", "15% hash verification"],
+                lines: 350,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Enhanced volatile memory layer with Merkle tree-based integrity verification and cognitive flow optimization. This system provides high-performance access while maintaining cryptographic proof of data integrity and ensuring that cognitive processes remain uninterrupted during memory operations."
+            },
+            {
+                name: "EpisodicMemory",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "Persistent storage with distributed witness nodes for tamper detection and cognitive pattern preservation",
+                logic: ["30% temporal indexing", "25% event correlation", "25% pattern recognition", "20% witness validation"],
+                lines: 400,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Long-term memory system enhanced with distributed witness nodes and cognitive pattern preservation. This component maintains historical records with tamper detection while preserving cognitive patterns that support agent learning and decision-making continuity."
+            },
+            {
+                name: "SemanticMemory",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "Shared knowledge base with Byzantine-tolerant consensus for updates and cognitive concept preservation",
+                logic: ["35% concept graph management", "25% consistency checks", "20% query optimization", "20% consensus protocol"],
+                lines: 380,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Knowledge repository with Byzantine fault-tolerant consensus mechanisms and cognitive concept preservation. This system ensures that conceptual updates maintain cognitive coherence while being validated through distributed agreement across the agent network."
+            },
+            {
+                name: "MechanicalSignalQueue",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Priority-based queuing system for mechanical signals with anti-starvation mechanisms",
+                logic: ["45% priority management", "30% queue optimization", "15% starvation prevention", "10% throughput monitoring"],
+                lines: 320,
+                complexity: "m",
+                mechanicalEnhanced: true,
+                definition: "Advanced queuing system that manages mechanical signal priorities while preventing starvation of lower-priority communications. This component ensures optimal signal delivery performance and maintains fair access to communication resources across all agents."
+            },
+            {
+                name: "CognitiveTransitionManager",
+                category: "Cognitive Continuity Core Systems",
+                subdirectory: "memory/cognitive",
+                purpose: "Manages smooth cognitive transitions during agent state changes and memory tier promotions",
+                logic: ["40% transition orchestration", "30% continuity validation", "20% state preservation", "10% error handling"],
+                lines: 380,
+                complexity: "h",
+                cognitiveEnhanced: true,
+                definition: "Specialized system that orchestrates cognitive transitions during agent state changes. This component ensures that cognitive awareness and decision-making capabilities remain intact during memory tier promotions, state modifications, and operational mode changes."
+            },
+            {
+                name: "MemoryQuery",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "Unified interface with zero-knowledge proof support for private queries and cognitive context preservation",
+                logic: ["30% query parsing", "25% tier routing", "25% relevance ranking", "20% privacy preservation"],
+                lines: 250,
+                complexity: "m",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Advanced query engine supporting zero-knowledge proofs for privacy-preserving queries while maintaining cognitive context. This system ensures that query operations preserve cognitive continuity and provide contextually relevant results across memory tiers."
+            },
+            {
+                name: "DistributedTrustOracle",
+                category: "Memory State Management with Distributed Trust",
+                subdirectory: "memory/core",
+                purpose: "Multi-agent consensus engine using Practical Byzantine Fault Tolerance algorithm with cognitive state preservation",
+                logic: ["35% PBFT protocol implementation", "30% reputation management", "25% quorum coordination", "10% cognitive continuity validation"],
+                lines: 500,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Core trust coordination engine implementing Practical Byzantine Fault Tolerance while preserving cognitive states. This system achieves consensus among agents while maintaining cognitive continuity and managing reputation scores based on both security and cognitive performance metrics."
+            },
+            {
+                name: "MechanicalSignalAnalyzer",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Analyzes mechanical signal patterns for optimization and anomaly detection",
+                logic: ["40% pattern analysis", "30% performance optimization", "20% anomaly detection", "10% reporting"],
+                lines: 350,
+                complexity: "m",
+                mechanicalEnhanced: true,
+                definition: "Analytical system that examines mechanical signal patterns to optimize communication performance and detect anomalies. This component provides insights into signal behavior and helps maintain optimal mechanical communication across the distributed agent network."
+            },
+            {
+                name: "StatePersistenceService",
+                category: "Memory Persistence with Distributed Verification",
+                subdirectory: "memory/persistence",
+                purpose: "Orchestrates state snapshots with distributed witness attestation and cognitive continuity preservation",
+                logic: ["25% snapshot scheduling", "25% integrity validation", "25% failure recovery", "25% witness coordination"],
+                lines: 500,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Enhanced persistence service coordinating snapshot creation with distributed witness attestation while preserving cognitive continuity. This system ensures tamper-proof state preservation and maintains cognitive coherence across persistence operations."
+            },
+            {
+                name: "TrustedSnapshotManager",
+                category: "Memory Persistence with Distributed Verification",
+                subdirectory: "memory/persistence",
+                purpose: "Multi-party computation for tamper-proof snapshot generation with cognitive state validation",
+                logic: ["40% threshold signature schemes", "30% secure multi-party protocols", "20% verification tracking", "10% cognitive continuity validation"],
+                lines: 350,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Snapshot management system using secure multi-party computation and threshold signatures while validating cognitive state integrity. This component creates tamper-proof snapshots that preserve both security and cognitive continuity requirements."
+            },
+            {
+                name: "ReputationLedger",
+                category: "Memory Persistence with Distributed Verification",
+                subdirectory: "memory/persistence",
+                purpose: "Distributed ledger tracking agent behavior, trustworthiness scores, and cognitive performance metrics",
+                logic: ["40% behavior scoring algorithms", "25% consensus-based updates", "20% fraud detection", "15% cognitive performance tracking"],
+                lines: 300,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Blockchain-inspired ledger system maintaining tamper-proof records of agent behavior, reputation scores, and cognitive performance metrics. This system tracks both security compliance and cognitive continuity maintenance through distributed consensus and fraud detection mechanisms."
+            },
+            {
+                name: "MechanicalSignalComposer",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Composes complex mechanical signals from basic signaling primitives",
+                logic: ["45% signal composition", "25% primitive management", "20% validation", "10% optimization"],
+                lines: 280,
+                complexity: "m",
+                mechanicalEnhanced: true,
+                definition: "Sophisticated composition system that creates complex mechanical signals from basic signaling primitives. This component enables rich mechanical communication by combining simple signals into sophisticated messaging patterns for enhanced inter-agent coordination."
+            },
+            {
+                name: "MemorySnapshot",
+                category: "Memory Persistence with Distributed Verification",
+                subdirectory: "memory/persistence",
+                purpose: "Immutable snapshots with cryptographic commitment schemes and cognitive state markers",
+                logic: ["30% efficient serialization", "25% metadata tagging", "25% version chaining", "20% commitment proofs"],
+                lines: 200,
+                complexity: "m",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Enhanced snapshot structure with cryptographic commitments and cognitive state markers. This system ensures immutability while preserving cognitive context, providing mathematical proof of both snapshot integrity and cognitive continuity preservation."
+            },
+            {
+                name: "BaseAgent",
+                category: "Agent Core Components with Trust Verification",
+                subdirectory: "agent",
+                purpose: "Foundation with cryptographic identity, behavior attestation, and cognitive continuity integration",
+                logic: ["25% event handling", "30% task processing", "25% memory integration", "20% trust protocol compliance"],
+                lines: 480,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Enhanced base agent class with cryptographic identity establishment, continuous behavior attestation, and integrated cognitive continuity maintenance. This foundational component ensures all agents operate within trusted frameworks while preserving cognitive coherence throughout their operational lifecycle."
+            },
+            {
+                name: "EnhancedBaseAgent",
+                category: "Agent Core Components with Trust Verification",
+                subdirectory: "agent",
+                purpose: "Advanced agent with continuous behavioral validation, ML anomaly detection, and cognitive continuity preservation",
+                logic: ["30% memory-augmented logic", "25% collaboration protocols", "25% self-monitoring", "20% trust verification"],
+                lines: 750,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Advanced agent implementation with machine learning-based behavioral validation, continuous self-monitoring, and integrated cognitive continuity preservation. This system maintains cognitive coherence while providing trust verification and collaborative capabilities."
+            },
+            {
+                name: "MechanicalSignalTransmitter",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "High-performance mechanical signal transmission with reliability guarantees",
+                logic: ["40% transmission optimization", "30% error correction", "20% performance monitoring", "10% acknowledgment protocols"],
+                lines: 400,
+                complexity: "h",
+                mechanicalEnhanced: true,
+                definition: "High-performance transmission system for mechanical signals with built-in reliability guarantees and error correction capabilities. This component ensures consistent signal delivery across the agent network with optimal performance characteristics."
+            },
+            {
+                name: "TrustedAgentValidator",
+                category: "Agent Core Components with Trust Verification",
+                subdirectory: "agent",
+                purpose: "Continuous agent behavior verification using reputation consensus protocols and cognitive continuity assessment",
+                logic: ["40% behavioral monitoring", "25% reputation scoring", "20% consensus participation", "15% cognitive continuity validation"],
+                lines: 400,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Specialized validation system that continuously monitors agent behavior and cognitive continuity through reputation consensus protocols. This component ensures system-wide trust maintenance while validating that agents maintain proper cognitive coherence."
+            },
+            {
+                name: "MemoryAwareAgent",
+                category: "Agent Core Components with Trust Verification",
+                subdirectory: "agent",
+                purpose: "Specialized agent with cryptographically verified memory operations and cognitive state management",
+                logic: ["30% state persistence", "25% context switching", "25% synchronization", "20% trust verification"],
+                lines: 420,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Memory-aware agent with cryptographic verification of all memory operations and integrated cognitive state management. This component ensures memory access authenticity while maintaining cognitive continuity across all memory interactions."
+            },
+            {
+                name: "CognitiveCoherenceValidator",
+                category: "Cognitive Continuity Core Systems",
+                subdirectory: "memory/cognitive",
+                purpose: "Validates cognitive coherence across agent operations and memory transitions",
+                logic: ["50% coherence analysis", "25% validation protocols", "15% error detection", "10% repair mechanisms"],
+                lines: 320,
+                complexity: "h",
+                cognitiveEnhanced: true,
+                definition: "Specialized validation system that ensures cognitive coherence is maintained across all agent operations and memory transitions. This component analyzes cognitive patterns and validates that intellectual continuity remains intact throughout system operations."
+            },
+            {
+                name: "MechanicalSignalReceiver",
+                category: "Mechanical Signaling Infrastructure",
+                subdirectory: "communication/mechanical",
+                purpose: "Robust mechanical signal reception with signal reconstruction and error handling",
+                logic: ["35% signal reception", "30% reconstruction", "25% error handling", "10% acknowledgment"],
+                lines: 380,
+                complexity: "h",
+                mechanicalEnhanced: true,
+                definition: "Robust reception system for mechanical signals with advanced signal reconstruction and comprehensive error handling capabilities. This component ensures reliable signal reception and proper acknowledgment of received communications."
+            },
+            {
+                name: "AgentCoordinatorService",
+                category: "Core Services with Distributed Trust Integration",
+                subdirectory: "services",
+                purpose: "Oversees collaboration with distributed consensus on coordination decisions and cognitive continuity management",
+                logic: ["25% task assignment", "25% conflict mediation", "25% progress tracking", "25% consensus participation"],
+                lines: 500,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Enhanced coordination service requiring distributed consensus for coordination decisions while managing cognitive continuity across agent collaborations. This system ensures trusted and verified collaboration mechanisms that preserve cognitive coherence throughout multi-agent operations."
+            },
+            {
+                name: "TrustedCoordinatorService",
+                category: "Core Services with Distributed Trust Integration",
+                subdirectory: "services",
+                purpose: "Multi-party coordination service using Byzantine fault-tolerant protocols with cognitive state management",
+                logic: ["40% consensus coordination", "25% cryptographic verification", "20% trust management", "15% cognitive state management"],
+                lines: 450,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Advanced coordination service using Byzantine fault-tolerant protocols for multi-party coordination while managing cognitive states. This system provides comprehensive trust management and cryptographic verification with integrated cognitive continuity preservation."
+            },
+            {
+                name: "TrustManagementService",
+                category: "Core Services with Distributed Trust Integration",
+                subdirectory: "services",
+                purpose: "Central trust coordination using reputation systems, Byzantine fault tolerance, and cognitive performance metrics",
+                logic: ["35% reputation management", "25% consensus protocols", "25% trust verification operations", "15% cognitive performance tracking"],
+                lines: 500,
+                complexity: "h",
+                trustEnhanced: true,
+                cognitiveEnhanced: true,
+                definition: "Central trust management service coordinating reputation systems and Byzantine fault tolerance mechanisms while tracking cognitive performance metrics. This system provides comprehensive trust verification across the system with integrated cognitive continuity assessment capabilities."
+            }
+        ];
+
+        let filteredTerms = [...termsData];
+        const searchInput = document.getElementById('searchInput');
+        const purposeFilter = document.getElementById('purposeFilter');
+        const subdirectoryFilter = document.getElementById('subdirectoryFilter');
+        const complexityFilter = document.getElementById('complexityFilter');
+        const enhancementFilter = document.getElementById('enhancementFilter');
+        const wordFreqInput = document.getElementById('wordFreqInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const termGrid = document.getElementById('termGrid');
+        const noResults = document.getElementById('noResults');
+        const totalCount = document.getElementById('totalCount');
+        const filteredCount = document.getElementById('filteredCount');
+        const trustCount = document.getElementById('trustCount');
+        const cognitiveCount = document.getElementById('cognitiveCount');
+        const mechanicalCount = document.getElementById('mechanicalCount');
+        const wordFrequencyPanel = document.getElementById('wordFrequencyPanel');
+        const wordFrequencyGrid = document.getElementById('wordFrequencyGrid');
+        const closeFrequency = document.getElementById('closeFrequency');
+
+        function initializeFilters() {
+            const purposes = [...new Set(termsData.map(term => term.category))].sort();
+            purposes.forEach(purpose => {
+                const option = document.createElement('option');
+                option.value = purpose;
+                option.textContent = purpose;
+                purposeFilter.appendChild(option);
+            });
+
+            const subdirectories = [...new Set(termsData.map(term => term.subdirectory))].sort();
+            subdirectories.forEach(subdir => {
+                const option = document.createElement('option');
+                option.value = subdir;
+                option.textContent = subdir;
+                subdirectoryFilter.appendChild(option);
+            });
+
+            totalCount.textContent = `Total: ${termsData.length} components`;
+            trustCount.textContent = `Trust-Enhanced: ${termsData.filter(term => term.trustEnhanced).length} components`;
+            cognitiveCount.textContent = `Cognitive Continuity: ${termsData.filter(term => term.cognitiveEnhanced).length} components`;
+            mechanicalCount.textContent = `Mechanical Signaling: ${termsData.filter(term => term.mechanicalEnhanced).length} components`;
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            // Escape special regex characters to treat them as literal characters
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escapedQuery})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function createTooltip(logicItem) {
+            const cleanItem = logicItem.replace(/^\d+%\s*/, '').toLowerCase();
+            const explanation = logicExplanations[cleanItem] || 'This logic component handles specialized operational requirements within the system architecture.';
+            return `<div class="tooltip">${explanation}</div>`;
+        }
+
+        function analyzeWordFrequency() {
+            const limit = parseInt(wordFreqInput.value) || 50;
+            const text = document.documentElement.innerText.toLowerCase();
+            const words = text.match(/\b[a-z]{4,}\b/g) || [];
+
+            const commonWords = new Set(['that', 'with', 'have', 'this', 'will', 'your', 'from', 'they', 'know', 'want', 'been', 'good', 'much', 'some', 'time', 'very', 'when', 'come', 'here', 'just', 'like', 'long', 'make', 'many', 'over', 'such', 'take', 'than', 'them', 'well', 'were', 'what', 'year', 'work', 'back', 'call', 'came', 'each', 'even', 'find', 'give', 'hand', 'high', 'keep', 'last', 'left', 'life', 'live', 'look', 'made', 'most', 'move', 'must', 'name', 'need', 'next', 'only', 'open', 'part', 'play', 'right', 'said', 'same', 'seem', 'show', 'side', 'tell', 'turn', 'used', 'want', 'ways', 'week', 'went', 'where', 'which', 'while', 'word', 'write', 'would', 'years', 'young', 'above', 'again', 'after', 'along', 'always', 'another', 'around', 'being', 'below', 'between', 'both', 'could', 'during', 'every', 'first', 'found', 'going', 'great', 'group', 'house', 'large', 'later', 'learn', 'never', 'night', 'number', 'often', 'order', 'other', 'place', 'point', 'public', 'small', 'sound', 'start', 'state', 'still', 'system', 'their', 'there', 'these', 'thing', 'think', 'those', 'three', 'through', 'under', 'until', 'water', 'world', 'write', 'about', 'after', 'again', 'against', 'before', 'being', 'between', 'during', 'first', 'following', 'general', 'important', 'information', 'little', 'local', 'long', 'national', 'never', 'number', 'often', 'people', 'possible', 'problem', 'program', 'right', 'several', 'should', 'small', 'social', 'special', 'still', 'those', 'through', 'together', 'toward', 'under', 'until', 'using', 'various', 'water', 'where', 'which', 'while', 'without', 'within', 'without']);
+
+            const wordCount = {};
+            words.forEach(word => {
+                if (!commonWords.has(word)) {
+                    wordCount[word] = (wordCount[word] || 0) + 1;
+                }
+            });
+
+            const sortedWords = Object.entries(wordCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, limit);
+
+            wordFrequencyGrid.innerHTML = '';
+            sortedWords.forEach(([word, count]) => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'word-item';
+                wordItem.innerHTML = `
+                    <span style="font-weight: 600; text-transform: capitalize;">${word}</span>
+                    <span class="word-count">${count}</span>
+                `;
+                wordFrequencyGrid.appendChild(wordItem);
+            });
+
+            wordFrequencyPanel.classList.add('active');
+        }
+
+        function renderTerms() {
+            termGrid.innerHTML = '';
+
+            if (filteredTerms.length === 0) {
+                noResults.style.display = 'block';
+                termGrid.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                termGrid.style.display = 'grid';
+
+                const searchQuery = searchInput.value.toLowerCase();
+
+                filteredTerms.forEach(term => {
+                    const card = document.createElement('div');
+                    let cardClasses = ['term-card'];
+
+                    if (term.trustEnhanced) cardClasses.push('trust-enhanced');
+                    if (term.cognitiveEnhanced) cardClasses.push('cognitive-enhanced');
+                    if (term.mechanicalEnhanced) cardClasses.push('mechanical-enhanced');
+
+                    card.className = cardClasses.join(' ');
+
+                    const complexityMap = { h: 'High', m: 'Medium', l: 'Low' };
+                    const complexityClass = term.complexity === 'h' ? 'high' : term.complexity === 'm' ? 'medium' : 'low';
+
+                    let indicators = [];
+                    if (term.trustEnhanced) indicators.push('<span class="trust-indicator">🔐 TRUST</span>');
+                    if (term.cognitiveEnhanced) indicators.push('<span class="cognitive-indicator">🧠 COGNITIVE</span>');
+                    if (term.mechanicalEnhanced) indicators.push('<span class="mechanical-indicator">⚙️ MECHANICAL</span>');
+
+                    let categoryClass = '';
+                    if (term.trustEnhanced) categoryClass = 'trust-enhanced';
+                    else if (term.cognitiveEnhanced) categoryClass = 'cognitive-enhanced';
+                    else if (term.mechanicalEnhanced) categoryClass = 'mechanical-enhanced';
+
+                    let logicClass = '';
+                    if (term.trustEnhanced) logicClass = 'trust-enhanced';
+                    else if (term.cognitiveEnhanced) logicClass = 'cognitive-enhanced';
+                    else if (term.mechanicalEnhanced) logicClass = 'mechanical-enhanced';
+
+                    card.innerHTML = `
+                        <div class="term-header">
+                            <div class="term-name">
+                                ${highlightText(term.name, searchQuery)}
+                                ${indicators.join(' ')}
+                            </div>
+                            <div class="term-category ${categoryClass}">${highlightText(term.category, searchQuery)}</div>
+                            <div class="term-meta">
+                                <span class="meta-badge meta-lines">~${term.lines} lines</span>
+                                <span class="meta-badge meta-complexity ${complexityClass}">${complexityMap[term.complexity]} Complexity</span>
+                            </div>
+                        </div>
+                        <div class="term-purpose">
+                            <h4>System Purpose</h4>
+                            <p>${highlightText(term.purpose, searchQuery)}</p>
+                        </div>
+                        <div class="term-logic ${logicClass}">
+                            <h4>Logic Distribution</h4>
+                            <div class="logic-breakdown">
+                                ${term.logic.map(item => `
+                                    <span class="logic-item">
+                                        ${highlightText(item, searchQuery)}
+                                        ${createTooltip(item)}
+                                    </span>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="term-definition">
+                            <p>${highlightText(term.definition, searchQuery)}</p>
+                        </div>
+                    `;
+
+                    termGrid.appendChild(card);
+                });
+            }
+
+            filteredCount.textContent = `Displaying: ${filteredTerms.length} components`;
+        }
+
+        function filterTerms() {
+            const searchQuery = searchInput.value.toLowerCase();
+            const purposeQuery = purposeFilter.value;
+            const subdirectoryQuery = subdirectoryFilter.value;
+            const complexityQuery = complexityFilter.value;
+            const enhancementQuery = enhancementFilter.value;
+
+            filteredTerms = termsData.filter(term => {
+                const matchesSearch = !searchQuery || 
+                    term.name.toLowerCase().includes(searchQuery) ||
+                    term.purpose.toLowerCase().includes(searchQuery) ||
+                    term.definition.toLowerCase().includes(searchQuery) ||
+                    term.logic.some(item => item.toLowerCase().includes(searchQuery)) ||
+                    term.category.toLowerCase().includes(searchQuery) ||
+                    term.subdirectory.toLowerCase().includes(searchQuery);
+
+                const matchesPurpose = !purposeQuery || term.category === purposeQuery;
+                const matchesSubdirectory = !subdirectoryQuery || term.subdirectory === subdirectoryQuery;
+                const matchesComplexity = !complexityQuery || term.complexity === complexityQuery;
+                const matchesEnhancement = !enhancementQuery || 
+                    (enhancementQuery === 'trust' && term.trustEnhanced) ||
+                    (enhancementQuery === 'cognitive' && term.cognitiveEnhanced) ||
+                    (enhancementQuery === 'mechanical' && term.mechanicalEnhanced) ||
+                    (enhancementQuery === 'core' && !term.trustEnhanced && !term.cognitiveEnhanced && !term.mechanicalEnhanced);
+
+                return matchesSearch && matchesPurpose && matchesSubdirectory && matchesComplexity && matchesEnhancement;
+            });
+
+            renderTerms();
+        }
+
+        function clearAllFilters() {
+            searchInput.value = '';
+            purposeFilter.value = '';
+            subdirectoryFilter.value = '';
+            complexityFilter.value = '';
+            enhancementFilter.value = '';
+            wordFreqInput.value = '';
+            wordFrequencyPanel.classList.remove('active');
+            filterTerms();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterTerms);
+        purposeFilter.addEventListener('change', filterTerms);
+        subdirectoryFilter.addEventListener('change', filterTerms);
+        complexityFilter.addEventListener('change', filterTerms);
+        enhancementFilter.addEventListener('change', filterTerms);
+        analyzeBtn.addEventListener('click', analyzeWordFrequency);
+        closeFrequency.addEventListener('click', () => {
+            wordFrequencyPanel.classList.remove('active');
+        });
+
+        wordFreqInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                analyzeWordFrequency();
+            }
+        });
+
+        // Initialize application
+        initializeFilters();
+        renderTerms();
+    </script>
+</body>
+</html>

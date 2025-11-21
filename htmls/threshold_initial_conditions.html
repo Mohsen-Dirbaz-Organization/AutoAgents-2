@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoAgents System Reference</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 25px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .filter-select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .toggle-btn:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .toggle-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .clear-filters {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .clear-filters:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .term-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+        }
+
+        .term-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .term-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .term-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .term-header {
+            margin-bottom: 15px;
+        }
+
+        .term-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .term-category {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .term-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .meta-badge {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+
+        .meta-location {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .term-purpose {
+            margin-bottom: 15px;
+        }
+
+        .term-purpose h4 {
+            color: #37474f;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .term-purpose p {
+            color: #546e7a;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .term-explanation {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 15px;
+        }
+
+        .term-explanation h4 {
+            color: #37474f;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .term-explanation p {
+            color: #546e7a;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .term-implication {
+            margin-bottom: 15px;
+        }
+
+        .term-implication h4 {
+            color: #37474f;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .term-implication p {
+            color: #546e7a;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .term-conditions {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .term-conditions h4 {
+            color: #37474f;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .term-conditions ul {
+            color: #546e7a;
+            line-height: 1.5;
+            font-size: 0.95em;
+            padding-left: 20px;
+        }
+
+        .term-relevance {
+            margin-top: 15px;
+        }
+
+        .term-relevance h4 {
+            color: #37474f;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .term-relevance p {
+            color: #546e7a;
+            line-height: 1.5;
+            font-size: 0.95em;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .no-results h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .controls {
+                padding: 20px;
+            }
+
+            .control-group {
+                grid-template-columns: 1fr;
+            }
+
+            .term-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AutoAgents System Reference</h1>
+            <p>Threshold Definitions and Initial Conditions</p>
+        </div>
+
+        <div class="controls">
+            <div class="toggle-container">
+                <button id="thresholdsBtn" class="toggle-btn active">Threshold Definitions</button>
+                <button id="conditionsBtn" class="toggle-btn">Initial Conditions</button>
+            </div>
+            <div class="control-group">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search terms, purposes, or explanations...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">All Categories</option>
+                </select>
+            </div>
+            <div class="stats">
+                <div class="stat-item" id="totalCount">Total: 0 items</div>
+                <div class="stat-item" id="filteredCount">Showing: 0 items</div>
+                <button class="clear-filters" onclick="clearAllFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="termGrid" class="term-grid">
+                <!-- Terms will be populated here -->
+            </div>
+            <div id="noResults" class="no-results" style="display: none;">
+                <div class="no-results-icon">🔍</div>
+                <h3>No items found</h3>
+                <p>Try adjusting your search criteria or clearing filters</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Threshold definitions data
+        const thresholdData = [
+            {
+                name: "threshold (Constructor Parameter)",
+                category: "Trust and Authorization System",
+                subcategory: "ThresholdSignature Thresholds",
+                purpose: "Defines the minimum number of shares (k) required to reconstruct a secret in a k-of-n threshold signature scheme.",
+                explanation: "In Shamir's Secret Sharing, a secret is divided into n shares such that any k shares can reconstruct the secret, but k-1 shares reveal no information. This is based on polynomial interpolation where a polynomial of degree k-1 is uniquely determined by k points.",
+                implication: "Higher threshold values increase security by requiring more participants to agree, but reduce availability as more participants must be online for operations to proceed.",
+                type: "threshold"
+            },
+            {
+                name: "KEY_SIZE = 2048",
+                category: "Trust and Authorization System",
+                subcategory: "ThresholdSignature Thresholds",
+                purpose: "Defines the bit length of the RSA keys used in the threshold signature scheme.",
+                explanation: "RSA security is based on the difficulty of factoring large numbers. A 2048-bit key means the modulus n = p×q is approximately 2^2048, making factorization computationally infeasible with current technology.",
+                implication: "Larger key sizes provide stronger security but require more computational resources for key generation and signature operations.",
+                type: "threshold"
+            },
+            {
+                name: "PRIME_CERTAINTY = 100",
+                category: "Trust and Authorization System",
+                subcategory: "ThresholdSignature Thresholds",
+                purpose: "Defines the statistical certainty that generated numbers are prime.",
+                explanation: "Uses probabilistic primality testing where a certainty of 100 means the probability of a composite number passing the test is 2^-100 (approximately 10^-30).",
+                implication: "Higher certainty values increase security but make key generation slower.",
+                type: "threshold"
+            },
+            {
+                name: "SESSION_TIMEOUT_MINUTES = 5",
+                category: "Trust and Authorization System",
+                subcategory: "ThresholdSignature Thresholds",
+                purpose: "Defines how long a signing session remains active before timing out.",
+                explanation: "Limits the window of opportunity for an attacker to compromise a signing session.",
+                implication: "Shorter timeouts improve security but may frustrate users if legitimate operations take longer than the timeout period.",
+                type: "threshold"
+            },
+            {
+                name: "TRUSTED_THRESHOLD = 0.8",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines the minimum reputation score for an agent to be considered trusted.",
+                explanation: "Represents a probability-like measure where 0.8 means the system is 80% confident in the agent's trustworthiness.",
+                implication: "Higher thresholds create a more secure system but may exclude potentially valuable agents.",
+                type: "threshold"
+            },
+            {
+                name: "NEUTRAL_THRESHOLD = 0.5",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines the minimum reputation score for an agent to be considered neutral (neither trusted nor suspicious).",
+                explanation: "Represents the midpoint between trust and distrust.",
+                implication: "Agents with scores between NEUTRAL_THRESHOLD and TRUSTED_THRESHOLD are monitored but allowed to operate normally.",
+                type: "threshold"
+            },
+            {
+                name: "SUSPICIOUS_THRESHOLD = 0.3",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines the minimum reputation score for an agent to be considered suspicious rather than untrusted.",
+                explanation: "Represents a level of doubt that warrants increased scrutiny but not outright rejection.",
+                implication: "Agents with scores between SUSPICIOUS_THRESHOLD and NEUTRAL_THRESHOLD face additional verification steps.",
+                type: "threshold"
+            },
+            {
+                name: "UNTRUSTED_THRESHOLD = 0.1",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines the minimum reputation score for an agent to be considered untrusted rather than blacklisted.",
+                explanation: "Represents a level of distrust that severely restricts operations but allows for potential rehabilitation.",
+                implication: "Agents with scores between UNTRUSTED_THRESHOLD and SUSPICIOUS_THRESHOLD can only perform low-risk operations.",
+                type: "threshold"
+            },
+            {
+                name: "DECAY_RATE = 0.01",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines how quickly reputation scores decay over time without activity.",
+                explanation: "For each hour of inactivity, the reputation score moves toward the neutral value by DECAY_RATE. If S is the current score and N is the neutral score, the new score after t hours is: S' = S - (S-N) × (1-(1-DECAY_RATE)^t)",
+                implication: "Higher decay rates mean reputation must be actively maintained, preventing agents from resting on past achievements.",
+                type: "threshold"
+            },
+            {
+                name: "RECOVERY_RATE = 0.005",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines how quickly reputation scores can recover from negative events.",
+                explanation: "For each positive action, the reputation score increases by a base amount multiplied by RECOVERY_RATE. This creates a diminishing returns effect where recovery becomes progressively harder.",
+                implication: "Lower recovery rates make the system more punitive, requiring more positive actions to recover from negative events.",
+                type: "threshold"
+            },
+            {
+                name: "HISTORY_RETENTION_DAYS = 30",
+                category: "Trust and Authorization System",
+                subcategory: "ReputationManager Thresholds",
+                purpose: "Defines how long trust-related events are kept in history before being purged.",
+                explanation: "Limits the time window considered for reputation calculations.",
+                implication: "Longer retention periods provide more data for decision-making but increase storage requirements and computational load.",
+                type: "threshold"
+            },
+            {
+                name: "minSeverityThreshold = 1",
+                category: "Collision Handling",
+                subcategory: "EnhancedCollisionHandler Thresholds",
+                purpose: "Defines the minimum severity level for a collision to be considered worth resolving.",
+                explanation: "Filters out trivial collisions to focus resources on significant conflicts.",
+                implication: "Higher thresholds reduce system overhead but may allow minor conflicts to accumulate.",
+                type: "threshold"
+            },
+            {
+                name: "minTrustThreshold = 0.5",
+                category: "Collision Handling",
+                subcategory: "EnhancedCollisionHandler Thresholds",
+                purpose: "Defines the minimum average trust level required for agents involved in a collision to use the collision resolution system.",
+                explanation: "Prevents untrusted agents from abusing the collision resolution system.",
+                implication: "Higher thresholds improve security but may leave legitimate conflicts between lower-trust agents unresolved.",
+                type: "threshold"
+            },
+            {
+                name: "monitoringInterval = 5",
+                category: "Collision Handling",
+                subcategory: "EnhancedCollisionHandler Thresholds",
+                purpose: "Defines how often (in minutes) the system checks for and cleans up old collision records.",
+                explanation: "Controls the frequency of maintenance operations.",
+                implication: "Shorter intervals keep the system cleaner but increase computational overhead.",
+                type: "threshold"
+            },
+            {
+                name: "historyRetentionDays = 30",
+                category: "Collision Handling",
+                subcategory: "EnhancedCollisionHandler Thresholds",
+                purpose: "Defines how long collision records are kept before being purged.",
+                explanation: "Limits the historical data used for pattern analysis and optimization.",
+                implication: "Longer retention periods provide more data for analysis but increase storage requirements.",
+                type: "threshold"
+            },
+            {
+                name: "DEFAULT_CAPACITY = 50000",
+                category: "Memory Management",
+                subcategory: "SemanticMemory Thresholds",
+                purpose: "Defines the maximum number of concepts that can be stored in semantic memory.",
+                explanation: "Limits memory usage to prevent resource exhaustion.",
+                implication: "Larger capacity allows more concepts to be stored but increases memory usage.",
+                type: "threshold"
+            },
+            {
+                name: "ACTIVATION_DECAY_RATE = 0.1",
+                category: "Memory Management",
+                subcategory: "SemanticMemory Thresholds",
+                purpose: "Defines how quickly concept activation levels decay over time.",
+                explanation: "For each decay cycle, activation is multiplied by (1-ACTIVATION_DECAY_RATE). After n cycles, activation becomes: A' = A × (1-ACTIVATION_DECAY_RATE)^n",
+                implication: "Higher decay rates make the system forget unused concepts faster, freeing up capacity for new concepts.",
+                type: "threshold"
+            },
+            {
+                name: "MIN_ACTIVATION_THRESHOLD = 0.01",
+                category: "Memory Management",
+                subcategory: "SemanticMemory Thresholds",
+                purpose: "Defines the minimum activation level for a concept to be retained during memory eviction.",
+                explanation: "When memory reaches capacity, concepts with activation below this threshold are candidates for removal.",
+                implication: "Higher thresholds make the system more aggressive in removing inactive concepts.",
+                type: "threshold"
+            },
+            {
+                name: "Concept Similarity Threshold (0.8)",
+                category: "Memory Management",
+                subcategory: "SemanticMemory Thresholds",
+                purpose: "Defines the minimum similarity score for two concepts to be considered similar enough to merge.",
+                explanation: "Uses Jaccard similarity coefficient: J(A,B) = |A∩B|/|A∪B| where A and B are the sets of keywords associated with each concept.",
+                implication: "Higher thresholds require more similarity for merging, resulting in more distinct concepts but potentially redundant information.",
+                type: "threshold"
+            },
+            {
+                name: "Relationship Strength Threshold (0.1)",
+                category: "Memory Management",
+                subcategory: "SemanticMemory Thresholds",
+                purpose: "Defines the minimum strength for a relationship between concepts to be maintained.",
+                explanation: "Relationships with strength below this threshold are pruned during maintenance.",
+                implication: "Higher thresholds create a sparser relationship graph, improving query performance but potentially losing weak but important connections.",
+                type: "threshold"
+            },
+            {
+                name: "CONSOLIDATION_THRESHOLD_MS = TimeUnit.HOURS.toMillis(24)",
+                category: "Memory Management",
+                subcategory: "EpisodicMemory Thresholds",
+                purpose: "Defines how old an episodic memory must be before it's considered for consolidation into semantic memory.",
+                explanation: "Mimics human memory consolidation during sleep, where recent experiences are integrated into long-term knowledge.",
+                implication: "Longer thresholds delay knowledge integration but reduce the risk of incorporating temporary or erroneous information.",
+                type: "threshold"
+            },
+            {
+                name: "EVICTION_THRESHOLD_MS = TimeUnit.MINUTES.toMillis(5)",
+                category: "Memory Management",
+                subcategory: "WorkingMemory Thresholds",
+                purpose: "Defines how long items remain in working memory before being evicted.",
+                explanation: "Mimics the limited attention span of human working memory.",
+                implication: "Shorter thresholds free up working memory faster but may discard information still needed for ongoing tasks.",
+                type: "threshold"
+            },
+            {
+                name: "MAX_QUEUE_SIZE = 10000",
+                category: "Signal Processing",
+                subcategory: "MechanicalSignalQueue Thresholds",
+                purpose: "Defines the maximum number of signals that can be queued.",
+                explanation: "Prevents unbounded queue growth that could lead to memory exhaustion.",
+                implication: "Larger queue sizes allow more signals to be buffered during traffic spikes but increase memory usage.",
+                type: "threshold"
+            },
+            {
+                name: "STARVATION_THRESHOLD_MS = 30000",
+                category: "Signal Processing",
+                subcategory: "MechanicalSignalQueue Thresholds",
+                purpose: "Defines how long a signal can wait in the queue before being considered \"starving\" and given priority.",
+                explanation: "Prevents low-priority signals from being indefinitely delayed by higher-priority signals.",
+                implication: "Shorter thresholds improve worst-case latency but may reduce overall throughput by interrupting the processing of high-priority signals.",
+                type: "threshold"
+            },
+            {
+                name: "Queue Fragmentation Threshold (0.3)",
+                category: "Signal Processing",
+                subcategory: "MechanicalSignalQueue Thresholds",
+                purpose: "Defines the level of queue fragmentation that triggers rebalancing.",
+                explanation: "Fragmentation is calculated as 1 - (items_in_queue / queue_capacity). A threshold of 0.3 means rebalancing occurs when the queue is less than 70% utilized.",
+                implication: "Lower thresholds trigger more frequent rebalancing, improving memory efficiency but increasing computational overhead.",
+                type: "threshold"
+            },
+            {
+                name: "PHASE_TIMEOUT_MS = 5000",
+                category: "Consensus Mechanisms",
+                subcategory: "ByzantineFaultTolerance Thresholds",
+                purpose: "Defines how long to wait for responses in each phase of the consensus protocol.",
+                explanation: "Balances between waiting for slow nodes and maintaining system responsiveness.",
+                implication: "Longer timeouts improve reliability in unstable networks but increase latency for all operations.",
+                type: "threshold"
+            },
+            {
+                name: "MAX_RETRIES = 3",
+                category: "Consensus Mechanisms",
+                subcategory: "ByzantineFaultTolerance Thresholds",
+                purpose: "Defines how many times to retry a failed consensus round before giving up.",
+                explanation: "Provides resilience against temporary network or node failures.",
+                implication: "More retries improve success rates but can significantly increase latency when problems occur.",
+                type: "threshold"
+            },
+            {
+                name: "BYZANTINE_THRESHOLD = 0.67",
+                category: "Consensus Mechanisms",
+                subcategory: "ByzantineFaultTolerance Thresholds",
+                purpose: "Defines the proportion of nodes required to reach consensus.",
+                explanation: "Based on the theoretical result that Byzantine agreement requires more than 2/3 of nodes to be honest. For n nodes with f Byzantine (malicious) nodes, consensus is possible if and only if n > 3f.",
+                implication: "Higher thresholds improve security against Byzantine failures but reduce availability as more nodes must agree.",
+                type: "threshold"
+            },
+            {
+                name: "collaborationThreshold = 0.7",
+                category: "Agent Coordination",
+                subcategory: "AgentCoordinatorService Thresholds",
+                purpose: "Defines the minimum task complexity level that triggers multi-agent collaboration.",
+                explanation: "Determines when a task is complex enough to warrant the overhead of coordination between multiple agents.",
+                implication: "Higher thresholds reduce coordination overhead but may result in suboptimal handling of moderately complex tasks.",
+                type: "threshold"
+            },
+            {
+                name: "stallTimeout = 60",
+                category: "Agent Coordination",
+                subcategory: "AgentCoordinatorService Thresholds",
+                purpose: "Defines how many minutes an agent can be unresponsive before being considered stalled.",
+                explanation: "Detects agents that have stopped making progress.",
+                implication: "Shorter timeouts detect problems faster but may incorrectly flag agents working on time-consuming tasks.",
+                type: "threshold"
+            },
+            {
+                name: "maxRecoveryAttempts = 3",
+                category: "Agent Coordination",
+                subcategory: "AgentCoordinatorService Thresholds",
+                purpose: "Defines how many times to attempt recovery of an unhealthy agent before replacing it.",
+                explanation: "Balances between giving agents a chance to recover and maintaining system health.",
+                implication: "More recovery attempts improve agent stability but may prolong system degradation when agents are truly failing.",
+                type: "threshold"
+            },
+            {
+                name: "maxErrorRate = 0.3",
+                category: "Agent Coordination",
+                subcategory: "AgentCoordinatorService Thresholds",
+                purpose: "Defines the maximum acceptable error rate for an agent before it's considered unhealthy.",
+                explanation: "Calculated as (failed_tasks / total_tasks). A threshold of 0.3 means an agent is considered unhealthy if more than 30% of its tasks fail.",
+                implication: "Lower thresholds create a more reliable system but may unnecessarily flag agents dealing with difficult tasks.",
+                type: "threshold"
+            },
+            {
+                name: "recoveryDelay = 10",
+                category: "Agent Coordination",
+                subcategory: "AgentCoordinatorService Thresholds",
+                purpose: "Defines how many seconds to wait before restarting a recovered agent.",
+                explanation: "Provides a cooling-off period to prevent rapid restart cycles.",
+                implication: "Longer delays reduce thrashing but increase downtime during recovery.",
+                type: "threshold"
+            }
+        ];
+
+        // Initial conditions data
+        const conditionData = [
+            {
+                name: "StationManager",
+                category: "Station Management System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/station/StationManager.java",
+                conditions: [
+                    "Project instance (injected in constructor)",
+                    "AgentCoordinatorService (obtained from project)",
+                    "TrustManager (obtained from project)",
+                    "MemoryService (obtained from project)",
+                    "ScheduledExecutorService (created in constructor)",
+                    "Configuration constants: MAX_STATIONS (default: 10), STATUS_UPDATE_INTERVAL (default: 5000ms), IDLE_TIMEOUT (default: 300000ms), MIN_TRUST_THRESHOLD (default: 0.3)"
+                ],
+                relevance: "Central component for managing agent stations. Critical for the multi-agent architecture (28% of components) as it coordinates station creation, agent assignment, and task distribution. Directly supports the \"Station Management System\" feature mentioned in the README.",
+                type: "condition"
+            },
+            {
+                name: "Station",
+                category: "Station Management System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/station/Station.java",
+                conditions: [
+                    "Unique ID (generated by StationManager)",
+                    "StationConfiguration (defines capabilities and constraints)",
+                    "Creation time (set in constructor)"
+                ],
+                relevance: "Individual processing units that host agents. Stations need proper configuration to ensure they can accept the right agents and process appropriate tasks. They form the foundation of the distributed agent system.",
+                type: "condition"
+            },
+            {
+                name: "StationConfiguration",
+                category: "Station Management System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/station/StationConfiguration.java",
+                conditions: [
+                    "Name (required in Builder constructor)",
+                    "Maximum agents (default: 5)",
+                    "Required agent capabilities (empty by default)",
+                    "Supported task types (empty by default)",
+                    "Primary task types (empty by default)",
+                    "Properties map (empty by default)",
+                    "Preferred agent roles (empty by default)"
+                ],
+                relevance: "Defines the capabilities and constraints of stations. Proper configuration ensures stations are specialized for specific tasks and can host appropriate agents, supporting the specialized agent architecture described in the README.",
+                type: "condition"
+            },
+            {
+                name: "BaseAgent",
+                category: "Agent System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/agent/BaseAgent.java",
+                conditions: [
+                    "Agent ID (passed to constructor)",
+                    "Agent role (passed to constructor)",
+                    "SharedContext (passed to constructor)",
+                    "EventBus (passed to constructor)",
+                    "ExecutorService (created in constructor)",
+                    "Task queue (created in constructor)",
+                    "Capabilities map (initialized in constructor, populated by subclasses)",
+                    "Performance metrics (created in constructor)",
+                    "Message channels (created in constructor)",
+                    "Resource limiter (created in constructor based on max concurrent tasks)"
+                ],
+                relevance: "Base implementation for all agents in the system. Proper initialization ensures agents can process tasks, communicate with other agents, and participate in the trust system. Supports the multi-agent architecture feature in the README.",
+                type: "condition"
+            },
+            {
+                name: "Agent Interface",
+                category: "Agent System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/agent/Agent.java",
+                conditions: [
+                    "Implementation must provide ID, name, state, and capabilities",
+                    "Implementation must handle initialization and shutdown",
+                    "Implementation must support task execution"
+                ],
+                relevance: "Core contract for all agents. Ensures all agents provide the necessary functionality for the multi-agent system to operate correctly.",
+                type: "condition"
+            },
+            {
+                name: "SharedContext (context package)",
+                category: "Shared Context System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/context/SharedContext.java",
+                conditions: [
+                    "Empty ConcurrentHashMap (created in constructor)"
+                ],
+                relevance: "Provides a shared data space for agents to exchange information. Critical for agent coordination and memory state management (26% of components) as described in the README.",
+                type: "condition"
+            },
+            {
+                name: "SharedContext (core package)",
+                category: "Shared Context System",
+                location: "src/main/java/com/IDE/plugin/ai/multiagent/core/SharedContext.java",
+                conditions: [
+                    "Empty ConcurrentHashMap for context data (created in constructor)",
+                    "Empty ConcurrentHashMap for agent states (created in constructor)"
+                ],
+                relevance: "Similar to the context package version but with additional support for tracking agent states. The existence of two similar classes with the same name in different packages is a potential issue that should be resolved.",
+                type: "condition"
+            },
+            {
+                name: "TrustManager",
+                category: "Trust System",
+                location: "Referenced in StationManager but implementation not found in search",
+                conditions: [
+                    "Unknown (implementation not found)"
+                ],
+                relevance: "Critical component of the distributed trust system (28% of components) described in the README. Used by StationManager to evaluate agent trust scores before station assignment.",
+                type: "condition"
+            },
+            {
+                name: "MemoryService",
+                category: "Memory System",
+                location: "Referenced in StationManager but implementation not found in search",
+                conditions: [
+                    "Unknown (implementation not found)"
+                ],
+                relevance: "Part of the memory state management system (26% of components) described in the README. Used by StationManager to record station lifecycle events and agent assignments.",
+                type: "condition"
+            },
+            {
+                name: "EventBus",
+                category: "Event System",
+                location: "Referenced in BaseAgent but implementation not found in search",
+                conditions: [
+                    "Unknown (implementation not found)"
+                ],
+                relevance: "Provides event-based communication between components. Used by BaseAgent for publishing events and subscribing to messages. Supports the agent coordination system (24% of components) described in the README.",
+                type: "condition"
+            },
+            {
+                name: "AutoAgentsApplicationComponent",
+                category: "Application Initialization",
+                location: "Referenced in plugin.xml but implementation not found in search",
+                conditions: [
+                    "Unknown (implementation not found)"
+                ],
+                relevance: "Main entry point for plugin initialization. Would be responsible for setting up the core services and components when the plugin starts.",
+                type: "condition"
+            },
+            {
+                name: "AutoAgentsProjectComponent",
+                category: "Project Initialization",
+                location: "Referenced in plugin.xml but implementation not found in search",
+                conditions: [
+                    "Unknown (implementation not found)"
+                ],
+                relevance: "Entry point for project-specific initialization. Would be responsible for setting up project-level services and components when a project is opened.",
+                type: "condition"
+            }
+        ];
+
+        // Variables for filtering and rendering
+        let currentData = thresholdData;
+        let filteredItems = [...thresholdData];
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const termGrid = document.getElementById('termGrid');
+        const noResults = document.getElementById('noResults');
+        const totalCount = document.getElementById('totalCount');
+        const filteredCount = document.getElementById('filteredCount');
+        const thresholdsBtn = document.getElementById('thresholdsBtn');
+        const conditionsBtn = document.getElementById('conditionsBtn');
+
+        // Initialize filters
+        function initializeFilters() {
+            // Clear existing options
+            while (categoryFilter.options.length > 1) {
+                categoryFilter.remove(1);
+            }
+
+            // Get unique categories from current data
+            const categories = [...new Set(currentData.map(item => item.category))].sort();
+            
+            // Add options to category filter
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
+
+            // Update counts
+            totalCount.textContent = `Total: ${currentData.length} items`;
+            filteredCount.textContent = `Showing: ${filteredItems.length} items`;
+        }
+
+        // Highlight search text
+        function highlightText(text, query) {
+            if (!query) return text;
+            const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escapedQuery})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Render items
+        function renderItems() {
+            termGrid.innerHTML = '';
+
+            if (filteredItems.length === 0) {
+                noResults.style.display = 'block';
+                termGrid.style.display = 'none';
+            } else {
+                noResults.style.display = 'none';
+                termGrid.style.display = 'grid';
+
+                const searchQuery = searchInput.value.toLowerCase();
+
+                filteredItems.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'term-card';
+
+                    if (item.type === 'threshold') {
+                        // Render threshold card
+                        card.innerHTML = `
+                            <div class="term-header">
+                                <div class="term-name">${highlightText(item.name, searchQuery)}</div>
+                                <div class="term-category">${highlightText(item.subcategory, searchQuery)}</div>
+                            </div>
+                            <div class="term-purpose">
+                                <h4>Purpose</h4>
+                                <p>${highlightText(item.purpose, searchQuery)}</p>
+                            </div>
+                            <div class="term-explanation">
+                                <h4>${item.explanation.includes('Mathematical') ? 'Mathematical Explanation' : 'Explanation'}</h4>
+                                <p>${highlightText(item.explanation, searchQuery)}</p>
+                            </div>
+                            <div class="term-implication">
+                                <h4>Practical Implication</h4>
+                                <p>${highlightText(item.implication, searchQuery)}</p>
+                            </div>
+                        `;
+                    } else {
+                        // Render condition card
+                        card.innerHTML = `
+                            <div class="term-header">
+                                <div class="term-name">${highlightText(item.name, searchQuery)}</div>
+                                <div class="term-category">${highlightText(item.category, searchQuery)}</div>
+                                <div class="term-meta">
+                                    <span class="meta-badge meta-location">${highlightText(item.location, searchQuery)}</span>
+                                </div>
+                            </div>
+                            <div class="term-conditions">
+                                <h4>Initial Conditions Required</h4>
+                                <ul>
+                                    ${item.conditions.map(condition => `<li>${highlightText(condition, searchQuery)}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="term-relevance">
+                                <h4>Relevance</h4>
+                                <p>${highlightText(item.relevance, searchQuery)}</p>
+                            </div>
+                        `;
+                    }
+
+                    termGrid.appendChild(card);
+                });
+            }
+
+            filteredCount.textContent = `Showing: ${filteredItems.length} items`;
+        }
+
+        // Filter items
+        function filterItems() {
+            const searchQuery = searchInput.value.toLowerCase();
+            const categoryQuery = categoryFilter.value;
+
+            filteredItems = currentData.filter(item => {
+                // Search in all text fields
+                const matchesSearch = !searchQuery || 
+                    item.name.toLowerCase().includes(searchQuery) ||
+                    item.category.toLowerCase().includes(searchQuery) ||
+                    item.purpose?.toLowerCase().includes(searchQuery) ||
+                    item.explanation?.toLowerCase().includes(searchQuery) ||
+                    item.implication?.toLowerCase().includes(searchQuery) ||
+                    item.location?.toLowerCase().includes(searchQuery) ||
+                    item.relevance?.toLowerCase().includes(searchQuery) ||
+                    (item.conditions && item.conditions.some(condition => condition.toLowerCase().includes(searchQuery)));
+
+                // Filter by category
+                const matchesCategory = !categoryQuery || item.category === categoryQuery;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            renderItems();
+        }
+
+        // Clear all filters
+        function clearAllFilters() {
+            searchInput.value = '';
+            categoryFilter.value = '';
+            filteredItems = [...currentData];
+            renderItems();
+        }
+
+        // Toggle between thresholds and conditions
+        function toggleDataType(type) {
+            if (type === 'threshold') {
+                currentData = thresholdData;
+                thresholdsBtn.classList.add('active');
+                conditionsBtn.classList.remove('active');
+            } else {
+                currentData = conditionData;
+                thresholdsBtn.classList.remove('active');
+                conditionsBtn.classList.add('active');
+            }
+
+            filteredItems = [...currentData];
+            initializeFilters();
+            renderItems();
+        }
+
+        // Event listeners
+        searchInput.addEventListener('input', filterItems);
+        categoryFilter.addEventListener('change', filterItems);
+        thresholdsBtn.addEventListener('click', () => toggleDataType('threshold'));
+        conditionsBtn.addEventListener('click', () => toggleDataType('condition'));
+
+        // Initialize
+        initializeFilters();
+        renderItems();
+    </script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.13.3'
+}
+
+group = 'com.IDE.plugin'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // HTTP client for API calls
+    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    
+    // JSON processing
+    implementation 'com.google.code.gson:gson:2.10.1'
+    
+    // Logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    implementation 'ch.qos.logback:logback-classic:1.4.11'
+    
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+}
+
+// Configure IntelliJ Platform Plugin
+intellij {
+    version = '2023.2'
+    type = 'IC' // IntelliJ IDEA Community Edition
+    downloadSources = true
+    plugins = ['java']
+    updateSinceUntilBuild = false
+}
+
+tasks {
+    // Set the JVM compatibility versions
+    compileJava {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    
+    patchPluginXml {
+        sinceBuild = '213'
+        untilBuild = '233.*'
+        
+        changeNotes = """
+            <h3>1.0.0</h3>
+            <ul>
+                <li>Initial release of AutoAgents plugin</li>
+                <li>AI-powered code generation</li>
+                <li>Tool window integration</li>
+                <li>Customizable settings</li>
+                <li>Support for multiple AI models</li>
+            </ul>
+        """
+    }
+    
+    signPlugin {
+        certificateChain = System.getenv("CERTIFICATE_CHAIN")
+        privateKey = System.getenv("PRIVATE_KEY")
+        password = System.getenv("PRIVATE_KEY_PASSWORD")
+    }
+    
+    publishPlugin {
+        token = System.getenv("PUBLISH_TOKEN")
+    }
+    
+    runIde {
+        // Customize the JVM options for running the IDE
+        jvmArgs = ['-Xmx2048m', '-XX:+UseG1GC', '-XX:SoftRefLRUPolicyMSPerMB=50']
+    }
+    
+    buildSearchableOptions {
+        enabled = false
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Configure plugin verification
+/*
+runPluginVerifier {
+    ideVersions = ['IC-2021.3', 'IC-2022.1', 'IC-2022.2', 'IC-2022.3', 'IC-2023.1', 'IC-2023.2']
+}
+*/
+
+// Configure distribution
+distributions {
+    main {
+        contents {
+            from("$buildDir/libs") {
+                include "${project.name}-${project.version}.jar"
+            }
+        }
+    }
+}
