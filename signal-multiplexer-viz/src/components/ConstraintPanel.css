@@ -1,0 +1,216 @@
+.constraint-panel {
+  padding: 1rem 0;
+}
+
+.constraint-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
+
+.summary-item .label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.3rem;
+}
+
+.summary-item .value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.constraint-category {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.category-icon {
+  font-size: 1.3rem;
+}
+
+.category-name {
+  font-weight: 700;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.category-count {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.category-description {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.constraints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.constraint-item {
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 4px solid #ddd;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.constraint-item:hover {
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.constraint-item.type-physics-informed {
+  border-left-color: #667eea;
+}
+
+.constraint-item.type-requirement {
+  border-left-color: #FF9800;
+}
+
+.constraint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.constraint-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.physics-badge {
+  padding: 0.2rem 0.5rem;
+  background: #667eea;
+  color: white;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.constraint-description {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.constraint-formula {
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.constraint-formula code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.constraint-tightness {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.constraint-tightness .label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.tightness-bar {
+  flex: 1;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.tightness-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #FFC107 50%, #f44336 100%);
+  transition: width 0.5s;
+}
+
+.constraint-tightness .value {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.more-constraints {
+  padding: 0.75rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.constraint-philosophy {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f0f4ff;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.constraint-philosophy h4 {
+  margin: 0 0 0.5rem 0;
+  color: #667eea;
+  font-size: 1rem;
+}
+
+.constraint-philosophy p {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.constraint-philosophy ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.constraint-philosophy li {
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.constraint-philosophy li strong {
+  color: #667eea;
+}
