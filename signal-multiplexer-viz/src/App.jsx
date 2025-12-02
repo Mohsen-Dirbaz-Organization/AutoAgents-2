@@ -8,6 +8,7 @@ import ConstraintPanel from './components/ConstraintPanel';
 import PerformanceMetrics from './components/PerformanceMetrics';
 import ControlPanel from './components/ControlPanel';
 import CodePanel from './components/CodePanel';
+import DemultiplexerVisualization from './components/DemultiplexerVisualization';
 import './App.css';
 
 function App() {
@@ -205,6 +206,13 @@ function App() {
           </section>
         </div>
       </div>
+
+      <section className="section full-width">
+        <DemultiplexerVisualization
+          channels={state.channels}
+          demuxState={state.demuxState}
+        />
+      </section>
 
       <footer className="app-footer">
         <p>

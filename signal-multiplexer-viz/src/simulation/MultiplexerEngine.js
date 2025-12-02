@@ -34,6 +34,14 @@ export class MultiplexerEngine {
 
     this.state = 'idle'; // idle, observing, formulating, solving, applying
     this.listeners = new Set();
+
+    // Demultiplexing state
+    this.demuxState = {
+      extractedSignals: {},
+      totalExtracted: 0,
+      successRate: 1.0,
+      channelQuality: {}
+    };
   }
 
   // Event handling
@@ -416,6 +424,78 @@ export class MultiplexerEngine {
 
     this.performanceMetrics.throughput = this.performanceMetrics.totalSignalsProcessed /
       ((Date.now() - this.startTime) / 1000);
+
+    // Demultiplex processed signals
+    this.demultiplexSignals();
+  }
+
+  // Demultiplex signals - extract and recover from multiplexed channels
+  demultiplexSignals() {
+    this.channels.forEach((channel, channelId) => {
+      // Initialize demux arrays for this channel
+      if (!this.demuxState.extractedSignals[channelId]) {
+        this.demuxState.extractedSignals[channelId] = [];
+      }
+
+      // Simulate signal extraction based on bandwidth and time slots
+      const extractionRate = channel.bandwidth / 100; // signals per cycle
+      const signalsToExtract = Math.floor(extractionRate);
+
+      for (let i = 0; i < signalsToExtract; i++) {
+        // Simulate signal quality based on channel conditions
+        const baseQuality = 0.85 + Math.random() * 0.15;
+        const priorityBonus = this.getPriorityWeight(channel.priority) * 0.02;
+        const congestionPenalty = channel.queue.length > 50 ? 0.1 : 0;
+        const quality = Math.min(1.0, baseQuality + priorityBonus - congestionPenalty);
+
+        const extractedSignal = {
+          id: `extracted-${channelId}-${Date.now()}-${i}`,
+          channelId,
+          priority: channel.priority,
+          quality,
+          verified: quality > 0.8,
+          timestamp: Date.now(),
+          method: this.getDemuxMethod(channel)
+        };
+
+        this.demuxState.extractedSignals[channelId].push(extractedSignal);
+        this.demuxState.totalExtracted++;
+
+        // Keep only recent signals (last 20)
+        if (this.demuxState.extractedSignals[channelId].length > 20) {
+          this.demuxState.extractedSignals[channelId].shift();
+        }
+      }
+
+      // Update channel quality metrics
+      this.demuxState.channelQuality[channelId] = {
+        snr: 20 + Math.random() * 20, // Signal-to-Noise Ratio (dB)
+        ber: Math.random() * 0.001, // Bit Error Rate
+        jitter: Math.random() * 5, // Jitter in ms
+        loss: Math.random() * 0.02 // Packet loss rate
+      };
+    });
+
+    // Calculate overall success rate
+    let totalVerified = 0;
+    let totalSignals = 0;
+    Object.values(this.demuxState.extractedSignals).forEach(signals => {
+      signals.forEach(signal => {
+        totalSignals++;
+        if (signal.verified) totalVerified++;
+      });
+    });
+
+    this.demuxState.successRate = totalSignals > 0 ? totalVerified / totalSignals : 1.0;
+  }
+
+  getDemuxMethod(channel) {
+    // Determine demultiplexing method based on allocation strategy
+    const methods = ['TDM', 'FDM', 'CDM', 'Adaptive'];
+    if (channel.timeSlots > channel.bandwidth / 10) return 'TDM'; // Time Division
+    if (channel.bandwidth > 200) return 'FDM'; // Frequency Division
+    if (channel.priority === 'CRITICAL') return 'CDM'; // Code Division
+    return 'Adaptive'; // Adaptive optimization-based
   }
 
   // Helper methods
@@ -450,6 +530,7 @@ export class MultiplexerEngine {
       selectedSolver: this.selectedSolver,
       constraints: this.constraints,
       performanceMetrics: this.performanceMetrics,
+      demuxState: this.demuxState,
       state: this.state
     };
   }
