@@ -1,0 +1,51 @@
+.time-series-chart {
+  padding: 1rem 0;
+}
+
+.time-series-chart h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #667eea;
+}
+
+.time-series-chart svg {
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.time-series-line {
+  transition: stroke-width 0.3s, opacity 0.3s;
+}
+
+.time-series-line:hover {
+  stroke-width: 3 !important;
+  opacity: 1 !important;
+}
+
+.chart-description {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #f0f4ff;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.chart-description p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.x-axis line,
+.y-axis line,
+.x-axis path,
+.y-axis path {
+  stroke: #ddd;
+}
+
+.x-axis text,
+.y-axis text {
+  font-size: 11px;
+  fill: #666;
+}

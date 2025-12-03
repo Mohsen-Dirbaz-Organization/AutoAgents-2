@@ -1,6 +1,6 @@
 /**
- * Adaptive Signal Multiplexer Simulation Engine
- * Simplified JavaScript implementation for visualization
+ * Enhanced Adaptive Signal Multiplexer Simulation Engine
+ * With real-time operational scenarios and parameter interplay visualization
  */
 
 export class MultiplexerEngine {
@@ -10,15 +10,18 @@ export class MultiplexerEngine {
       totalTimeSlots: config.totalTimeSlots || 100,
       optimizationInterval: config.optimizationInterval || 100,
       adaptationInterval: config.adaptationInterval || 1000,
+      historyLength: config.historyLength || 200, // Keep last 200 data points
       ...config
     };
 
     this.channels = new Map();
     this.resourceState = {
       availableBandwidth: this.config.totalBandwidth,
-      totalTimeSlots: this.config.totalTimeSlots
+      totalTimeSlots: this.config.totalTimeSlots,
+      allocatedBandwidth: 0
     };
 
+    // Enhanced state tracking
     this.currentProblem = null;
     this.currentSolution = null;
     this.currentStructure = null;
@@ -29,11 +32,42 @@ export class MultiplexerEngine {
       totalSignalsProcessed: 0,
       averageLatency: 0,
       throughput: 0,
-      fairnessIndex: 1.0
+      fairnessIndex: 1.0,
+      constraintViolations: 0,
+      adaptationCount: 0
     };
 
-    this.state = 'idle'; // idle, observing, formulating, solving, applying
+    // Time-series history for parameter interplay visualization
+    this.history = {
+      timestamps: [],
+      bandwidth: {},  // Per-channel bandwidth over time
+      queueSizes: {}, // Per-channel queue sizes
+      latency: [],    // Average latency
+      throughput: [], // System throughput
+      fairness: [],   // Fairness index
+      constraintTightness: [], // Adaptation of constraint tightness
+      predictionError: [], // Model prediction error
+      arrivalRates: {} // Per-channel arrival rates
+    };
+
+    // Adaptive learning parameters
+    this.adaptiveParams = {
+      constraintTightness: 1.1,
+      predictionError: 0.0,
+      learningRate: 0.1,
+      modelAccuracy: 1.0
+    };
+
+    // Operational scenario
+    this.scenario = {
+      mode: 'steady', // steady, burst, overload, recovery, mixed
+      intensity: 1.0,
+      parameters: {}
+    };
+
+    this.state = 'idle';
     this.listeners = new Set();
+    this.cycleCount = 0;
   }
 
   // Event handling
@@ -47,8 +81,13 @@ export class MultiplexerEngine {
     });
   }
 
-  // Core optimization loop (called every 100ms)
+  // ========================================================================
+  // ENHANCED CORE LOOP WITH ADAPTATION TRACKING
+  // ========================================================================
+
   reformulateAndSolve() {
+    this.cycleCount++;
+
     // 1. OBSERVE
     this.state = 'observing';
     const snapshot = this.captureSnapshot();
@@ -70,7 +109,7 @@ export class MultiplexerEngine {
     this.selectedSolver = solver;
     this.emit('solver_selected', solver);
 
-    // 5. SYNTHESIZE CONSTRAINTS
+    // 5. SYNTHESIZE CONSTRAINTS (with adaptive tightness)
     const constraints = this.synthesizeConstraints(snapshot, structure);
     this.constraints = constraints;
     problem.constraints = constraints;
@@ -87,12 +126,235 @@ export class MultiplexerEngine {
     this.applySolution(solution);
     this.emit('solution_applied', solution);
 
+    // 8. LEARN - Update adaptive parameters
+    this.updateAdaptiveParameters(snapshot, solution);
+
+    // 9. RECORD HISTORY
+    this.recordHistory();
+
     this.state = 'idle';
 
     return solution;
   }
 
-  // 1. OBSERVE: Capture system snapshot
+  // ========================================================================
+  // TIME-SERIES HISTORY TRACKING
+  // ========================================================================
+
+  recordHistory() {
+    const now = Date.now();
+    this.history.timestamps.push(now);
+
+    // Record bandwidth allocations
+    this.channels.forEach((channel, id) => {
+      if (!this.history.bandwidth[id]) this.history.bandwidth[id] = [];
+      if (!this.history.queueSizes[id]) this.history.queueSizes[id] = [];
+      if (!this.history.arrivalRates[id]) this.history.arrivalRates[id] = [];
+
+      this.history.bandwidth[id].push(channel.bandwidth);
+      this.history.queueSizes[id].push(channel.queue.length);
+      this.history.arrivalRates[id].push(channel.arrivalRate || 0);
+    });
+
+    // Record system metrics
+    this.history.latency.push(this.performanceMetrics.averageLatency);
+    this.history.throughput.push(this.performanceMetrics.throughput);
+    this.history.fairness.push(this.performanceMetrics.fairnessIndex);
+    this.history.constraintTightness.push(this.adaptiveParams.constraintTightness);
+    this.history.predictionError.push(this.adaptiveParams.predictionError);
+
+    // Trim history to keep only recent data
+    const maxLength = this.config.historyLength;
+    if (this.history.timestamps.length > maxLength) {
+      const excess = this.history.timestamps.length - maxLength;
+      this.history.timestamps.splice(0, excess);
+      this.history.latency.splice(0, excess);
+      this.history.throughput.splice(0, excess);
+      this.history.fairness.splice(0, excess);
+      this.history.constraintTightness.splice(0, excess);
+      this.history.predictionError.splice(0, excess);
+
+      Object.keys(this.history.bandwidth).forEach(id => {
+        this.history.bandwidth[id].splice(0, excess);
+        this.history.queueSizes[id].splice(0, excess);
+        this.history.arrivalRates[id].splice(0, excess);
+      });
+    }
+  }
+
+  // ========================================================================
+  // ADAPTIVE LEARNING
+  // ========================================================================
+
+  updateAdaptiveParameters(snapshot, solution) {
+    // Calculate prediction error based on queue behavior
+    let totalError = 0;
+    let count = 0;
+
+    this.channels.forEach((channel, id) => {
+      const state = snapshot.channelStates[id];
+      if (state) {
+        // Predicted queue size based on arrival rate and bandwidth
+        const serviceRate = channel.bandwidth / 10;
+        const predictedQueue = Math.max(0, state.arrivalRate - serviceRate);
+        const actualQueue = state.queueSize;
+        const error = Math.abs(predictedQueue - actualQueue) / (actualQueue + 1);
+
+        totalError += error;
+        count++;
+      }
+    });
+
+    if (count > 0) {
+      const avgError = totalError / count;
+      this.adaptiveParams.predictionError =
+        (this.adaptiveParams.predictionError * 0.9) + (avgError * 0.1);
+
+      // Adapt constraint tightness based on prediction error
+      if (this.adaptiveParams.predictionError > 0.3) {
+        // High error - tighten constraints
+        this.adaptiveParams.constraintTightness = Math.min(
+          2.0,
+          this.adaptiveParams.constraintTightness * 1.05
+        );
+        this.performanceMetrics.adaptationCount++;
+      } else if (this.adaptiveParams.predictionError < 0.1) {
+        // Low error - can relax constraints
+        this.adaptiveParams.constraintTightness = Math.max(
+          1.0,
+          this.adaptiveParams.constraintTightness * 0.98
+        );
+      }
+
+      // Update model accuracy
+      this.adaptiveParams.modelAccuracy = 1.0 - this.adaptiveParams.predictionError;
+    }
+
+    // Calculate fairness index (Jain's fairness index)
+    const bandwidths = Array.from(this.channels.values()).map(c => c.bandwidth);
+    if (bandwidths.length > 0) {
+      const sum = bandwidths.reduce((a, b) => a + b, 0);
+      const sumSq = bandwidths.reduce((a, b) => a + b * b, 0);
+      this.performanceMetrics.fairnessIndex =
+        (sum * sum) / (bandwidths.length * sumSq);
+    }
+  }
+
+  // ========================================================================
+  // REALISTIC OPERATIONAL SCENARIOS
+  // ========================================================================
+
+  setScenario(mode, intensity = 1.0) {
+    this.scenario.mode = mode;
+    this.scenario.intensity = Math.max(0.1, Math.min(3.0, intensity));
+
+    // Configure scenario-specific parameters
+    switch (mode) {
+      case 'steady':
+        this.scenario.parameters = {
+          burstProbability: 0.1,
+          baseArrivalRate: 5 * intensity,
+          priorityMix: { CRITICAL: 0.1, HIGH: 0.2, NORMAL: 0.5, LOW: 0.2 }
+        };
+        break;
+
+      case 'burst':
+        this.scenario.parameters = {
+          burstProbability: 0.4,
+          baseArrivalRate: 3 * intensity,
+          burstMultiplier: 5,
+          priorityMix: { CRITICAL: 0.3, HIGH: 0.4, NORMAL: 0.2, LOW: 0.1 }
+        };
+        break;
+
+      case 'overload':
+        this.scenario.parameters = {
+          burstProbability: 0.6,
+          baseArrivalRate: 15 * intensity,
+          priorityMix: { CRITICAL: 0.4, HIGH: 0.3, NORMAL: 0.2, LOW: 0.1 }
+        };
+        break;
+
+      case 'recovery':
+        this.scenario.parameters = {
+          burstProbability: 0.05,
+          baseArrivalRate: 2 * intensity,
+          drainMode: true,
+          priorityMix: { CRITICAL: 0.05, HIGH: 0.15, NORMAL: 0.5, LOW: 0.3 }
+        };
+        break;
+
+      case 'mixed':
+        // Oscillating pattern
+        this.scenario.parameters = {
+          oscillation: true,
+          period: 50, // cycles
+          baseArrivalRate: 5 * intensity,
+          priorityMix: { CRITICAL: 0.15, HIGH: 0.25, NORMAL: 0.4, LOW: 0.2 }
+        };
+        break;
+    }
+
+    this.emit('scenario_changed', this.scenario);
+  }
+
+  // Scenario-driven signal generation
+  generateScenarioSignals() {
+    const params = this.scenario.parameters;
+
+    // Determine if this cycle should have a burst
+    const isBurst = Math.random() < (params.burstProbability || 0.1);
+    let signalCount = params.baseArrivalRate || 5;
+
+    if (isBurst && params.burstMultiplier) {
+      signalCount *= params.burstMultiplier;
+    }
+
+    // Mixed mode: oscillating pattern
+    if (params.oscillation) {
+      const phase = (this.cycleCount % params.period) / params.period;
+      const oscillationFactor = 0.5 + 1.5 * Math.sin(2 * Math.PI * phase);
+      signalCount *= oscillationFactor;
+    }
+
+    // Generate signals according to scenario
+    const channelIds = Array.from(this.channels.keys());
+    if (channelIds.length === 0) return;
+
+    for (let i = 0; i < Math.floor(signalCount); i++) {
+      // Select random channel
+      const channelId = channelIds[Math.floor(Math.random() * channelIds.length)];
+
+      // Select priority based on scenario mix
+      const priority = this.selectPriorityFromMix(params.priorityMix);
+
+      // Send signal
+      this.sendSignal(channelId, {
+        priority,
+        data: `scenario-${this.scenario.mode}-${Date.now()}-${i}`,
+        scenario: this.scenario.mode
+      });
+    }
+  }
+
+  selectPriorityFromMix(mix) {
+    const rand = Math.random();
+    let cumulative = 0;
+
+    for (const [priority, probability] of Object.entries(mix)) {
+      cumulative += probability;
+      if (rand < cumulative) {
+        return priority;
+      }
+    }
+
+    return 'NORMAL';
+  }
+
+  // ========================================================================
+  // ORIGINAL METHODS (Enhanced)
+  // ========================================================================
+
   captureSnapshot() {
     const channelStates = {};
 
@@ -103,7 +365,8 @@ export class MultiplexerEngine {
         utilization: channel.utilization || 0.7,
         minBandwidth: this.getMinBandwidthForPriority(channel.priority),
         arrivalRate: channel.arrivalRate || 10.0,
-        currentBandwidth: channel.bandwidth
+        currentBandwidth: channel.bandwidth,
+        serviceRate: channel.bandwidth / 10
       };
     });
 
@@ -111,11 +374,11 @@ export class MultiplexerEngine {
       channelStates,
       availableBandwidth: this.resourceState.availableBandwidth,
       totalTimeSlots: this.resourceState.totalTimeSlots,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      scenarioMode: this.scenario.mode
     };
   }
 
-  // 2. FORMULATE: Construct optimization problem
   formulateProblem(snapshot) {
     const problem = {
       variables: {},
@@ -140,24 +403,28 @@ export class MultiplexerEngine {
       };
     });
 
-    // Define objectives
+    // Define objectives (weights adapt based on scenario)
+    const latencyWeight = this.scenario.mode === 'overload' ? 1.5 : 1.0;
+    const throughputWeight = this.scenario.mode === 'recovery' ? 1.2 : 0.8;
+    const fairnessWeight = this.scenario.mode === 'steady' ? 0.7 : 0.5;
+
     problem.objectives.push({
       name: 'minimize_latency',
-      weight: 1.0,
+      weight: latencyWeight,
       description: 'Minimize total latency: Σ(queue_i / b_i)',
       formula: 'Σ(queue_i / b_i) × priority_i'
     });
 
     problem.objectives.push({
       name: 'maximize_throughput',
-      weight: 0.8,
+      weight: throughputWeight,
       description: 'Maximize throughput: Σ(b_i × utilization_i)',
       formula: '-Σ(b_i × utilization_i)'
     });
 
     problem.objectives.push({
       name: 'maximize_fairness',
-      weight: 0.5,
+      weight: fairnessWeight,
       description: 'Balance fairness: minimize variance of service rates',
       formula: 'minimize variance(b_i)'
     });
@@ -165,18 +432,16 @@ export class MultiplexerEngine {
     return problem;
   }
 
-  // 3. DETECT STRUCTURE: Identify problem class
   detectStructure(problem) {
     const structure = {
       isConvex: true,
-      isMixedInteger: true, // has time slot variables
-      isStochastic: false,
+      isMixedInteger: true,
+      isStochastic: this.scenario.mode === 'mixed',
       isGameTheoretic: false,
       isRecedingHorizon: false,
       hasMultipleObjectives: problem.objectives.length > 1
     };
 
-    // Determine problem class
     if (structure.isMixedInteger && structure.hasMultipleObjectives) {
       structure.class = 'Multi-Objective Mixed-Integer Program (MOMIP)';
     } else if (structure.isConvex) {
@@ -188,7 +453,6 @@ export class MultiplexerEngine {
     return structure;
   }
 
-  // 4. SELECT SOLVER: Choose appropriate method
   selectSolver(structure) {
     if (structure.isConvex && !structure.isMixedInteger) {
       return {
@@ -225,21 +489,20 @@ export class MultiplexerEngine {
     }
   }
 
-  // 5. SYNTHESIZE CONSTRAINTS: Physics-informed constraints
   synthesizeConstraints(snapshot, structure) {
     const constraints = [];
 
-    // Conservation of bandwidth (fundamental physical constraint)
+    // Conservation with adaptive tightness
     constraints.push({
       name: 'bandwidth_conservation',
       type: 'physics-informed',
       category: 'conservation',
       description: 'Total allocated bandwidth ≤ available bandwidth',
       formula: 'Σ b_i ≤ B_total',
-      tightness: 1.0
+      tightness: this.adaptiveParams.constraintTightness
     });
 
-    // Stability constraints (queue dynamics)
+    // Stability constraints with adaptive margins
     Object.keys(snapshot.channelStates).forEach(channelId => {
       const state = snapshot.channelStates[channelId];
       constraints.push({
@@ -247,8 +510,8 @@ export class MultiplexerEngine {
         type: 'physics-informed',
         category: 'dynamics',
         description: `Service rate must exceed arrival rate for channel ${channelId}`,
-        formula: `b_${channelId} ≥ λ_${channelId} × 1.1`,
-        tightness: 1.1,
+        formula: `b_${channelId} ≥ λ_${channelId} × ${this.adaptiveParams.constraintTightness.toFixed(2)}`,
+        tightness: this.adaptiveParams.constraintTightness,
         arrivalRate: state.arrivalRate
       });
     });
@@ -266,7 +529,7 @@ export class MultiplexerEngine {
       });
     });
 
-    // Causality constraints (time ordering)
+    // Causality constraints
     constraints.push({
       name: 'causality',
       type: 'physics-informed',
@@ -278,42 +541,41 @@ export class MultiplexerEngine {
     return constraints;
   }
 
-  // 6. SOLVE: Execute optimization
   solve(problem, solver) {
-    // Simplified solver - uses greedy allocation weighted by priority
     const solution = {
       feasible: true,
       bandwidthAllocations: {},
       scheduleSlots: {},
       objectiveValue: 0,
-      solverTime: Math.random() * 30 + 10, // 10-40ms
+      solverTime: Math.random() * 30 + 10,
       iterations: Math.floor(Math.random() * 100) + 50
     };
 
     const snapshot = this.captureSnapshot();
     const channelIds = Object.keys(snapshot.channelStates);
 
-    // Calculate total priority weight
     const totalWeight = channelIds.reduce((sum, id) => {
       return sum + snapshot.channelStates[id].priorityWeight;
     }, 0);
 
-    // Allocate bandwidth proportionally to priority and queue size
     channelIds.forEach(channelId => {
       const state = snapshot.channelStates[channelId];
       const queueFactor = state.queueSize > 0 ? Math.log(state.queueSize + 1) : 0;
       const weight = state.priorityWeight * (1 + queueFactor);
 
-      // Bandwidth allocation
+      // Enhanced allocation considering arrival rate
       const baseBandwidth = (state.priorityWeight / totalWeight) * snapshot.availableBandwidth;
+      const demandBandwidth = state.arrivalRate * 10 * this.adaptiveParams.constraintTightness;
       const adjustedBandwidth = Math.max(
         state.minBandwidth,
-        Math.min(baseBandwidth * (1 + queueFactor / 10), snapshot.availableBandwidth)
+        Math.min(
+          Math.max(baseBandwidth * (1 + queueFactor / 10), demandBandwidth),
+          snapshot.availableBandwidth
+        )
       );
 
       solution.bandwidthAllocations[channelId] = adjustedBandwidth;
 
-      // Time slot allocation
       const slots = Math.floor((adjustedBandwidth / snapshot.availableBandwidth) * snapshot.totalTimeSlots);
       solution.scheduleSlots[channelId] = Math.max(1, slots);
     });
@@ -321,7 +583,6 @@ export class MultiplexerEngine {
     return solution;
   }
 
-  // 7. APPLY: Update system configuration
   applySolution(solution) {
     Object.entries(solution.bandwidthAllocations).forEach(([channelId, bandwidth]) => {
       const channel = this.channels.get(channelId);
@@ -337,7 +598,6 @@ export class MultiplexerEngine {
       this.config.totalBandwidth - this.resourceState.allocatedBandwidth;
   }
 
-  // Channel management
   createChannel(channelId, priority = 'NORMAL') {
     const minBandwidth = this.getMinBandwidthForPriority(priority);
 
@@ -371,7 +631,7 @@ export class MultiplexerEngine {
       enqueuedAt: Date.now()
     });
 
-    // Update arrival rate (exponential smoothing)
+    // Update arrival rate with exponential smoothing
     const alpha = 0.3;
     channel.arrivalRate = alpha * (channel.arrivalRate + 1) + (1 - alpha) * channel.arrivalRate;
 
@@ -383,7 +643,6 @@ export class MultiplexerEngine {
 
     this.emit('signal_enqueued', { channelId, signal });
 
-    // Trigger immediate optimization if critical
     if (signal.priority === 'CRITICAL') {
       this.reformulateAndSolve();
     }
@@ -391,12 +650,11 @@ export class MultiplexerEngine {
     return { success: true, channelId };
   }
 
-  // Process signals based on bandwidth allocation
   processSignals() {
     this.channels.forEach((channel, channelId) => {
       const signalsToProcess = Math.min(
         channel.queue.length,
-        Math.floor(channel.bandwidth / 10) // simplified processing rate
+        Math.floor(channel.bandwidth / 10)
       );
 
       for (let i = 0; i < signalsToProcess; i++) {
@@ -411,14 +669,19 @@ export class MultiplexerEngine {
         }
       }
 
+      // Update utilization based on queue length
       channel.utilization = Math.min(1.0, channel.queue.length / 100);
+
+      // Exponential decay of arrival rate when no signals
+      if (channel.queue.length === 0) {
+        channel.arrivalRate *= 0.95;
+      }
     });
 
     this.performanceMetrics.throughput = this.performanceMetrics.totalSignalsProcessed /
       ((Date.now() - this.startTime) / 1000);
   }
 
-  // Helper methods
   getPriorityWeight(priority) {
     const weights = {
       'CRITICAL': 4.0,
@@ -439,7 +702,6 @@ export class MultiplexerEngine {
     return minBandwidths[priority] || 20.0;
   }
 
-  // Get current state for visualization
   getState() {
     return {
       channels: Array.from(this.channels.values()),
@@ -450,6 +712,10 @@ export class MultiplexerEngine {
       selectedSolver: this.selectedSolver,
       constraints: this.constraints,
       performanceMetrics: this.performanceMetrics,
+      adaptiveParams: this.adaptiveParams,
+      scenario: this.scenario,
+      history: this.history,
+      cycleCount: this.cycleCount,
       state: this.state
     };
   }
@@ -457,6 +723,10 @@ export class MultiplexerEngine {
   start() {
     this.startTime = Date.now();
     this.running = true;
+    // Start with steady scenario by default
+    if (!this.scenario.mode || this.scenario.mode === 'steady') {
+      this.setScenario('steady', 1.0);
+    }
   }
 
   stop() {
