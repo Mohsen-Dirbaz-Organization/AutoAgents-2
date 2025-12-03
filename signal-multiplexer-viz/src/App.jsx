@@ -8,6 +8,9 @@ import ConstraintPanel from './components/ConstraintPanel';
 import PerformanceMetrics from './components/PerformanceMetrics';
 import ControlPanel from './components/ControlPanel';
 import CodePanel from './components/CodePanel';
+import TimeSeriesChart from './components/TimeSeriesChart';
+import ScenarioControl from './components/ScenarioControl';
+import AdaptationMetrics from './components/AdaptationMetrics';
 import './App.css';
 
 function App() {
@@ -15,9 +18,11 @@ function App() {
   const [state, setState] = useState(engine.getState());
   const [isRunning, setIsRunning] = useState(false);
   const [showCode, setShowCode] = useState(false);
+  const [currentScenario, setCurrentScenario] = useState({ mode: 'steady', intensity: 1.0 });
   const optimizationInterval = useRef(null);
   const processingInterval = useRef(null);
   const visualizationInterval = useRef(null);
+  const signalInjectorInterval = useRef(null);
 
   // Initialize some test channels
   useEffect(() => {
@@ -25,6 +30,9 @@ function App() {
     engine.createChannel('channel-2', 'NORMAL');
     engine.createChannel('channel-3', 'CRITICAL');
     engine.createChannel('channel-4', 'LOW');
+
+    // Set initial scenario
+    engine.setScenario('steady', 1.0);
 
     // Add some initial signals
     for (let i = 0; i < 5; i++) {
@@ -73,22 +81,10 @@ function App() {
       updateState();
     }, 100);
 
-    // Inject random signals
-    const signalInjector = setInterval(() => {
-      const channels = ['channel-1', 'channel-2', 'channel-3', 'channel-4'];
-      const priorities = ['CRITICAL', 'HIGH', 'NORMAL', 'LOW'];
-      const randomChannel = channels[Math.floor(Math.random() * channels.length)];
-      const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
-
-      if (Math.random() > 0.7) {
-        engine.sendSignal(randomChannel, {
-          priority: randomPriority,
-          data: `auto-signal-${Date.now()}`
-        });
-      }
+    // Inject scenario-driven signals
+    signalInjectorInterval.current = setInterval(() => {
+      engine.generateScenarioSignals();
     }, 200);
-
-    return () => clearInterval(signalInjector);
   };
 
   const stopSimulation = () => {
@@ -108,6 +104,11 @@ function App() {
     if (visualizationInterval.current) {
       clearInterval(visualizationInterval.current);
       visualizationInterval.current = null;
+    }
+
+    if (signalInjectorInterval.current) {
+      clearInterval(signalInjectorInterval.current);
+      signalInjectorInterval.current = null;
     }
   };
 
@@ -134,6 +135,11 @@ function App() {
         data: `disturbance-signal-${i}`
       });
     }
+  };
+
+  const handleScenarioChange = (mode, intensity) => {
+    engine.setScenario(mode, intensity);
+    setCurrentScenario({ mode, intensity });
   };
 
   return (
@@ -172,6 +178,14 @@ function App() {
               solution={state.currentSolution}
             />
           </section>
+
+          <section className="section">
+            <h2>Bandwidth Allocation Over Time</h2>
+            <TimeSeriesChart
+              history={state.history}
+              channels={state.channels}
+            />
+          </section>
         </div>
 
         <div className="right-panel">
@@ -183,6 +197,14 @@ function App() {
               onInjectSignal={injectSignal}
               onInjectDisturbance={injectDisturbance}
               channels={state.channels}
+            />
+          </section>
+
+          <section className="section">
+            <ScenarioControl
+              currentScenario={currentScenario}
+              onScenarioChange={handleScenarioChange}
+              disabled={!isRunning}
             />
           </section>
 
@@ -202,6 +224,14 @@ function App() {
           <section className="section">
             <h2>Performance Metrics</h2>
             <PerformanceMetrics metrics={state.performanceMetrics} />
+          </section>
+
+          <section className="section">
+            <AdaptationMetrics
+              history={state.history}
+              adaptiveParams={state.adaptiveParams}
+              performanceMetrics={state.performanceMetrics}
+            />
           </section>
         </div>
       </div>
