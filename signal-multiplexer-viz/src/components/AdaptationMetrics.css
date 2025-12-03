@@ -1,0 +1,163 @@
+.adaptation-metrics {
+  padding: 1rem 0;
+}
+
+.adaptation-metrics h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #667eea;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #ddd;
+  transition: all 0.3s;
+}
+
+.metric-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.constraint-card {
+  border-left-color: #667eea;
+}
+
+.error-card {
+  border-left-color: #f44336;
+}
+
+.accuracy-card {
+  border-left-color: #4CAF50;
+}
+
+.adaptation-card {
+  border-left-color: #FF9800;
+}
+
+.metric-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.metric-content {
+  flex: 1;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.metric-description {
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1.3;
+}
+
+.adaptation-chart {
+  margin-bottom: 1.5rem;
+}
+
+.adaptation-chart h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.95rem;
+  color: #667eea;
+}
+
+.adaptation-chart svg {
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.adaptation-line {
+  transition: stroke-width 0.3s;
+}
+
+.adaptation-line:hover {
+  stroke-width: 4 !important;
+}
+
+.line-label {
+  font-weight: 600;
+}
+
+.adaptation-info {
+  padding: 1rem;
+  background: #f0f4ff;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.adaptation-info h4 {
+  margin: 0 0 0.75rem 0;
+  color: #667eea;
+  font-size: 1rem;
+}
+
+.adaptation-info ul {
+  margin: 0 0 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.adaptation-info li {
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.adaptation-info li strong {
+  color: #667eea;
+}
+
+.interplay-note {
+  margin: 0;
+  padding: 0.75rem;
+  background: #fff;
+  border-radius: 6px;
+  border-left: 4px solid #FF9800;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #555;
+}
+
+.interplay-note strong {
+  color: #FF9800;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.x-axis line,
+.y-axis line,
+.x-axis path,
+.y-axis path {
+  stroke: #ddd;
+}
+
+.x-axis text,
+.y-axis text {
+  font-size: 11px;
+  fill: #666;
+}
