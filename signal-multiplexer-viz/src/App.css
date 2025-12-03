@@ -85,6 +85,12 @@
   color: #555;
 }
 
+.section.full-width {
+  margin: 0 2rem;
+  max-width: calc(100% - 4rem);
+}
+
+
 .app-footer {
   background: #2c3e50;
   color: white;
