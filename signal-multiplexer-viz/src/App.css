@@ -42,6 +42,16 @@
   transform: translateY(-1px);
 }
 
+.full-width-section {
+  max-width: 1800px;
+  margin: 2rem auto;
+  padding: 0 2rem;
+}
+
+.full-width-section .section {
+  margin-bottom: 0;
+}
+
 .main-content {
   display: grid;
   grid-template-columns: 1fr 1fr;

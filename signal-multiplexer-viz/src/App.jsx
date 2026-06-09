@@ -12,6 +12,8 @@ import DemultiplexerVisualization from './components/DemultiplexerVisualization'
 import TimeSeriesChart from './components/TimeSeriesChart';
 import ScenarioControl from './components/ScenarioControl';
 import AdaptationMetrics from './components/AdaptationMetrics';
+import ConceptExplainer from './components/ConceptExplainer';
+import AgentDeploymentViz from './components/AgentDeploymentViz';
 import './App.css';
 
 function App() {
@@ -159,6 +161,10 @@ function App() {
 
       {showCode && <CodePanel />}
 
+      <section className="section full-width-section">
+        <ConceptExplainer currentStep={state.currentStep} />
+      </section>
+
       <div className="main-content">
         <div className="left-panel">
           <section className="section">
@@ -185,6 +191,14 @@ function App() {
             <TimeSeriesChart
               history={state.history}
               channels={state.channels}
+            />
+          </section>
+
+          <section className="section">
+            <h2>Dual-Purpose Agent Deployment</h2>
+            <AgentDeploymentViz
+              channels={state.channels}
+              state={state}
             />
           </section>
         </div>
