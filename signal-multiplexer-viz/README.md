@@ -1,10 +1,19 @@
 # Adaptive Signal Multiplexer Visualization
 
-Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic Problem Formulation** - a modernized approach to signal multiplexing through continuous optimization.
+Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic Problem Formulation** - a modernized approach to signal multiplexing through continuous optimization, extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, and **Dirac-based impulsive control** for safety-critical memory-reservoir systems.
 
 ## Overview
 
 This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern. The system formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure.
+
+### Extended Framework: Metabolic Memory Renormalization
+
+The project has evolved to incorporate a **three-scale renormalization group architecture** for safety-critical autonomous systems (automotive, aerospace, robotics), integrating:
+
+- **Conserved-Quantity Renormalization (CQR)**: Zero-sum signal amplification/attenuation via projection onto a conservation manifold (Dalton simplex), driven by a scale-free running coupling ξ = ln(k/Λ_G)
+- **Topological Phase Discovery**: Discrete phase label S ∈ {0,1} that empirically "locks" within stable regimes and flips only at gap-closing transitions, providing robust detection of causal-structure changes
+- **Dirac-Based Impulsive Control**: Triple-point formulation (space/time/measure) enabling instantaneous reallocation at critical events while maintaining non-expansive flow guarantees
+- **Hardware-Mapped Architecture**: Silicon-grounded implementation with nanosecond-scale witness gates, 10ms preprocessing, and 50ms LLM inference forming a physical three-tier renormalization ladder
 
 ## Key Features
 
@@ -45,13 +54,187 @@ This visualization demonstrates how signal multiplexing can be treated as a **co
 - Adaptive learning and model updates
 - Anytime solving with performance certificates
 
+### Extended Philosophy: Governance as Geometry
+
+The metabolic memory extension redefines safety constraints as **structural properties** rather than penalized objectives:
+
+- **Conservation is Structural**: The constraint ∑wᵢ = M holds by construction (simplex geometry), not by penalty term
+- **Non-Expansive by Composition**: Rate-clamp-last ∘ simplex-projection both 1-Lipschitz → bounded evolution under perturbation
+- **Fail-Closed by Design**: Conservation-check failure → freeze reservoir (minimal-risk configuration) without loosening downstream bounds
+- **Topologically Protected Phases**: Discrete invariant S robust to sub-gap perturbations; changes only at detectable gap-closing events
+- **Hardware-Realizable Governance**: Every policy concept maps to a physical sub-volume of silicon with bounded latency and trust boundaries
+
+## Conserved-Quantity Renormalization (CQR) Framework
+
+### Mathematical Foundation
+
+The CQR kernel implements a **zero-sum renormalization flow** on the scaled probability simplex:
+
+```
+Δ_M = { w ∈ ℝ^N : wᵢ ≥ 0, ∑wᵢ = M }
+```
+
+**Running Coupling** (scale-free statistic validated at bin level on gasification corpus):
+```
+ξᵢ = ln(kᵢ / Λ_G)    where Λ_G = exp(mean(ln k))
+```
+
+**CQR Step** (O(N + log(1/ε)) complexity):
+```
+1. Additive update:    w' ← w + η · clamp(ξ, -ξ_max, ξ_max)
+2. Rate-clamp-last:    w'' ← clamp(w' - w_prev, -r_max, r_max) + w_prev
+3. Simplex projection: w_new ← Proj_Δ_M(w'')    [Duchi et al. 2008 sort-based]
+4. Conservation check: if |∑w_new - M| > tol → freeze (fail-closed)
+```
+
+**Squarity Index** (discrete phase label):
+```
+S = 1[n_z ≠ n_p]    where n_z = #{i : wᵢ > ε}
+S ∈ {0,1} empirically locks within phases, flips at gap-closing transitions
+```
+
+### Design Contracts
+
+1. **Conservation is Structural**: Simplex geometry enforces ∑w = M by construction, not penalty
+2. **Non-Expansive Flow**: Both rate-clamp and projection are 1-Lipschitz → composition is 1-Lipschitz
+3. **Meet (Never Average)**: Disagreeing salience sources compose by intersection (tighter bound), preserving safety
+4. **Fail-Closed**: Conservation-check failure → freeze reservoir; freezing cannot loosen admissible sets (memory-monotonicity invariant)
+5. **Subordinate to Safety**: CQR may tighten bounds freely; loosening only through trusted scalar φ and conformance gate
+
+### Three-Scale Renormalization Group (RG Ladder)
+
+The framework implements a **physical renormalization group** with three timescales:
+
+#### Scale 1: Gate (Impulsive Dirac Layer, <1ms)
+- **Mechanism**: Dirac impulses Δw δ(t - tₖ) triggered by critical events
+- **Triggers**: S-flip, queue threshold crossed, |ξ| exceeds gap, complexity misprediction
+- **Action**: Instantaneous fail-closed freeze (tighten only); actual reallocation deferred to TB tier
+- **Implementation**: Nanosecond-scale witness gate (μ(a,b) bilinear crossbar) reads latched phase bit S
+- **Guarantee**: Memory-monotonic (amplification free, attenuation gated by φ)
+
+#### Scale 2: TB (Tailored Brain - Adaptive, ~100ms)
+- **Mechanism**: Periodic optimization with ergodic balance metrics
+- **Operations**: CQR projection, ξ computation, learnable cost gradient descent
+- **Ergodic Metric**: Time-averaged queue distribution C_t(q) compared to target ρ_target
+- **Continuous Allocation**: Agent density ρ(channel, strength) = ∑wᵢ δ(channel - cᵢ, strength - sᵢ)
+- **Output**: Updated bounded tunables (LUT slot), signed for hardware deployment
+
+#### Scale 3: MB (Main Brain - Continuous, ~1s+)
+- **Mechanism**: Long-term RG flow on conservation manifold
+- **State**: ROM weights (persistent, read-only), bounded invariant library
+- **Updates**: Only via governed OTA / signed patches (attestation → canary → commit/rollback)
+- **Guarantee**: No silent drift; all loosening requires cryptographic evidence chain
+
+### Hardware Mapping (Enforcement Processing Unit - EPU)
+
+The CQR framework maps cleanly onto the **EPU IC Control Volume** (68 overlay architecture):
+
+| **CQR Component** | **Hardware Placement** | **Latency Budget** | **Overlay Reference** |
+|-------------------|------------------------|-------------------|----------------------|
+| Squarity S (phase bit) | Witness bitvector (latched) | ~8ns read | 10, 16, 35, 44 |
+| Gap-closing detector | Defect-exceeds-null-band signal | ~3ns | 53 (Failure-to-Feasible) |
+| CQR projection | LLM feature extraction tier | ~50–100ms | 15, 21 (bounded tunables) |
+| Impulsive freeze | EPU 1-bit accept/reject gate | ~3ns | 36, 55, 62 (typed feasibility) |
+| Signed updates | OTA staging→attestation→commit | Variable | 28, 38 (governed evolution) |
+| Memory persistence | ROM invariant library | Read-only | 35, 58 (evidence vs ephemeral) |
+| Provenance log | Crypto+Log ring buffer | ~64KB | 1, 21, 47 (traceability) |
+
+**Key Insight**: Topology computation (CQR, S-label) belongs at the TB tier (50–100ms); only the 1-bit phase readout belongs at the Gate (3ns). This resolves the WCET constraint: the simplex projection is off the hard real-time path by construction.
+
+### Topological Phase Discovery (2016 Nobel Prize Integration)
+
+Per `RESEARCH_PROMPT_TOPOLOGICAL_PHASE.md`, the framework incorporates:
+
+**Part A: Method Extraction**
+- **Landau Paradigm Replacement**: Phases distinguished by global topological invariants (Chern number, winding) rather than local order parameters
+- **Kosterlitz-Thouless (KBT)**: Vortex binding/unbinding; infinite-order transition with topological charge ∮dθ = 2πn
+- **TKNN (Quantum Hall)**: Chern number C = (1/2π)∫_BZ F d²k ∈ ℤ; integer-quantized, robust to smooth H deformations
+- **Haldane**: Topologically non-trivial phases without net magnetic field; Haldane gap in spin-1 chains
+
+**Part B: Mapping to S (with Warrants and Defeaters)**
+
+| **Correspondence** | **Warrant** | **Defeater** | **Standing** |
+|--------------------|-------------|--------------|-------------|
+| S as topological charge | S parity proxy; proposed refinement: winding of H(iω) around origin | S is discrete but not integer-valued invariant; needs pole-zero topology mapping | **Proposed** |
+| Gap = spectral margin | min_j \|Re(p_j)\| or min_i w_i; transition when → 0 | Finite N; no thermodynamic limit; gap not rigorously protected | **Proposed** |
+| Robustness ⇒ locking | Sub-gap perturbations cannot flip S (non-expansive flow + gap) | Empirical locking observed; quantitative bound on perturbation size owed | **Grounded** (empirical) |
+| Control parameter | Learning rate η, scale Λ_G, or capacity C; which gives clean hysteretic transition? | Needs experimental sweep; hysteresis not yet characterized | **Speculative** |
+
+**Part C: Manipulated Causality**
+- **Bulk Protection**: Within a phase (gap > 0), the effective causal-influence structure (which traces active/suppressed) is insulated from sub-gap perturbations
+- **Boundary Action**: At transitions (gap → 0), impulsive Dirac jumps Δw δ(t - tₖ) enable controlled regime shifts
+- **Hard Boundary**: Topology gives NO protection once gap closes; NOT a claim about retrocausality
+
+**Obligations Logged**:
+- **O-1**: One-sided bound proof for ξ as salience scalar
+- **O-2**: Convergence proof for CQR flow on conservation manifold
+- **O-3**: Cross-domain validation of ξ/S in memory domain (currently validated only at bin level on gasification corpus)
+- **O-4**: Measured WCET of simplex projection (now resolved: projection off hard real-time path; only S-bit read is on it)
+- **O-5**: Topological mapping validation (finite N vs. thermodynamic limit; no literal Brillouin zone)
+- **O-7**: Impulsive stability bound (does S-flip-triggered Δw preserve flow stability?)
+- **O-8**: Ergodic convergence in finite time (does C_t → ρ_target within operational window?)
+- **O-9**: Discrete channel-space geometry (define metric or flag as heuristic)
+
+### Dirac-Based Impulsive Control (Triple Point)
+
+The **triple point of Dirac integral** unifies three primitive operations:
+
+1. **Spatial Localization**: Agent i at "here" → δ(channel - i) or δ(position - xᵢ)
+2. **Temporal Impulse**: Control applied "now" → δ(t - tₖ)
+3. **Measure (Statistics)**: Time spent "in state" → ∫δ(state - observed(τ)) dτ
+
+**Unity Basis Analogy**: Just as the elliptic framework has (T, sct, κ) as minimal embedding for complex waveforms, the Dirac framework has (space, time, measure) as the minimal embedding for multi-agent coordination. Every trajectory, allocation, and statistical property is a composition of these three primitives.
+
+**Applications to CQR**:
+
+#### Impulsive Consensus Control
+- **Literature**: Zhu/Zheng/Wang 2015 — quantized consensus with δ(t - tₖ) impulses
+- **CQR Mapping**: When S flips or queue threshold crossed → instantaneous Δw δ(t - tₖ) reallocation
+- **Guarantee**: Preserves non-expansiveness if |Δw| ≤ rate-clamp bound (Obligation O-7)
+
+#### Ergodic Coverage for Queue States
+- **Literature**: Salman et al. 2017 — spatial ergodic coverage via time-averaged δ distributions
+- **CQR Mapping**: Define target queue distribution ρ_target; empirical C_t(q) = (1/Nt)∑∫δ(q - qᵢ(τ))dτ
+- **Objective**: Minimize ∫|C_t(q) - ρ_target|² (ensures balanced processing over time)
+
+#### Geometric Task Allocation
+- **Literature**: Schwager — distributed allocation via δ point masses minimizing error functional
+- **CQR Mapping**: Agent allocation as continuous density ρ(channel, strength) = ∑wᵢδ(...)
+- **Benefit**: Smooth gradient-based optimization for large N; discrete recovery via argmax
+
+#### Impulsive Learning Updates
+- **CQR Innovation**: When complexity misprediction or new public-utility task emerges → Dirac impulse in learning rate
+- **Memory-Monotonic**: Impulses may tighten (increase ξ magnitude) freely; attenuation gated by φ
+
+**Hybrid Flow Equation**:
+```
+w(t) = w_continuous(t) + ∑ₖ Δwₖ δ(t - tₖ)
+
+Continuous: ξ-driven CQR with rate-clamp + simplex-project
+Impulsive:  Triggered by {S-flip, queue spike, |ξ| > gap, error > ε}
+After impulse: w ← Proj_Δ(w + Δw) to restore conservation
+```
+
+### Contestability Ledger (Epistemic Discipline)
+
+All design choices documented as **contestable → correctable → steerable**:
+
+| **Choice** | **Warrant** | **Defeater** | **Standing** | **Owner / Exit** |
+|-----------|-------------|--------------|-------------|------------------|
+| **C-1**: Zero-sum by geometry | Simplex ∑w=M structural | If projection fails CONS.CHK | **Grounded** (self-test: residual ~2e-16) | — |
+| **C-2**: ξ = ln(k/Λ_G) as coupling | Bin-level validation (gasification corpus) | If memory-domain correlation breaks | **Grounded** (bin) / **Proposed** (memory) | O-3: cross-domain validation |
+| **C-3**: S as topological invariant | Empirical locking observed | Finite N; no rigorous protection | **Proposed** | O-5: mapping validation |
+| **C-4**: Impulsive jumps non-expansive | Projection 1-Lipschitz; \|Δw\| bounded | If \|Δw\| unbounded | **Grounded** (if bound holds) | O-7: stability proof |
+| **C-5**: Ergodic convergence | Literature theorems (Salman 2017) | Finite-time windows; no guarantee | **Proposed** | O-8: measure t_conv |
+
 ## Technologies
 
 - **React** - Component framework
 - **Vite** - Build tool and dev server
 - **D3.js** - Data visualization
-- **KaTeX** - Mathematical notation rendering
+- **KaTeX** - Mathematical notation rendering (includes CQR equations, topological invariants)
 - **Lucide React** - Icon library
+- **JavaScript** - Simulation engine (ConservedRenormalization.js, MultiplexerEngine.js)
 
 ## Getting Started
 
@@ -96,12 +279,24 @@ npm run preview
 
 ## What You'll See
 
+### Original Visualization Features
 - **Channels** requesting bandwidth with different priorities (CRITICAL, HIGH, NORMAL, LOW)
-- **Optimization problems** being formulated with decision variables (b_i for bandwidth, s_i for time slots)
+- **Optimization problems** formulated with decision variables (bᵢ for bandwidth, sᵢ for time slots)
 - **Problem structure detection** identifying whether problems are convex, mixed-integer, stochastic, etc.
 - **Solver selection** choosing appropriate methods (Interior Point, Branch & Bound, Weighted Sum, etc.)
 - **Constraint synthesis** generating physics-informed constraints for conservation, dynamics, and causality
 - **Real-time adaptation** as the system responds to changing conditions
+
+### Extended CQR/Topological Features
+- **Conservation Manifold**: Simplex projection visualizing zero-sum weight redistribution
+- **Running Coupling ξ**: Scale-free statistic ξᵢ = ln(kᵢ/Λ_G) driving RG flow
+- **Squarity Index S**: Discrete phase label {0,1} locking within regimes, flipping at transitions
+- **Ergodic Balance**: Time-averaged queue distribution Cₜ(q) vs. target ρ_target
+- **Impulsive Events**: Dirac δ(t - tₖ) reallocation triggers highlighted on timeline
+- **Three-Scale Ladder**: Gate (ns), TB (100ms), MB (s+) tier separation visualized
+- **Memory Monotonicity**: Asymmetric hysteresis — tighten instantly, loosen after dwell
+- **Fail-Closed Freeze**: Conservation-check violations triggering reservoir freeze
+- **Hardware Mapping**: Overlay references showing physical placement (witness gate, LUT slot, provenance ring)
 
 ## Academic Context
 
@@ -120,29 +315,257 @@ Designed for three audiences with one unified visualization:
 ## Project Structure
 
 ```
-src/
-├── simulation/
-│   └── MultiplexerEngine.js    # Simplified multiplexer simulation
-├── components/
-│   ├── OptimizationLoop.jsx    # 7-step loop visualization
-│   ├── ChannelVisualization.jsx # D3.js channel/bandwidth charts
-│   ├── ProblemFormulation.jsx  # Mathematical formulation (KaTeX)
-│   ├── SolverVisualization.jsx # Solver selection and results
-│   ├── ConstraintPanel.jsx     # Physics-informed constraints
-│   ├── PerformanceMetrics.jsx  # System metrics
-│   ├── ControlPanel.jsx        # Interactive controls
-│   └── CodePanel.jsx           # Java code display
-├── App.jsx                     # Main application
-└── index.css                   # Global styles
+signal-multiplexer-viz/
+├── src/
+│   ├── simulation/
+│   │   ├── MultiplexerEngine.js         # Multiplexer with time-series, scenarios
+│   │   └── ConservedRenormalization.js  # CQR reference kernel (O(N+log(1/ε)))
+│   ├── components/
+│   │   ├── OptimizationLoop.jsx         # 7-step loop visualization
+│   │   ├── ChannelVisualization.jsx     # D3.js channel/bandwidth charts
+│   │   ├── ProblemFormulation.jsx       # Mathematical formulation (KaTeX)
+│   │   ├── SolverVisualization.jsx      # Solver selection and results
+│   │   ├── ConstraintPanel.jsx          # Physics-informed constraints
+│   │   ├── PerformanceMetrics.jsx       # System metrics
+│   │   ├── ControlPanel.jsx             # Interactive controls
+│   │   ├── CodePanel.jsx                # Java code display
+│   │   ├── ConceptExplainer.jsx         # Educational component (6 concepts)
+│   │   └── AgentDeploymentViz.jsx       # Dual-purpose agent allocation viz
+│   ├── App.jsx                          # Main application
+│   └── index.css                        # Global styles
+├── docs/
+│   ├── RENORMALIZATION_FRAMEWORK.md      # Complete CQR specification
+│   ├── RESEARCH_PROMPT_TOPOLOGICAL_PHASE.md  # 2016 Nobel extraction prompt
+│   ├── CORRESPONDENCE_PRINCIPLE_PROPOSAL.md  # Quantum/classical bridge
+│   ├── Dirac function report.pdf         # Multi-agent Dirac delta applications
+│   └── PICAPD_compressed168.pdf          # EPU hardware overlays (68 pages)
+├── README.md                             # This file
+└── package.json                          # Dependencies + scripts
 ```
+
+## Hardware Architecture (EPU IC — 68 Overlay Analysis)
+
+The **Enforcement Processing Unit (EPU)** renders governance as geometry: every policy concept appears as a physical sub-volume of silicon with bounded latency and trust boundaries.
+
+### Governance-as-Geometry Principle
+
+**Core Insight**: An unsafe action is not rejected by software — it is **non-representable** in the hardware witness algebra.
+
+### EPU IC Control Volume (3D Rendering)
+
+The chip is visualized as a **normalized (X, Y, Z) control volume** with major subsystems:
+
+| **Z-Height** | **Subsystem** | **Function** | **Latency** |
+|--------------|---------------|--------------|-------------|
+| 0.0–0.2 | Actuator Interface | Physical outputs (brake, steering) | ns-scale |
+| 0.2–0.4 | EPU Cascade | 1-bit accept/reject witness gate | ~3ns |
+| 0.4–0.6 | LLM Tile | Feature extraction, physics compliance | ~50ms |
+| 0.6–0.8 | Crypto+Log | Provenance ring, signature verification | Variable |
+| 0.8–1.0 | Sensor I/O | Streaming ingress (10,000 bits ephemeral) | ~10ms |
+| 1.0–1.2 | IC Control Volume | Latency budgets, vote/checks | ns–ms |
+| 1.2–1.4 | Witness Gates | Bilinear μ(a,b) crossbar, defect bounds | ~8ns |
+
+### Key Overlays Mapped to CQR
+
+**Overlay 1**: Authority Volumes (Global Governance vs. Local Safety)
+- Global: Coarse constraints, policy model
+- Local: Tight accept/reject, high-rate decisions
+- **CQR Mapping**: MB (global, slow) vs. Gate (local, fast)
+
+**Overlays 10, 16, 35, 44**: Witness Primitive Hardware (μ(a,b) Crossbar + ROM Consistency)
+- Bilinear witness: μ(a,b) = a ⊗ b with graded commutativity enforcement
+- Reduced to scalar invariants: trace, spectral summary, gain
+- Null band N: μ(a,b) − σμ(b,a) ∈ N ⇒ representable; else pruned
+- **CQR Mapping**: Complementary to CONS.CHK — representability (theirs) + conservation (ours)
+
+**Overlay 15**: Where Learning Lives (RO Weights vs. Ephemeral vs. Bounded Tunables)
+- ROM basis + invariant library: persistent, read-only
+- KV cache: ephemeral (stream only, no persistence)
+- LUT slot: bounded tunables (signed updates only)
+- **CQR Mapping**: CQR updates the LUT slot via signed TB-tier commits
+
+**Overlays 21, 46, 58**: Memory vs. Ephemeral State (Persistence Contracts)
+- Persistent: ROM invariants, provenance ring (circular log)
+- Ephemeral: accumulator regs, KV cache (streaming reduction only)
+- **CQR Mapping**: Memory-monotonicity — tightening free, loosening via signed φ
+
+**Overlays 28, 38, 61**: OTA Policy Updates + Rollback (Governed Evolution)
+- Staging → canary → attestation → commit-or-rollback
+- Rollback latch forces conservative fallback (hardware-enforced)
+- All decisions signed and auditable
+- **CQR Mapping**: The trusted scalar φ; asymmetric hysteresis (tighten instant, loosen after dwell)
+
+**Overlay 53**: Failure-to-Feasible Response (Dependency Discovery Recovery)
+- Defect detector: μ-symmetry exceeds null band
+- Triggers: dependency discovery, conservative hardware fallback
+- **CQR Mapping**: Gap-closing detector; fail-closed freeze when CONS.CHK violated
+
+**Overlays 3, 30, 40, 51**: Latency as Geometry (Propagation + Pipeline Budget)
+- Sensor preprocessing: ~10ms
+- LLM feature extraction: ~50ms (parallel, pipelined)
+- Vote/checks: ~8ns
+- EPU decision: ~3ns
+- **CQR Mapping**: The three-scale RG ladder latency budget realized in silicon
+
+**Overlay 64**: Spatial Governance Zones (Global vs. Local Agents)
+- SOFT+HARD boundary: local agents own bounded sub-volumes
+- Global agent: chip-wide invariants + policy
+- **CQR Mapping**: Local agents = worker EPUs (micro-invariants); Global = Queen (final authority + provenance)
+
+**Overlays 9, 22, 33, 39, 45, 56**: Agent Partitioning (Global vs. Local in 3D Fabric)
+- Local agents: capture+sanity (world+bits)
+- Regional agents: manage+compose invariants
+- Global agent: Queen (final authority + provenance)
+- **CQR Mapping**: Hierarchical coercion (locality = evidence → hierarchical coercion)
+
+### Witness Algebra vs. Conservation (Complementary, Not Identical)
+
+| **Property** | **Witness Algebra (EPU)** | **CQR (Our Framework)** |
+|--------------|---------------------------|-------------------------|
+| **What it checks** | Representability: μ(a,b) − σμ(b,a) ∈ N (null band) | Conservation: ∑wᵢ = M (zero-sum budget) |
+| **Decision** | 1-bit accept/reject (unsafe → non-representable) | Redistribution weights w on simplex Δ_M |
+| **Latency** | ~3–8ns (Gate tier) | ~50–100ms (TB tier) |
+| **Failure mode** | Defect exceeds null band → prune action | Residual > tol → freeze reservoir |
+| **Guarantee** | Graded commutativity enforcement | 1-Lipschitz non-expansive flow |
+| **Composition** | Witness gates decide IF expressible; CQR decides HOW to redistribute salience among expressible traces | Clean seam: neither weakens the other |
+
+### Honest Flags (Defects in the Deck)
+
+1. **Duplicates and Gaps**: 68 pages but ~61 distinct overlays; pages repeat 36, 37, 38, 42, 43, 57, 58; overlay numbers 5, 26, 29 never appear
+2. **Annotation Legibility**: Overlays 16, 44, 52, 53 have unreadable label clusters at volume centers; need exploded views
+3. **Naming Collision on "S"**: Deck uses S for safety case (Overlay 19) and SG1–SG4 goals (Overlay 31); our S is squarity phase label — must disambiguate
+4. **Witness ≠ Conservation**: The deck implements representability gating, not zero-sum conservation — stating this distinction keeps the combined claim contestable
+5. **Thermodynamic Limit Caveat**: Hardware gives empirical locking (hysteresis, dwell), not rigorous topological protection — Obligation O-5 stands
+
+### Net Assessment: The Missing Physical Layer
+
+The overlays supply the silicon floorplan for our stack: conservation manifold (CQR) → phase label (S) → impulsive control (Dirac) → three-scale RG ladder (MB/TB/Gate) → **bounded volume, latency budget, trust boundary, signed audit path**. The synergy is genuine; the seam is clean.
+
+**Key Architectural Correction**: Topology computation (CQR, S-label) belongs at the TB tier (50–100ms); only the 1-bit phase readout belongs at the Gate (3ns). This resolves the WCET constraint.
 
 ## Research Connections
 
-Based on:
-- **AdaptiveSignalMultiplexer.java** - Main implementation
-- **GroupCoordinationFramework.java** - Broader multi-agent context
+### Original Foundation
+- **AdaptiveSignalMultiplexer.java** - Main implementation with dynamic problem formulation
+- **GroupCoordinationFramework.java** - Multi-agent context with dual-purpose allocation
 
-Demonstrates the same dynamic problem formulation approach applied to coordination problems beyond just signal multiplexing.
+### Extended Theoretical Framework
+- **Conserved-Quantity Renormalization**: Zero-sum signal reallocation on Dalton simplex (validated at bin level on gasification corpus)
+- **2016 Nobel Prize in Physics**: Topological phase transitions (Thouless, Haldane, Kosterlitz) — discrete invariants robust to continuous deformations
+- **Dirac Delta Multi-Agent Coordination**: Triple point (space/time/measure) for impulsive consensus, ergodic coverage, geometric allocation
+- **Bohr's Correspondence Principle**: Three-regime architecture (quantum n<10, correspondence 10<n<100, classical n>100) with elliptic transfer functions
+- **Hardware-Grounded Governance**: EPU IC control volume with 68 overlays rendering policy as physical geometry
+
+### Validation Status
+- **Bin-Level (Grounded)**: ξ/S validated on gasification corpus; conservation residual ~2e-16 in self-test
+- **Cross-Domain (Proposed)**: Memory-domain correlation owed (Obligation O-3)
+- **Topological (Proposed)**: S-locking empirically observed; rigorous protection in finite N systems owed (Obligation O-5)
+- **Hardware (Grounded)**: EPU overlays provide physical latency budgets and trust boundaries; witness algebra complementary to CQR
+
+## Session Development (High-Granularity Chronicle)
+
+### Phase 1: Dirac Delta Integration (Methodological Enrichment)
+
+**Input**: `Dirac function report.pdf` (5 pages, ChatGPT-generated)
+
+**Key Concepts Extracted**:
+1. **Impulsive Consensus Control**: Dirac δ(t - tₖ) for discrete-time corrections (Zhu/Zheng/Wang 2015)
+2. **Ergodic Coverage**: Time-averaged statistics Cₜ(x) = (1/Nt)∑∫δ(x - γⱼ(τ))dτ for spatial sampling
+3. **Geometric Task Allocation**: Error functional G(q) with agents as Dirac point masses δ(x - xᵢ)
+4. **Point-Mass Representation**: Continuous agent density ρ(channel, strength) = ∑wᵢδ(...)
+
+**Deliverable**: Methodological enrichment analysis integrating Dirac-based multi-agent coordination with CQR framework
+
+**Synergies Identified**:
+- **Triple Point** (space/time/measure) as unit basis for multi-agent coordination
+- **Impulsive reallocation** at S-flip or queue threshold → Δw δ(t - tₖ)
+- **Ergodic balance metric** over queue states instead of physical space
+- **Continuous allocation** for large-N scalability with discrete recovery via argmax
+- **Hybrid flow equation**: w(t) = w_continuous(t) + ∑Δwₖ δ(t - tₖ)
+
+**Breakage Points** (honest mapping):
+1. No literal spatial continuity (channels are discrete indices)
+2. Finite N vs. continuous limit (density approximation valid only for large N)
+3. Impulsive stability without full theory (Lyapunov convergence proof owed)
+4. Ergodic convergence time (finite windows vs. t → ∞ theorems)
+5. Topological invariants in finite systems (no rigorous protection)
+
+### Phase 2: Hardware EPU Architecture Study (68 Overlays)
+
+**Input**: `PICAPD_compressed168.pdf` (68 pages, 3D IC control volume rendering)
+
+**Analysis**: Systematic review of all 68 pages in 4 chunks (1-20, 21-40, 41-60, 61-68)
+
+**Key Findings**:
+1. **Governance as Geometry**: Every policy concept is a physical sub-volume with bounded latency
+2. **Latency Ladder Realized**: Sensor ~10ms, LLM ~50ms, Vote ~8ns, EPU ~3ns → matches MB/TB/Gate
+3. **Witness Algebra**: Bilinear μ(a,b) crossbar with null-band defect detection (complementary to CQR)
+4. **Memory Contracts**: ROM (persistent), KV cache (ephemeral), LUT (bounded tunables) → memory-monotonicity
+5. **Signed Update Path**: OTA staging → canary → attestation → commit/rollback → asymmetric hysteresis
+6. **Fail-Closed Hardware**: Defect-exceeds-null-band → conservative fallback (gap-closing detector)
+
+**Placement Resolution**: 
+- CQR projection → TB tier (~100ms), off hard real-time path
+- Squarity S → latched witness bitvector, Gate reads in O(1) at ~8ns
+- Impulsive freeze → EPU 1-bit gate (~3ns), actual reallocation deferred to TB
+- **Result**: WCET constraint satisfied (Obligation O-4 partially resolved)
+
+**Defects Flagged**:
+1. Duplicates/gaps: ~61 distinct overlays, not 68
+2. Annotation legibility issues (overlapping labels)
+3. Naming collision on "S" (safety case vs. squarity)
+4. Witness ≠ conservation (must state distinction)
+5. No rigorous topological protection (thermodynamic limit caveat)
+
+### Phase 3: Integration and Documentation
+
+**Outputs**:
+1. **RENORMALIZATION_FRAMEWORK.md** (comprehensive CQR specification with contestability ledger)
+2. **ConservedRenormalization.js** (reference kernel, self-test validates conservation ~2e-16)
+3. **RESEARCH_PROMPT_TOPOLOGICAL_PHASE.md** (2016 Nobel extraction prompt, Part A–D structure)
+4. **README.md** (this file, updated with high granularity)
+
+**Synthesis**: 
+- Dirac triple point + CQR conservation + topological S-locking + EPU hardware = coherent four-layer stack
+- Clean seams: representability gating (hardware) + conserved redistribution (CQR) compose without weakening
+- Honest breakage: finite N, no literal Brillouin zone, empirical locking vs. rigorous protection
+
+### Open Obligations (Contestability → Correctability → Steerability)
+
+| **ID** | **Owed** | **Owner** | **Exit Condition** |
+|--------|----------|-----------|-------------------|
+| **O-1** | One-sided bound proof for ξ as salience scalar | Formal analysis | Published bound or counterexample |
+| **O-2** | Convergence proof for CQR flow on Δ_M | Theory / simulation | Lyapunov function or Monte Carlo bound |
+| **O-3** | Cross-domain validation (memory vs. gasification) | Empirical study | Correlation r > 0.7 on memory corpus |
+| **O-4** | WCET of simplex projection | Measurement | **Resolved**: projection off real-time path; S-bit read is O(1) |
+| **O-5** | Topological mapping validation | Theory | Explicit finite-N invariant or honest disclaimer |
+| **O-7** | Impulsive stability bound | Proof / simulation | ‖w(t) - w*‖ bounded after Δw δ(t - tₖ) |
+| **O-8** | Ergodic convergence time | Simulation | Measure t_conv for ‖Cₜ - ρ_target‖ < ε |
+| **O-9** | Discrete channel-space geometry | Architectural decision | Define metric or flag as heuristic |
+
+### Right of Contestability
+
+Every non-trivial claim in this framework remains **challengeable by evidence or defective warrant**. The contestability ledger (RENORMALIZATION_FRAMEWORK.md) documents:
+- **Warrants**: Why each design choice should hold
+- **Defeaters**: The observation/argument that would break it
+- **Standing**: Grounded / Proposed / Speculative
+- **Owner/Exit**: Who owes the validation and what measurement closes the obligation
+
+### Key References
+
+**Primary Sources**:
+- Thouless–Kohmoto–Nightingale–den Nijs (1982, TKNN)
+- Kosterlitz–Thouless (1973)
+- Haldane (1988 model; 1983 spin chains)
+- 2016 Nobel Committee *Scientific Background* document
+- Duchi et al. (2008) — Euclidean projection onto simplex
+- Zhu/Zheng/Wang (2015) — impulsive consensus control
+- Salman et al. (2017) — ergodic coverage with obstacles
+
+**Implementation**:
+- `ConservedRenormalization.js` — O(N + log(1/ε)) CQR kernel with self-test
+- `MultiplexerEngine.js` — time-series history, operational scenarios, adaptive learning
+- `PICAPD_compressed168.pdf` — EPU IC 68-overlay hardware architecture
 
 ## License
 
@@ -150,4 +573,107 @@ See parent repository for license information.
 
 ## Contributing
 
-This is a research visualization project. For questions or contributions, please refer to the parent AutoAgents-2 repository.
+This is a research visualization project integrating multiple theoretical frameworks (CQR, topological phases, Dirac impulsive control, hardware governance). Contributions welcome in:
+- Cross-domain validation (memory corpus for ξ/S)
+- Convergence proofs (CQR flow, impulsive stability, ergodic metrics)
+- Hardware implementation (FPGA prototype, WCET measurements)
+- Visualization enhancements (3D EPU overlay browser, phase-transition animation)
+
+For questions or contributions, please refer to the parent AutoAgents-2 repository.
+
+---
+
+## Quick Reference: Key Equations and Mappings
+
+### Core CQR Equations
+
+**Simplex**:
+```
+Δ_M = { w ∈ ℝ^N : wᵢ ≥ 0, ∑wᵢ = M }
+```
+
+**Running Coupling**:
+```
+ξᵢ = ln(kᵢ / Λ_G)    where Λ_G = exp((1/N)∑ln kⱼ)
+```
+
+**CQR Step**:
+```
+w ← Proj_Δ_M(RateClamp(w + η·clamp(ξ, -ξ_max, ξ_max), w_prev))
+```
+
+**Squarity Index**:
+```
+S = 1[n_z ≠ n_p]    n_z = #{i : wᵢ > ε}    n_p = capacity
+```
+
+**Conservation Check**:
+```
+if |∑w - M| > tol → freeze (fail-closed)
+```
+
+### Dirac Triple Point
+
+**Spatial**: Agent i at channel → δ(channel - i)  
+**Temporal**: Impulse at tₖ → δ(t - tₖ)  
+**Measure**: Time in state → ∫₀ᵗ δ(state - observed(τ)) dτ
+
+**Hybrid Flow**:
+```
+w(t) = w_continuous(t) + ∑ₖ Δwₖ δ(t - tₖ)
+```
+
+**Ergodic Balance**:
+```
+Cₜ(q) = (1/Nt) ∑ᵢ ∫₀ᵗ δ(q - qᵢ(τ)) dτ
+E = ∫ |Cₜ(q) - ρ_target(q)|² dq
+```
+
+### Three-Scale RG Ladder
+
+| **Tier** | **Timescale** | **Mechanism** | **Hardware** |
+|----------|---------------|---------------|--------------|
+| **Gate** | <1ms (ns-scale) | Impulsive Δw δ(t - tₖ); fail-closed freeze | EPU 1-bit gate (~3ns), witness bitvector (~8ns) |
+| **TB** | ~100ms | CQR projection, ξ computation, ergodic balance | LLM feature tier, bounded LUT updates |
+| **MB** | ~1s+ | Long-term RG flow, ROM weights | Signed OTA, attestation→canary→commit |
+
+### Hardware-to-CQR Mapping
+
+| **CQR Concept** | **EPU Overlay** | **Latency** | **Notes** |
+|-----------------|-----------------|-------------|-----------|
+| Squarity S (phase bit) | 10, 16, 35, 44 | ~8ns read | Latched in witness bitvector |
+| Gap-closing detector | 53 | ~3ns | Defect-exceeds-null-band signal |
+| CQR projection | 15, 21 | ~50–100ms | LUT slot updates at TB tier |
+| Impulsive freeze | 36, 55, 62 | ~3ns | EPU accept/reject gate |
+| Signed updates | 28, 38 | Variable | OTA staging→attestation→commit |
+| Memory persistence | 35, 58 | RO | ROM invariants + evidence library |
+| Provenance log | 1, 21, 47 | ~64KB ring | Crypto+Log circular buffer |
+
+### Complexity Guarantees
+
+- **CQR step**: O(N + log(1/ε)) — expected linear simplex projection (Duchi et al. 2008)
+- **Squarity S**: O(N) — single pass count of active traces
+- **Conservation check**: O(N) — single sum
+- **Gate read**: O(1) — latched bit access
+- **Non-expansive**: 1-Lipschitz composition (rate-clamp ∘ projection)
+
+### Validation Status Summary
+
+| **Component** | **Status** | **Evidence** |
+|---------------|------------|--------------|
+| Conservation structural | ✅ Grounded | Self-test: residual ~2e-16 |
+| ξ bin-level | ✅ Grounded | Gasification corpus validation |
+| ξ memory-domain | ⏳ Proposed | O-3: cross-domain validation owed |
+| S empirical locking | ✅ Grounded | Observed in plots (RENORMALIZATION_FRAMEWORK.md) |
+| S topological protection | ⏳ Proposed | O-5: finite-N mapping owed |
+| Non-expansive flow | ✅ Grounded | 1-Lipschitz proof (composition) |
+| Impulsive stability | ⏳ Proposed | O-7: Lyapunov bound owed |
+| Ergodic convergence | ⏳ Proposed | O-8: finite-time measure owed |
+| Hardware latency budgets | ✅ Grounded | EPU overlays 3, 30, 40, 51 |
+| Witness algebra | ✅ Grounded | EPU overlays 10, 16, 35, 44 |
+
+---
+
+**Last Updated**: June 2026  
+**Session ID**: claude/signal-multiplexer-visualization-016x1jqpdGEcPjHhPJZWH9NY  
+**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping
