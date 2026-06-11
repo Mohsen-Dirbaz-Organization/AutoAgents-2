@@ -480,6 +480,11 @@ at `(0,0,0)`; low β = "speaks the spine's own vocabulary," high β = "reaches i
 
 ### Source #1 — *Bounded Autonomy on a Memristive Substrate* (Technical Reference, Rev 2026-05-26)
 
+> 📄 **Full protocol output:** the complete §8 output-format instance for this source — per-derivative
+> writing templates (§8.9), entanglement map (§8.4), verification summary (§8.10), and validation
+> checklist (§11) — lives in **[`EVD_Assessment_Source_01_Memristive_Substrate.md`](./EVD_Assessment_Source_01_Memristive_Substrate.md)**.
+> The summary below is the registry-level condensation of that document.
+
 **Gate (§5.3 Automatic Rejection):** PASS — source is identifiable, carries its own provenance and a
 known/built/claimed/unverified evidentiary ledger (§7), and supplies the required evidence components.
 Not rejected.
