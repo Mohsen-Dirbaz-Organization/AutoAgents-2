@@ -462,6 +462,122 @@ The overlays supply the silicon floorplan for our stack: conservation manifold (
 - **Topological (Proposed)**: S-locking empirically observed; rigorous protection in finite N systems owed (Obligation O-5)
 - **Hardware (Grounded)**: EPU overlays provide physical latency budgets and trust boundaries; witness algebra complementary to CQR
 
+## Design-Space Integration Registry (EVD Protocol Assessments)
+
+This registry positions **external source documents** within the project's open-ended design
+space (the CQR / topological-`S` / Dirac-impulse / three-scale-RG-ladder / EPU-hardware spine
+documented above). Each source is processed with the **Extraction of Structured Derivatives from
+Intertwined Texts** protocol (v0.2), using *this README's design space as the reference layer*
+(reference-layer origin = the existing spine). Derivatives are positioned in the 3-axis divergence
+space **(α abstraction, β analogical distance, γ domain-specificity)**, where the README spine sits
+at `(0,0,0)`; low β = "speaks the spine's own vocabulary," high β = "reaches in from another domain."
+
+> **How to read a position.** A derivative near the origin *confirms or directly extends* the spine.
+> A high-α derivative contributes an abstract law; a low-α one contributes concrete hardware/instances.
+> A high-γ derivative is deeply domain-embedded (memristor/automotive); a low-γ one is portable method.
+
+---
+
+### Source #1 — *Bounded Autonomy on a Memristive Substrate* (Technical Reference, Rev 2026-05-26)
+
+**Gate (§5.3 Automatic Rejection):** PASS — source is identifiable, carries its own provenance and a
+known/built/claimed/unverified evidentiary ledger (§7), and supplies the required evidence components.
+Not rejected.
+
+**EVD Header**
+
+| Field | Value |
+|-------|-------|
+| Source | `Bounded_Autonomy_Memristive_Substrate_Technical_Reference.md` (Rev 2026-05-26) |
+| Reference layer | This README's design space (CQR ξ/S · topological `S` · Dirac impulse · Gate/TB/MB ladder · EPU governance) — **Format 3: Conceptual Anchor** |
+| Entanglement density | **High** (monotonicity threads through all 8 lanes; concepts fused at clause level → decomposition + cross-referencing required) |
+| Conceptual units | **8 derivatives + 1 common ground** |
+| Angular diversity | mean pairwise distance ≈ **0.42** ( > 0.3 target → well-layered, PASS ) |
+
+**Reference-layer challenge (what the positioning must answer):**
+(RC1) Where does the new substrate attach to the existing three-scale ladder?
+(RC2) What does the source *add* that the spine lacks?
+(RC3) How is safety/contestability preserved across the new analog/digital seam?
+(RC4) Does it *confirm, extend, or compete with* the ξ/S/monotonicity spine?
+
+**Common Ground (applies to the whole source; near origin):**
+**Evidentiary discipline — the projected/measured seam** (§7). Every quantitative figure is *projected*
+unless marked *measured*; only the FPGA analog-veto witness (~32 ns) is measured. This is the source's
+framing of all eight concepts and is the direct counterpart of this README's **Contestability Ledger**
+(warrant / defeater / standing). Position ≈ `(0.50, 0.10, 0.10)`.
+
+**Derivative Angular-Positioning Table** (origin = README spine)
+
+| # | Derivative (source §) | α (abstraction) | β (analogical dist.) | γ (domain-spec.) | Standing vs. spine |
+|---|----------------------|:---:|:---:|:---:|---|
+| **D1** | Antitone Monotonicity Invariant (§1) | 0.85 | 0.10 | 0.35 | **Confirms + generalizes** the memory-monotonicity invariant |
+| **D2** | Enforced Causality as Fidelity (§1, §2.3, §3.3) | 0.55 | 0.20 | 0.65 | **Extends** "manipulated causality" into perception/ingestion |
+| **D3** | Metabolic-Memory Stratification (§2.3, §3) | 0.45 | 0.25 | 0.55 | **Near-isomorphic** to the Gate/TB/MB ladder |
+| **D4** | Budgeted Retrieval / Shadow Price λ (§3.2) | 0.60 | 0.45 | 0.45 | **New** recall-side economics (orthogonal to CQR) |
+| **D5** | Conservation-Manifold Compiler φ → ξ/S (§2.4) | 0.70 | 0.05 | 0.40 | **Identity** — same ξ=ln(k/Λ_G) & S engine (anchor) |
+| **D6** | Architecture of Refusal / Analog Veto S0–S4 (§2.2) | 0.30 | 0.15 | 0.70 | **Anchors** EPU Gate budgets with the only *measured* 32 ns |
+| **D7** | Memristor Co-Design & τ=5 s Boundary (§4) | 0.20 | 0.55 | 0.90 | **New substrate floor** below the digital-IC EPU |
+| **D8** | Anti-Silent-Drift / LLC Governance (§2.1, §3) | 0.65 | 0.35 | 0.55 | **New cross-validator** for topological `S` (O-5) |
+
+**Dependency diagram (functional, A→B = "A needs B to be understood"):**
+```
+D2 → D1     (enforced causality lifts the antitone law into perception)
+D3 → D1     (residence-tier verification IS the monotone-with-τ law)
+D4 → D3     (shadow price prices retrieval within a residence tier)
+D5 → D1     (ξ/S are the bounded scalars that make one-sidedness computable)
+D6 → D1     (the cascade enforces narrowing in hardware)
+D7 → D3     (device retention is mapped onto the residence tiers)
+D8 → D5     (LLC phase label sits beside φ's structural-parity S)
+Common Ground → all (evidentiary seam governs every claim)
+```
+
+**Synergy matrix (reference-conditional; each solves an RC no single derivative solves alone):**
+
+| Pair / set | Angular pattern | Synergy mechanism | Reference challenge solved |
+|-----------|-----------------|-------------------|----------------------------|
+| **D3 × D7** | β/γ transfer (mid→high domain) | Residence tiers ↔ device-retention classes; τ=5 s boundary places the analog/digital seam exactly where blast-radius verification demands | **RC1 + RC3** — substrate attaches *and* stays safe |
+| **D1 × D5** | abstraction spread (α 0.85↔0.70, low β) | Antitone *law* grounded by ξ/S *instrument* (bounded saturating scalars realize one-sidedness) | **RC4** — monotonicity becomes computable, not just asserted |
+| **D5 × D8** | adjacent, phase-label pair | φ's discrete structural-parity `S` + LLC developmental phase-transition → two independent discrete phase detectors that lock/flip | **O-5** — a *second* detector to cross-validate topological `S` |
+| **D6 × D7** | concrete pair (low α) | Measured 32 ns analog veto anchors the memristor WS-5 latency certification window | **RC1** — proves the analog floor can honor the veto contract |
+| **D4 × D3** | abstraction/domain | Per-partition shadow price λ_k gates *retrieval* within each tier | **RC2** — adds recall economics CQR lacks (CQR only *redistributes*) |
+| **D2 × D1** | direct, abstraction spread | Enforced causality extends the antitone law from actuation → perception | **RC2/RC4** — widens the invariant's reach |
+| **D1 × D5 × D8** | triplet triangulation | A *law* (D1) + a *continuous scalar* ξ (D5) + *two discrete phase labels* S/LLC (D5,D8) | Robust multi-path validation for the contestability ledger |
+
+**Net position in the design space.** The source is **not a competing framework** — it is a
+**downward-and-outward extension that confirms the spine**:
+
+- **Confirms (identity / near-origin):** D5 is literally this README's ξ/S engine (same `ξ = ln(k/Λ_G)`,
+  same discrete `S`, same gasification bin-level validation); D1 is the memory-monotonicity invariant
+  generalized to the full actuation algebra. The spine's core is independently restated here.
+- **Extends downward (new substrate floor, high γ):** D7 adds an *analog memristive device tier* beneath
+  the digital-IC EPU overlays — the README's hardware layer previously bottomed out at digital silicon.
+- **Extends outward (new orthogonal modules):** D4 adds recall-side shadow-price economics; D8 adds an
+  LLC phase-transition detector that cross-validates topological `S`.
+- **Anchors the projected with the measured:** D6 supplies the **only measured latency in the corpus
+  (~32 ns)**, giving the README's projected EPU Gate budgets (~3 ns / ~8 ns) an empirical reference point
+  (still projected; the seam is preserved).
+
+**Effect on open obligations / validation status:**
+- **O-4 (WCET)** — reinforced: D6's measured 32 ns analog-veto is consistent with placing topology at the
+  TB tier and only a latched bit at the Gate.
+- **O-5 (topological mapping)** — *partially advanced*: D8's LLC jump is a second, independent discrete
+  phase-transition signal that can be regressed against `S` (cross-validation path now exists).
+- **New obligation O-10** — *device-monotonicity*: prove real memristors honor antitone admission under
+  non-ideality (the source's own kill-criterion §9.1). Owner: PoC Workstream A. Exit: monotonicity
+  violation rate → 0 under conservative discipline on measured-device models.
+- **New obligation O-11** — *φ transfer to automotive*: the compiler is bin-level-validated on gasification
+  only (same standing as the README's O-3); automotive-perception transfer + `sct`-surrogate
+  reproducibility (rank corr ≥ 0.85) owed.
+
+**Honest flags (kept per the source's own evidentiary discipline):**
+1. Every memristor retention/monotonicity/latency number is a **Phase-0 hypothesis**, not measured.
+2. The *Numerical Substrate Partition* ADR and the *Functionally-Driven Refinement Schedule* are a
+   **ratified decision** and a **projected plan** respectively — neither upgrades any device figure to *measured*.
+3. D7's analog substrate is, by the ADR, **barred from the strategic tier** — so the "new substrate floor"
+   is explicitly a *non-strategic* floor; strategic persistence stays digital Posit/quire.
+
+---
+
 ## Session Development (High-Granularity Chronicle)
 
 ### Phase 1: Dirac Delta Integration (Methodological Enrichment)
@@ -671,9 +787,20 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 | Ergodic convergence | ⏳ Proposed | O-8: finite-time measure owed |
 | Hardware latency budgets | ✅ Grounded | EPU overlays 3, 30, 40, 51 |
 | Witness algebra | ✅ Grounded | EPU overlays 10, 16, 35, 44 |
+| Analog-veto latency (~32 ns) | ✅ **Measured** | Memristive Substrate §2.2/§7 — the *only* measured latency in the corpus |
+| ξ/S engine identity | ✅ Grounded | Memristive Substrate §2.4 — same φ-compiler ξ/S, bin-level on gasification |
+| Memristor device-monotonicity | ⏳ Proposed | O-10: PoC Workstream A (violation rate → 0 under discipline) |
+| φ transfer to automotive | ⏳ Proposed | O-11: gasification-only; `sct`-surrogate reproducibility (rank corr ≥ 0.85) owed |
+
+### Open Obligations (extended)
+
+| ID | Owed | Owner | Exit |
+|----|------|-------|------|
+| O-10 | Device-monotonicity under non-ideality | PoC Workstream A | Monotonicity violation rate → 0 under conservative discipline on measured-device models |
+| O-11 | φ transfer gasification → automotive perception | Conservation-Manifold Compiler team | Cross-domain validation + deterministic-surrogate rank corr ≥ 0.85 |
 
 ---
 
 **Last Updated**: June 2026  
 **Session ID**: claude/signal-multiplexer-visualization-016x1jqpdGEcPjHhPJZWH9NY  
-**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping
+**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping + Memristive-Substrate Integration (Source #1)
