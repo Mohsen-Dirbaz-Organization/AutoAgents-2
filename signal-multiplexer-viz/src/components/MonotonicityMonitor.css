@@ -1,0 +1,45 @@
+.monotonicity-monitor { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.mmn-headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mmn-rate {
+  display: flex;
+  flex-direction: column;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  min-width: 150px;
+}
+.mmn-rate.clear { background: #e8f7ee; }
+.mmn-rate.marginal { background: #fef9c3; }
+.mmn-rate.violated { background: #fdecea; }
+.mmn-rate-val {
+  font-size: 1.8rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.mmn-rate.clear .mmn-rate-val { color: #228B22; }
+.mmn-rate.marginal .mmn-rate-val { color: #b7791f; }
+.mmn-rate.violated .mmn-rate-val { color: #dc143c; }
+.mmn-rate-label { font-size: 0.72rem; color: #64748b; font-weight: 600; }
+
+.mmn-counts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+  color: #475569;
+  text-align: right;
+}
+.mmn-disc { font-size: 0.72rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; display: inline-block; }
+.mmn-disc.on { background: #dcfce7; color: #166534; }
+.mmn-disc.off { background: #fee2e2; color: #991b1b; }
+
+.mmn-grid line { stroke: #eef0f4; }
+.mmn-grid path { display: none; }
+
+.mmn-note { margin: 0; font-size: 0.78rem; color: #94a3b8; line-height: 1.4; }

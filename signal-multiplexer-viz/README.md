@@ -1,10 +1,33 @@
-# Adaptive Signal Multiplexer Visualization
+# Signal Multiplexer → Bounded-Autonomy Substrate Visualization
 
-Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic Problem Formulation** - a modernized approach to signal multiplexing through continuous optimization, extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, and **Dirac-based impulsive control** for safety-critical memory-reservoir systems.
+Interactive React + D3 research visualization that began as an **Adaptive Signal Multiplexer with Dynamic Problem Formulation** and has grown into a **four-view exploration of a bounded-autonomy safety substrate** — extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, **Dirac-based impulsive control**, a runnable **eight-thread safety stack**, a **program coverage map**, and a **Constitution of Truth** governance layer that keeps the system correctable.
+
+> **Status (runtime-verified).** All four views render and interact in a real browser (Playwright + headless Chromium) with **zero console errors**; view transitions and per-view simulation lifecycles are clean. See [Verification Status](#verification-status-runtime) below.
 
 ## Overview
 
-This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern. The system formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure.
+This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern — and then layers on the safety-substrate research the project has accreted across three integrated source documents (see the [Design-Space Integration Registry](#design-space-integration-registry-evd-protocol-assessments)). The original engine formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure; the newer views simulate the bounded-autonomy stack, map the program's coverage, and govern a correctable Ground Truth.
+
+### Four views (header switcher)
+
+The app ships with a view switcher in the header:
+
+- **Signal Multiplexer** — the original adaptive-multiplexer simulation (optimization loop, channels, demux).
+- **Bounded Autonomy Stack** — see below.
+- **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
+- **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
+
+The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
+  - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
+  - the **S0 → S4 Architecture of Refusal**, showing the convex command box that can only ever *narrow*, plus the electrically-isolated **~32 ns analog veto** (the corpus's only *measured* latency);
+  - **metabolic memory** — reflexive / tactical (analog) and strategic (digital Posit/quire) tiers, with the **τ = 5 s boundary** where analog state is re-quantized, and **shadow-price λ** retrieval admission;
+  - the **antitone monotonicity monitor** — with WS-2 conservative discipline ON, monotonicity violations stay at **0%**; toggle it OFF to watch raw memristor non-idealities re-admit forbidden commands;
+  - the **trusted scalars** ξ (continuous, saturating) and S (discrete parity) from the conservation-manifold compiler, plus the **LLC drift detector** that quarantines strategic consolidations on a phase-transition jump;
+  - the **evidentiary ledger** preserving the projected / measured seam.
+
+  - the **Conservation-Renormalization Layer** (`Q=0`) — a live zero-sum gain budget (Source #2's CRL) with the §3.4 gauge-covariance proposition verified on the harness.
+
+  The engine lives in `src/simulation/BoundedAutonomyStack.js` and is driven by `src/components/StackView.jsx`. Scenarios (nominal, degrading warrant, sensor drift, adversarial, recovery) and event injectors (drop warrant, inject drift, spoof spike) are in the control panel.
 
 ### Extended Framework: Metabolic Memory Renormalization
 
@@ -234,7 +257,7 @@ All design choices documented as **contestable → correctable → steerable**:
 - **D3.js** - Data visualization
 - **KaTeX** - Mathematical notation rendering (includes CQR equations, topological invariants)
 - **Lucide React** - Icon library
-- **JavaScript** - Simulation engine (ConservedRenormalization.js, MultiplexerEngine.js)
+- **JavaScript** - Simulation engines: `MultiplexerEngine.js`, `ConservedRenormalization.js`, `BoundedAutonomyStack.js`, `ConservationRenormalizationLayer.js` (the CRL), and `ConstitutionalTruthEngine.js` (correctable Ground Truth)
 
 ## Getting Started
 
@@ -271,11 +294,41 @@ npm run preview
 
 ## How to Use
 
-1. **Start the simulation** - Click the "Start Simulation" button to begin the continuous optimization loop
-2. **Watch the loop** - Observe the 7-step optimization cycle running every 100ms
-3. **Inject signals** - Use the control panel to manually add signals to specific channels
-4. **Create disturbances** - Click "Inject Traffic Burst" to test system adaptation
-5. **Explore the code** - Toggle "Show Java Implementation" to see the source code
+Use the **header view-switcher** to move between the four views. Each owns its own simulation engine; switching away cleanly stops and disposes that view's loop.
+
+**Signal Multiplexer** (origin view)
+1. **Start the simulation** to begin the continuous optimization loop (7-step cycle, 100ms).
+2. **Inject signals / traffic bursts** from the control panel to test adaptation.
+3. **Toggle "Show Java Implementation"** to see the source reference.
+
+**Bounded Autonomy Stack**
+1. **Run stack** — watch the antitone monotonicity monitor hold **0% violations** with conservative discipline ON.
+2. **Toggle discipline OFF + Adversarial scenario** — raw device non-idealities re-admit forbidden commands and the violation rate climbs.
+3. The **CRL `Q=0` panel** re-confirms the §3.4 clauses (i)/(iii) live every tick on the real channels.
+
+**Program Coverage Map**
+1. Click the **coverage cards** to filter; click any **subcategory cell** to open its detail drawer (target chapters + source files).
+
+**Constitution of Truth** (correctability)
+1. **Run governance** — the substrate's warrant degrades over time and drives challenges/corrections (note: the *autonomous* dynamics ramp slowly; see the verification finding below).
+2. **Challenge** any canon claim (strong) to watch **Correction Supremacy** demote it; **corroborate** a provisional claim to raise it over its bar.
+3. **Attempt silent drift** — it is forced to surface as a constitutional event; use the **rollback chips** in the Archive to restore a prior epistemic state.
+
+## Verification Status (runtime)
+
+The app has been verified by **driving the running build in a real browser** (Vite production preview + Playwright + headless Chromium), not just by building/linting. What was observed:
+
+- **All four views render and switch correctly**, with the right titles, and survive 3× rapid `multiplexer → stack → coverage → constitution` churn cycles.
+- **Zero console errors or warnings** across the entire session — including unmounting a view *mid-simulation* — i.e. no React leak warnings and no missing-key warnings.
+- **Per-view interval lifecycle is clean.** On the Bounded Autonomy Stack the tick counter advances while running (0 → 12), **holds on pause** (12 → 12), and an unmount-mid-run then remount yields a **fresh engine** (tick 18 → tick 0). The Constitution view shares this hook pattern.
+- **Two-engine integration is live.** In the Constitution view the substrate (`BoundedAutonomyStack`) feeds the `ConstitutionalTruthEngine` each tick — the warrant gauge moves (0.90 → 0.88) and a strong **challenge demotes a canon claim Warranted → Provisional** (Correction Supremacy), a **silent-drift attempt surfaces** as a constitutional event, and **rollback restores a prior canon**.
+- **CRL §3.4** clauses (i)/(iii) are re-confirmed **live every tick** on the actual renormalized channels (drift & residual ≈ machine zero).
+
+**Honest findings from verification:**
+- ⚠️ The Constitution view's **autonomous** events ramp slowly — under the default `degrading` scenario, warrant only crosses the challenge threshold (~0.5) after ~30s of sim-time, so a brief run shows a *stable* canon. The immediate demonstration of correctability is the per-claim **challenge** button.
+- The original **Signal Multiplexer's** simulation intervals are **App-scoped** (not view-scoped): if started and then switched away, they keep ticking in the background (wasted CPU, no error). The three newer views scope and dispose their loops per view.
+
+> Reproduce: `npm run build && npm run preview`, then open the app and click through the four tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
 
 ## What You'll See
 
@@ -319,19 +372,22 @@ signal-multiplexer-viz/
 ├── src/
 │   ├── simulation/
 │   │   ├── MultiplexerEngine.js         # Multiplexer with time-series, scenarios
-│   │   └── ConservedRenormalization.js  # CQR reference kernel (O(N+log(1/ε)))
+│   │   ├── ConservedRenormalization.js  # CQR reference kernel (O(N+log(1/ε)))
+│   │   ├── BoundedAutonomyStack.js      # Eight-thread stack: antitone law, metabolic memory, analog veto
+│   │   ├── ConservationRenormalizationLayer.js  # The CRL — zero-sum gain budget Q=0 (§3.4 verified)
+│   │   └── ConstitutionalTruthEngine.js # Correctable Ground Truth: powers, correction, rollback
+│   ├── data/
+│   │   └── programCoverage.js           # 56-subcategory GHOST coverage map (FULL/HIGH/PARTIAL/GAP)
 │   ├── components/
-│   │   ├── OptimizationLoop.jsx         # 7-step loop visualization
-│   │   ├── ChannelVisualization.jsx     # D3.js channel/bandwidth charts
-│   │   ├── ProblemFormulation.jsx       # Mathematical formulation (KaTeX)
-│   │   ├── SolverVisualization.jsx      # Solver selection and results
-│   │   ├── ConstraintPanel.jsx          # Physics-informed constraints
-│   │   ├── PerformanceMetrics.jsx       # System metrics
-│   │   ├── ControlPanel.jsx             # Interactive controls
-│   │   ├── CodePanel.jsx                # Java code display
-│   │   ├── ConceptExplainer.jsx         # Educational component (6 concepts)
-│   │   └── AgentDeploymentViz.jsx       # Dual-purpose agent allocation viz
-│   ├── App.jsx                          # Main application
+│   │   ├── (multiplexer)                # OptimizationLoop, ChannelVisualization, ProblemFormulation,
+│   │   │                                #   SolverVisualization, ConstraintPanel, PerformanceMetrics,
+│   │   │                                #   ControlPanel, CodePanel, ConceptExplainer, AgentDeploymentViz
+│   │   ├── StackView.jsx + panels       # StackArchitecture, RefusalCascade, MetabolicMemory,
+│   │   │                                #   MonotonicityMonitor, TrustedScalars, ConservationRenormalizationPanel,
+│   │   │                                #   EvidentiaryLedger, StackControlPanel
+│   │   ├── ProgramCoverageMap.jsx       # Coverage dashboard (filter + domain grids + detail drawer)
+│   │   └── ConstitutionView.jsx + panels# GroundTruthCanon, SeparationOfPowers, ConstitutionalLog, UnknownRegister
+│   ├── App.jsx                          # Main application + 4-view header switcher
 │   └── index.css                        # Global styles
 ├── docs/
 │   ├── RENORMALIZATION_FRAMEWORK.md      # Complete CQR specification
@@ -461,6 +517,243 @@ The overlays supply the silicon floorplan for our stack: conservation manifold (
 - **Cross-Domain (Proposed)**: Memory-domain correlation owed (Obligation O-3)
 - **Topological (Proposed)**: S-locking empirically observed; rigorous protection in finite N systems owed (Obligation O-5)
 - **Hardware (Grounded)**: EPU overlays provide physical latency budgets and trust boundaries; witness algebra complementary to CQR
+
+## Design-Space Integration Registry (EVD Protocol Assessments)
+
+This registry positions **external source documents** within the project's open-ended design
+space (the CQR / topological-`S` / Dirac-impulse / three-scale-RG-ladder / EPU-hardware spine
+documented above). Each source is processed with the **Extraction of Structured Derivatives from
+Intertwined Texts** protocol (v0.2), using *this README's design space as the reference layer*
+(reference-layer origin = the existing spine). Derivatives are positioned in the 3-axis divergence
+space **(α abstraction, β analogical distance, γ domain-specificity)**, where the README spine sits
+at `(0,0,0)`; low β = "speaks the spine's own vocabulary," high β = "reaches in from another domain."
+
+> **How to read a position.** A derivative near the origin *confirms or directly extends* the spine.
+> A high-α derivative contributes an abstract law; a low-α one contributes concrete hardware/instances.
+> A high-γ derivative is deeply domain-embedded (memristor/automotive); a low-γ one is portable method.
+
+---
+
+### Source #1 — *Bounded Autonomy on a Memristive Substrate* (Technical Reference, Rev 2026-05-26)
+
+> 📄 **Full protocol output:** the complete §8 output-format instance for this source — per-derivative
+> writing templates (§8.9), entanglement map (§8.4), verification summary (§8.10), and validation
+> checklist (§11) — lives in **[`EVD_Assessment_Source_01_Memristive_Substrate.md`](./EVD_Assessment_Source_01_Memristive_Substrate.md)**.
+> The summary below is the registry-level condensation of that document.
+
+**Gate (§5.3 Automatic Rejection):** PASS — source is identifiable, carries its own provenance and a
+known/built/claimed/unverified evidentiary ledger (§7), and supplies the required evidence components.
+Not rejected.
+
+**EVD Header**
+
+| Field | Value |
+|-------|-------|
+| Source | `Bounded_Autonomy_Memristive_Substrate_Technical_Reference.md` (Rev 2026-05-26) |
+| Reference layer | This README's design space (CQR ξ/S · topological `S` · Dirac impulse · Gate/TB/MB ladder · EPU governance) — **Format 3: Conceptual Anchor** |
+| Entanglement density | **High** (monotonicity threads through all 8 lanes; concepts fused at clause level → decomposition + cross-referencing required) |
+| Conceptual units | **8 derivatives + 1 common ground** |
+| Angular diversity | mean pairwise distance ≈ **0.42** ( > 0.3 target → well-layered, PASS ) |
+
+**Reference-layer challenge (what the positioning must answer):**
+(RC1) Where does the new substrate attach to the existing three-scale ladder?
+(RC2) What does the source *add* that the spine lacks?
+(RC3) How is safety/contestability preserved across the new analog/digital seam?
+(RC4) Does it *confirm, extend, or compete with* the ξ/S/monotonicity spine?
+
+**Common Ground (applies to the whole source; near origin):**
+**Evidentiary discipline — the projected/measured seam** (§7). Every quantitative figure is *projected*
+unless marked *measured*; only the FPGA analog-veto witness (~32 ns) is measured. This is the source's
+framing of all eight concepts and is the direct counterpart of this README's **Contestability Ledger**
+(warrant / defeater / standing). Position ≈ `(0.50, 0.10, 0.10)`.
+
+**Derivative Angular-Positioning Table** (origin = README spine)
+
+| # | Derivative (source §) | α (abstraction) | β (analogical dist.) | γ (domain-spec.) | Standing vs. spine |
+|---|----------------------|:---:|:---:|:---:|---|
+| **D1** | Antitone Monotonicity Invariant (§1) | 0.85 | 0.10 | 0.35 | **Confirms + generalizes** the memory-monotonicity invariant |
+| **D2** | Enforced Causality as Fidelity (§1, §2.3, §3.3) | 0.55 | 0.20 | 0.65 | **Extends** "manipulated causality" into perception/ingestion |
+| **D3** | Metabolic-Memory Stratification (§2.3, §3) | 0.45 | 0.25 | 0.55 | **Near-isomorphic** to the Gate/TB/MB ladder |
+| **D4** | Budgeted Retrieval / Shadow Price λ (§3.2) | 0.60 | 0.45 | 0.45 | **New** recall-side economics (orthogonal to CQR) |
+| **D5** | Conservation-Manifold Compiler φ → ξ/S (§2.4) | 0.70 | 0.05 | 0.40 | **Identity** — same ξ=ln(k/Λ_G) & S engine (anchor) |
+| **D6** | Architecture of Refusal / Analog Veto S0–S4 (§2.2) | 0.30 | 0.15 | 0.70 | **Anchors** EPU Gate budgets with the only *measured* 32 ns |
+| **D7** | Memristor Co-Design & τ=5 s Boundary (§4) | 0.20 | 0.55 | 0.90 | **New substrate floor** below the digital-IC EPU |
+| **D8** | Anti-Silent-Drift / LLC Governance (§2.1, §3) | 0.65 | 0.35 | 0.55 | **New cross-validator** for topological `S` (O-5) |
+
+**Dependency diagram (functional, A→B = "A needs B to be understood"):**
+```
+D2 → D1     (enforced causality lifts the antitone law into perception)
+D3 → D1     (residence-tier verification IS the monotone-with-τ law)
+D4 → D3     (shadow price prices retrieval within a residence tier)
+D5 → D1     (ξ/S are the bounded scalars that make one-sidedness computable)
+D6 → D1     (the cascade enforces narrowing in hardware)
+D7 → D3     (device retention is mapped onto the residence tiers)
+D8 → D5     (LLC phase label sits beside φ's structural-parity S)
+Common Ground → all (evidentiary seam governs every claim)
+```
+
+**Synergy matrix (reference-conditional; each solves an RC no single derivative solves alone):**
+
+| Pair / set | Angular pattern | Synergy mechanism | Reference challenge solved |
+|-----------|-----------------|-------------------|----------------------------|
+| **D3 × D7** | β/γ transfer (mid→high domain) | Residence tiers ↔ device-retention classes; τ=5 s boundary places the analog/digital seam exactly where blast-radius verification demands | **RC1 + RC3** — substrate attaches *and* stays safe |
+| **D1 × D5** | abstraction spread (α 0.85↔0.70, low β) | Antitone *law* grounded by ξ/S *instrument* (bounded saturating scalars realize one-sidedness) | **RC4** — monotonicity becomes computable, not just asserted |
+| **D5 × D8** | adjacent, phase-label pair | φ's discrete structural-parity `S` + LLC developmental phase-transition → two independent discrete phase detectors that lock/flip | **O-5** — a *second* detector to cross-validate topological `S` |
+| **D6 × D7** | concrete pair (low α) | Measured 32 ns analog veto anchors the memristor WS-5 latency certification window | **RC1** — proves the analog floor can honor the veto contract |
+| **D4 × D3** | abstraction/domain | Per-partition shadow price λ_k gates *retrieval* within each tier | **RC2** — adds recall economics CQR lacks (CQR only *redistributes*) |
+| **D2 × D1** | direct, abstraction spread | Enforced causality extends the antitone law from actuation → perception | **RC2/RC4** — widens the invariant's reach |
+| **D1 × D5 × D8** | triplet triangulation | A *law* (D1) + a *continuous scalar* ξ (D5) + *two discrete phase labels* S/LLC (D5,D8) | Robust multi-path validation for the contestability ledger |
+
+**Net position in the design space.** The source is **not a competing framework** — it is a
+**downward-and-outward extension that confirms the spine**:
+
+- **Confirms (identity / near-origin):** D5 is literally this README's ξ/S engine (same `ξ = ln(k/Λ_G)`,
+  same discrete `S`, same gasification bin-level validation); D1 is the memory-monotonicity invariant
+  generalized to the full actuation algebra. The spine's core is independently restated here.
+- **Extends downward (new substrate floor, high γ):** D7 adds an *analog memristive device tier* beneath
+  the digital-IC EPU overlays — the README's hardware layer previously bottomed out at digital silicon.
+- **Extends outward (new orthogonal modules):** D4 adds recall-side shadow-price economics; D8 adds an
+  LLC phase-transition detector that cross-validates topological `S`.
+- **Anchors the projected with the measured:** D6 supplies the **only measured latency in the corpus
+  (~32 ns)**, giving the README's projected EPU Gate budgets (~3 ns / ~8 ns) an empirical reference point
+  (still projected; the seam is preserved).
+
+**Effect on open obligations / validation status:**
+- **O-4 (WCET)** — reinforced: D6's measured 32 ns analog-veto is consistent with placing topology at the
+  TB tier and only a latched bit at the Gate.
+- **O-5 (topological mapping)** — *partially advanced*: D8's LLC jump is a second, independent discrete
+  phase-transition signal that can be regressed against `S` (cross-validation path now exists).
+- **New obligation O-10** — *device-monotonicity*: prove real memristors honor antitone admission under
+  non-ideality (the source's own kill-criterion §9.1). Owner: PoC Workstream A. Exit: monotonicity
+  violation rate → 0 under conservative discipline on measured-device models.
+- **New obligation O-11** — *φ transfer to automotive*: the compiler is bin-level-validated on gasification
+  only (same standing as the README's O-3); automotive-perception transfer + `sct`-surrogate
+  reproducibility (rank corr ≥ 0.85) owed.
+
+**Honest flags (kept per the source's own evidentiary discipline):**
+1. Every memristor retention/monotonicity/latency number is a **Phase-0 hypothesis**, not measured.
+2. The *Numerical Substrate Partition* ADR and the *Functionally-Driven Refinement Schedule* are a
+   **ratified decision** and a **projected plan** respectively — neither upgrades any device figure to *measured*.
+3. D7's analog substrate is, by the ADR, **barred from the strategic tier** — so the "new substrate floor"
+   is explicitly a *non-strategic* floor; strategic persistence stays digital Posit/quire.
+
+---
+
+### Source #2 — *Conservation-Renormalization for Real-Time Adaptive Autonomy* (GHOST internal synthesis, v1.0, 2026-06-06)
+
+> 🧩 **Special standing — this source is the *generative origin* of the reference layer.** Where Source #1
+> attaches *to* the spine, Source #2 *defines* it: the README's CQR/`S`/metabolic-memory/contestability
+> axes are this document's CRL, TPD, MMR, and Contestable Witness Protocol. Per EVD §7 (Reference-Layer
+> Definition) its derivatives sit **at/near the origin** (low β by construction) — low angular diversity
+> here is an expected *source feature*, not a clustering failure (§6.13/§9.10 do not fire).
+
+**EVD Header**
+
+| Field | Value |
+|-------|-------|
+| Source | `ConservationRenormalization_AdaptiveAutonomy.pdf` (GHOST · 14 pp · v1.0 · 2026-06-06) |
+| Reference layer | This README's design spine — which this document **generates** (Format 3 → *also* §7 Reference-Layer Definition) |
+| Entanglement density | **Medium** (five framework layers, cleanly sectioned §3–§7, sharing one premise: the Right of Contestability) |
+| Conceptual units | **6 derivatives + 1 common ground** (the Right of Contestability) |
+
+**Derivative Angular-Positioning Table** (origin = README spine; this source *is* the origin frame)
+
+| # | Derivative (source §) | α | β | γ | Standing vs. spine |
+|---|----------------------|:---:|:---:|:---:|---|
+| **E1** | CRL — zero-sum gain budget `Q = Σ wₖℓₖ = 0` (§3) | 0.75 | 0.05 | 0.30 | **Defines** the CQR ξ law (gauge-fixes gain so `c` is an RG invariant) |
+| **E2** | TPD — quantized topological phase labels (§4) | 0.80 | 0.10 | 0.35 | **Defines** the topological `S` invariant + manipulated-causality lever |
+| **E3** | MMR — charge-conserving Metabolic Memory Reservoir (§5) | 0.50 | 0.10 | 0.45 | **Defines** the metabolic-memory tiers (conserve charges, not values) |
+| **E4** | Contestable Witness Protocol — contestable→correctable→steerable (§6) | 0.60 | 0.10 | 0.30 | **Defines** the Contestability Ledger (warrant travels with the decision) |
+| **E5** | Complexity discipline — `O(channels)`, net cost ≤ original (§7) | 0.55 | 0.20 | 0.25 | **New budget constraint** every spine layer must satisfy |
+| **E6** | Gauge-covariance proposition `c(Rx)=c(x)` (§3.4) | 0.85 | 0.05 | 0.20 | **New verifiable theorem** — masking/inflation provably blocked |
+
+**Net position.** Not a divergent source — the *parent* of the spine. The genuinely **new, actionable**
+contributions beyond restating the spine precisely are: (a) the **exact zero-sum projection operator** (3.3)
+and the **§3.4 gauge-covariance proposition** (E6); (b) the explicit **complexity budget** (E5); (c) the
+ready-to-run **TPD-01 research prompt** (§4.4).
+
+**Effect on open obligations / validation status — a real upgrade.** The source's §7.1/§8 recommend, as
+step (a), *"implement the CRL on the simulation harness and verify the Proposition of §3.4 empirically."*
+**This is now done.** `src/simulation/ConservationRenormalizationLayer.js` implements the CRL (gauge
+factorization 3.1, zero-sum budget 3.2, projection 3.3) and runs live inside the Bounded-Autonomy-Stack
+view (`Q=0` panel). Verification happens at two levels:
+
+1. **The proposition (all three clauses) is proved on a canonical multiplet** by `verifyGaugeCovariance()`:
+   - **(i)** `c(Rx) = c(x)` — conserved coordinate invariant (drift ≈ 5×10⁻¹⁶, machine zero);
+   - **(ii)** masking blocked — a genuine defect (0.632) is masked on the *raw* signal (→0.035, a false accept)
+     but stays genuine (0.632) in the gauge-fixed *shape* sector the gain cannot reach;
+   - **(iii)** `Q = 0` is an exact critical zero after projection (residual ≈ 5×10⁻¹⁶).
+2. **Clauses (i) and (iii) are then re-confirmed *live, every tick*** on the actual renormalized sensor
+   channels (`crlState.live`): the per-tick conserved-coordinate drift and zero-sum residual are both
+   asserted ≤ tolerance against the real, time-varying gains — not just the canonical example.
+
+This moves the §3.4 proposition from **Proposed** to **Verified on simulation harness** (still *simulation*,
+not silicon — the document's own standing for CRL/TPD/MMR remains *research proposal awaiting field validation*).
+
+**Honest flag.** Per the source's §8, CRL/TPD/MMR/Contestable-Witness are **research proposals**, presented as
+contestable claims with explicit warrants and falsifiers — they "await prototype validation on the simulation
+harness before any trusted-promotion." The harness verification above *is* that prototype validation for §3.4;
+it does not field-validate the substrate.
+
+---
+
+### Source #3 — *Tense Grammar as State Management / Temporal State Management* (64 pp, 2026-05-27)
+
+> 🏛️ **Why this source mattered: it supplied the depth the substrate lacked — CORRECTABILITY.** The prior
+> build had a *static* projected/measured ledger and an LLC quarantine with no actual correction. This source's
+> **Part VI (Constitution of Truth)** demands the system remain correctable; **Part I** gives a real temporal
+> state model (reversible flow maps, realis/irrealis modality, versioned past/present/future); **Part II** gives
+> principled memory-erasure criteria. A new governance engine + view were built to make the system genuinely
+> correctable. See **the "Constitution of Truth" app view**.
+
+**EVD Header**
+
+| Field | Value |
+|-------|-------|
+| Source | `Temporal_State_Management.pdf` (64 pp · 2026-05-27 · 6 parts) |
+| Reference layer | This README's spine + the Bounded-Autonomy substrate (the thing being governed) |
+| Entanglement density | **Medium** (6 cleanly-separated parts; Part VI is the load-bearing one for this build) |
+| Conceptual units | **6 derivatives** (one per part) + common ground (the Constitution's supremacy) |
+
+**Derivative Angular-Positioning Table** (origin = README spine)
+
+| # | Derivative (source part) | α | β | γ | Standing vs. spine |
+|---|--------------------------|:---:|:---:|:---:|---|
+| **T1** | Constitution of Truth — correctable Ground Truth (Part VI) | 0.70 | 0.20 | 0.30 | **Implemented** — new governance engine; *defines* correctability |
+| **T2** | Temporal state model — reversible flow maps, realis/irrealis (Part I) | 0.80 | 0.30 | 0.25 | **Implemented** — versioned canon + rollback; modality on every claim |
+| **T3** | Principled memory erasure — correlation/τ-hierarchy/conservation (Part II) | 0.65 | 0.25 | 0.40 | **Implemented** — replaced ad-hoc eviction in the metabolic memory |
+| **T4** | Continuum-aware sensing (Part III) | 0.45 | 0.35 | 0.70 | Confirms Lane G (sensors-as-witnesses) |
+| **T5** | Constraint satisfaction as stress fields (Part V) | 0.75 | 0.55 | 0.55 | New analogy (constraint violation = stress); not yet built |
+| **T6** | Verification-before-fusion (Part VI §19) | 0.55 | 0.15 | 0.65 | Grounds the pre-fusion admissibility gate + Art. XXXVI = the antitone law |
+
+**What was built (the correctability depth):**
+- **`src/simulation/ConstitutionalTruthEngine.js`** — Ground Truth as the canon of *warranted* claims with
+  degrees of reliance (hypothesis → provisional → warranted → retracted, Art. VII); **separation of epistemic
+  powers** (Archive / Proposers / Verifiers / Adjudicators / Auditor, Art. VIII–XIV); **Right of Correction +
+  Correction Supremacy** (stronger admissible evidence beats canon consistency, Art. V.3 / XVIII);
+  **Anti-Silent-Drift** (every truth-judgment change surfaces as a constitutional event, Art. XIX); a versioned
+  **Archive** with **temporal rollback** (Part I reversibility); **realis/irrealis** modality on every claim
+  (unifying with the projected/measured seam); the **Unknown Register** + Self-Reference Constraint (Art. XXVIII/XXX);
+  and **conserved-fact permanence** (Part II §9.6.3 — conservation laws are permanent memory).
+- **Constitution-of-Truth view** (4th app tab) — `ConstitutionView` + `GroundTruthCanon`, `SeparationOfPowers`,
+  `ConstitutionalLog` (versioned events + rollback chips), `UnknownRegister`. The substrate's falling warrant /
+  risk / LLC jumps drive live challenges and corrections; the operator can challenge any claim, add independent
+  corroboration, attempt a silent drift (forced to surface), and roll the canon back to a prior epistemic state.
+- **Metabolic-memory erasure** (`BoundedAutonomyStack._ageMemory`) regrounded in Part II: analog entries erase by
+  correlation decay (|C|<ε) or the τ-hierarchy (t > α·τ, α≈3); re-quantized/conserved state is permanent memory.
+
+**Verified in a real browser** (Playwright + headless Chromium): the Constitution view renders with **zero console
+errors**; a strong challenge to a canon claim demotes it Warranted→Provisional (**correction prevails over
+consistency**); a silent-drift attempt surfaces as a constitutional event; **rollback restores a prior canon**
+(3 → after-run → back to 3). The standalone engine smoke test confirms genesis canon (3 warranted: 2 conserved +
+1 correctable), corroboration canonizes a provisional claim, conserved facts resist weak challenges, and erasure
+always leaves lineage in the Archive.
+
+**Honest flag.** This is a *constitutional design governing the simulation*, per the source's own standing — it
+makes the system demonstrably correctable; it does not certify a vehicle. Parts III–V (continuum sensing, quantum
+sensing, stress-field constraint satisfaction) are noted but not yet built.
+
+---
 
 ## Session Development (High-Granularity Chronicle)
 
@@ -671,9 +964,20 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 | Ergodic convergence | ⏳ Proposed | O-8: finite-time measure owed |
 | Hardware latency budgets | ✅ Grounded | EPU overlays 3, 30, 40, 51 |
 | Witness algebra | ✅ Grounded | EPU overlays 10, 16, 35, 44 |
+| Analog-veto latency (~32 ns) | ✅ **Measured** | Memristive Substrate §2.2/§7 — the *only* measured latency in the corpus |
+| ξ/S engine identity | ✅ Grounded | Memristive Substrate §2.4 — same φ-compiler ξ/S, bin-level on gasification |
+| Memristor device-monotonicity | ⏳ Proposed | O-10: PoC Workstream A (violation rate → 0 under discipline) |
+| φ transfer to automotive | ⏳ Proposed | O-11: gasification-only; `sct`-surrogate reproducibility (rank corr ≥ 0.85) owed |
+
+### Open Obligations (extended)
+
+| ID | Owed | Owner | Exit |
+|----|------|-------|------|
+| O-10 | Device-monotonicity under non-ideality | PoC Workstream A | Monotonicity violation rate → 0 under conservative discipline on measured-device models |
+| O-11 | φ transfer gasification → automotive perception | Conservation-Manifold Compiler team | Cross-domain validation + deterministic-surrogate rank corr ≥ 0.85 |
 
 ---
 
 **Last Updated**: June 2026  
 **Session ID**: claude/signal-multiplexer-visualization-016x1jqpdGEcPjHhPJZWH9NY  
-**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping
+**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping + Memristive-Substrate Integration (Source #1) + Conservation-Renormalization Layer implemented & §3.4 verified on harness (Source #2) + Constitutional Truth Governance — correctable Ground Truth, separation of powers, temporal rollback (Source #3)

@@ -1,0 +1,10 @@
+.ureg { display: flex; flex-direction: column; gap: 0.4rem; }
+.ureg-empty { font-size: 0.78rem; color: #94a3b8; font-style: italic; }
+.ureg-item {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem;
+  border: 1px solid #e2e8f0; border-left: 4px solid var(--c);
+  border-radius: 6px; padding: 0.4rem 0.55rem; background: #fff;
+}
+.ureg-kind { color: #fff; font-size: 0.62rem; font-weight: 800; padding: 0.08rem 0.4rem; border-radius: 999px; white-space: nowrap; }
+.ureg-risk { flex: 1; font-size: 0.76rem; color: #334155; min-width: 180px; }
+.ureg-since { font-size: 0.64rem; color: #94a3b8; font-variant-numeric: tabular-nums; }

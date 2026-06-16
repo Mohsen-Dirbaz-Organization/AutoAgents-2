@@ -1,0 +1,24 @@
+.clog { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.clog-snapshots { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+.clog-snap-label { font-size: 0.74rem; color: #64748b; font-weight: 700; }
+.clog-snap {
+  font-size: 0.72rem; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 5px;
+  border: 1px solid #cbd5e1; background: #fff; cursor: pointer; color: #334155; transition: all 0.12s;
+  font-variant-numeric: tabular-nums;
+}
+.clog-snap:hover { border-color: #6366f1; background: #eef2ff; }
+.clog-snap-meta { color: #94a3b8; margin-left: 0.15rem; }
+
+.clog-events { display: flex; flex-direction: column; gap: 0.3rem; max-height: 360px; overflow-y: auto; }
+.clog-empty { font-size: 0.8rem; color: #94a3b8; font-style: italic; }
+.clog-event {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  border-left: 3px solid var(--c); background: #f8fafc; border-radius: 4px; padding: 0.35rem 0.5rem;
+}
+.clog-ev-icon { font-size: 0.9rem; }
+.clog-ev-v { font-size: 0.68rem; font-weight: 800; color: #94a3b8; font-variant-numeric: tabular-nums; min-width: 30px; }
+.clog-ev-body { display: flex; flex-direction: column; gap: 0.05rem; }
+.clog-ev-label { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; }
+.clog-ev-stmt { font-size: 0.78rem; color: #1e293b; }
+.clog-ev-reason { font-size: 0.68rem; color: #94a3b8; font-style: italic; }
