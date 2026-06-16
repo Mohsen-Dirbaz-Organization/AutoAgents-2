@@ -1,0 +1,82 @@
+.stack-architecture { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.sa-laws { display: flex; justify-content: space-between; gap: 0.5rem; }
+.sa-law {
+  flex: 1;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+}
+.sa-law.authority { background: #eef2ff; color: #4338ca; }
+.sa-law.consequence { background: #fef3e8; color: #b45309; text-align: right; }
+
+.sa-lanes { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.sa-lane {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  border-left: 4px solid #cbd5e1;
+  background: #f8fafc;
+  transition: transform 0.15s;
+}
+.sa-lane:hover { transform: translateX(3px); }
+.sa-lane.law-authority { border-left-color: #6366f1; }
+.sa-lane.law-consequence { border-left-color: #f59e0b; }
+
+.sa-lane-tag {
+  flex: 0 0 auto;
+  width: 56px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.03em;
+}
+.sa-lane-body { flex: 1; }
+.sa-lane-name { font-weight: 700; color: #1e293b; font-size: 0.9rem; }
+.sa-lane-role { font-size: 0.78rem; color: #64748b; }
+
+.sa-lane-flag {
+  flex: 0 0 auto;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.sa-lane-flag.authority { background: #e0e7ff; color: #4338ca; }
+.sa-lane-flag.consequence { background: #ffedd5; color: #c2410c; }
+
+.sa-epu {
+  margin-top: 0.4rem;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: white;
+  border-radius: 8px;
+  padding: 1rem;
+}
+.sa-epu-title { font-weight: 800; font-size: 1rem; }
+.sa-epu-sub { font-size: 0.78rem; opacity: 0.8; margin-bottom: 0.75rem; }
+
+.sa-epu-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.sa-epu-stat {
+  flex: 1;
+  min-width: 90px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+}
+.sa-epu-k { font-size: 0.68rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.03em; }
+.sa-epu-v { font-size: 1.05rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.sa-epu-stat.veto.armed {
+  background: rgba(220, 20, 60, 0.35);
+  animation: sa-veto-pulse 0.6s ease-in-out infinite alternate;
+}
+@keyframes sa-veto-pulse {
+  from { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.6); }
+  to { box-shadow: 0 0 0 6px rgba(220, 20, 60, 0); }
+}

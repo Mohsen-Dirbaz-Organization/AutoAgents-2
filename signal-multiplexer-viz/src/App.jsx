@@ -14,6 +14,7 @@ import ScenarioControl from './components/ScenarioControl';
 import AdaptationMetrics from './components/AdaptationMetrics';
 import ConceptExplainer from './components/ConceptExplainer';
 import AgentDeploymentViz from './components/AgentDeploymentViz';
+import StackView from './components/StackView';
 import './App.css';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   const [state, setState] = useState(engine.getState());
   const [isRunning, setIsRunning] = useState(false);
   const [showCode, setShowCode] = useState(false);
+  const [activeView, setActiveView] = useState('multiplexer');
   const [currentScenario, setCurrentScenario] = useState({ mode: 'steady', intensity: 1.0 });
   const optimizationInterval = useRef(null);
   const processingInterval = useRef(null);
@@ -148,17 +150,43 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Adaptive Signal Multiplexer with Dynamic Problem Formulation</h1>
+        <h1>
+          {activeView === 'stack'
+            ? 'Bounded Autonomy on a Memristive Substrate'
+            : 'Adaptive Signal Multiplexer with Dynamic Problem Formulation'}
+        </h1>
         <p className="subtitle">
-          Real-time visualization of intelligent coordination through continuous optimization
+          {activeView === 'stack'
+            ? 'The full eight-thread safety stack: antitone monotonicity, metabolic memory, and the analog veto'
+            : 'Real-time visualization of intelligent coordination through continuous optimization'}
         </p>
-        <div className="header-actions">
-          <button onClick={() => setShowCode(!showCode)} className="btn-secondary">
-            {showCode ? 'Hide' : 'Show'} Java Implementation
+        <nav className="view-switcher">
+          <button
+            className={`view-tab ${activeView === 'multiplexer' ? 'active' : ''}`}
+            onClick={() => setActiveView('multiplexer')}
+          >
+            Signal Multiplexer
           </button>
-        </div>
+          <button
+            className={`view-tab ${activeView === 'stack' ? 'active' : ''}`}
+            onClick={() => setActiveView('stack')}
+          >
+            Bounded Autonomy Stack
+          </button>
+        </nav>
+        {activeView === 'multiplexer' && (
+          <div className="header-actions">
+            <button onClick={() => setShowCode(!showCode)} className="btn-secondary">
+              {showCode ? 'Hide' : 'Show'} Java Implementation
+            </button>
+          </div>
+        )}
       </header>
 
+      {activeView === 'stack' && <StackView />}
+
+      {activeView === 'multiplexer' && (
+      <>
       {showCode && <CodePanel />}
 
       <section className="section full-width-section">
@@ -264,6 +292,18 @@ function App() {
           structure detection, and adaptive solver selection.
         </p>
       </footer>
+      </>
+      )}
+
+      {activeView === 'stack' && (
+        <footer className="app-footer">
+          <p>
+            Architecture Philosophy: bound what an error is allowed to <em>do</em>, not whether it occurs.
+            Every quantitative figure is <strong>projected</strong> unless marked <strong>measured</strong>
+            — only the ~32 ns analog-veto witness is measured.
+          </p>
+        </footer>
+      )}
     </div>
   );
 }

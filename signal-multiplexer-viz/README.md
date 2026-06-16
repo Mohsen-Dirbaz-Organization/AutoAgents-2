@@ -6,6 +6,21 @@ Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic
 
 This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern. The system formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure.
 
+### Two views (header switcher)
+
+The app now ships with a view switcher in the header:
+
+- **Signal Multiplexer** — the original adaptive-multiplexer simulation (optimization loop, channels, demux).
+- **Bounded Autonomy Stack** — a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`). It renders, live:
+  - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
+  - the **S0 → S4 Architecture of Refusal**, showing the convex command box that can only ever *narrow*, plus the electrically-isolated **~32 ns analog veto** (the corpus's only *measured* latency);
+  - **metabolic memory** — reflexive / tactical (analog) and strategic (digital Posit/quire) tiers, with the **τ = 5 s boundary** where analog state is re-quantized, and **shadow-price λ** retrieval admission;
+  - the **antitone monotonicity monitor** — with WS-2 conservative discipline ON, monotonicity violations stay at **0%**; toggle it OFF to watch raw memristor non-idealities re-admit forbidden commands;
+  - the **trusted scalars** ξ (continuous, saturating) and S (discrete parity) from the conservation-manifold compiler, plus the **LLC drift detector** that quarantines strategic consolidations on a phase-transition jump;
+  - the **evidentiary ledger** preserving the projected / measured seam.
+
+  The engine lives in `src/simulation/BoundedAutonomyStack.js` and is driven by `src/components/StackView.jsx`. Scenarios (nominal, degrading warrant, sensor drift, adversarial, recovery) and event injectors (drop warrant, inject drift, spoof spike) are in the control panel.
+
 ### Extended Framework: Metabolic Memory Renormalization
 
 The project has evolved to incorporate a **three-scale renormalization group architecture** for safety-critical autonomous systems (automotive, aerospace, robotics), integrating:
