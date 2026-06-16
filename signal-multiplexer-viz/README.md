@@ -1,10 +1,12 @@
-# Adaptive Signal Multiplexer Visualization
+# Signal Multiplexer → Bounded-Autonomy Substrate Visualization
 
-Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic Problem Formulation** - a modernized approach to signal multiplexing through continuous optimization, extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, and **Dirac-based impulsive control** for safety-critical memory-reservoir systems.
+Interactive React + D3 research visualization that began as an **Adaptive Signal Multiplexer with Dynamic Problem Formulation** and has grown into a **four-view exploration of a bounded-autonomy safety substrate** — extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, **Dirac-based impulsive control**, a runnable **eight-thread safety stack**, a **program coverage map**, and a **Constitution of Truth** governance layer that keeps the system correctable.
+
+> **Status (runtime-verified).** All four views render and interact in a real browser (Playwright + headless Chromium) with **zero console errors**; view transitions and per-view simulation lifecycles are clean. See [Verification Status](#verification-status-runtime) below.
 
 ## Overview
 
-This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern. The system formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure.
+This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern — and then layers on the safety-substrate research the project has accreted across three integrated source documents (see the [Design-Space Integration Registry](#design-space-integration-registry-evd-protocol-assessments)). The original engine formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure; the newer views simulate the bounded-autonomy stack, map the program's coverage, and govern a correctable Ground Truth.
 
 ### Four views (header switcher)
 
@@ -255,7 +257,7 @@ All design choices documented as **contestable → correctable → steerable**:
 - **D3.js** - Data visualization
 - **KaTeX** - Mathematical notation rendering (includes CQR equations, topological invariants)
 - **Lucide React** - Icon library
-- **JavaScript** - Simulation engine (ConservedRenormalization.js, MultiplexerEngine.js)
+- **JavaScript** - Simulation engines: `MultiplexerEngine.js`, `ConservedRenormalization.js`, `BoundedAutonomyStack.js`, `ConservationRenormalizationLayer.js` (the CRL), and `ConstitutionalTruthEngine.js` (correctable Ground Truth)
 
 ## Getting Started
 
@@ -292,11 +294,41 @@ npm run preview
 
 ## How to Use
 
-1. **Start the simulation** - Click the "Start Simulation" button to begin the continuous optimization loop
-2. **Watch the loop** - Observe the 7-step optimization cycle running every 100ms
-3. **Inject signals** - Use the control panel to manually add signals to specific channels
-4. **Create disturbances** - Click "Inject Traffic Burst" to test system adaptation
-5. **Explore the code** - Toggle "Show Java Implementation" to see the source code
+Use the **header view-switcher** to move between the four views. Each owns its own simulation engine; switching away cleanly stops and disposes that view's loop.
+
+**Signal Multiplexer** (origin view)
+1. **Start the simulation** to begin the continuous optimization loop (7-step cycle, 100ms).
+2. **Inject signals / traffic bursts** from the control panel to test adaptation.
+3. **Toggle "Show Java Implementation"** to see the source reference.
+
+**Bounded Autonomy Stack**
+1. **Run stack** — watch the antitone monotonicity monitor hold **0% violations** with conservative discipline ON.
+2. **Toggle discipline OFF + Adversarial scenario** — raw device non-idealities re-admit forbidden commands and the violation rate climbs.
+3. The **CRL `Q=0` panel** re-confirms the §3.4 clauses (i)/(iii) live every tick on the real channels.
+
+**Program Coverage Map**
+1. Click the **coverage cards** to filter; click any **subcategory cell** to open its detail drawer (target chapters + source files).
+
+**Constitution of Truth** (correctability)
+1. **Run governance** — the substrate's warrant degrades over time and drives challenges/corrections (note: the *autonomous* dynamics ramp slowly; see the verification finding below).
+2. **Challenge** any canon claim (strong) to watch **Correction Supremacy** demote it; **corroborate** a provisional claim to raise it over its bar.
+3. **Attempt silent drift** — it is forced to surface as a constitutional event; use the **rollback chips** in the Archive to restore a prior epistemic state.
+
+## Verification Status (runtime)
+
+The app has been verified by **driving the running build in a real browser** (Vite production preview + Playwright + headless Chromium), not just by building/linting. What was observed:
+
+- **All four views render and switch correctly**, with the right titles, and survive 3× rapid `multiplexer → stack → coverage → constitution` churn cycles.
+- **Zero console errors or warnings** across the entire session — including unmounting a view *mid-simulation* — i.e. no React leak warnings and no missing-key warnings.
+- **Per-view interval lifecycle is clean.** On the Bounded Autonomy Stack the tick counter advances while running (0 → 12), **holds on pause** (12 → 12), and an unmount-mid-run then remount yields a **fresh engine** (tick 18 → tick 0). The Constitution view shares this hook pattern.
+- **Two-engine integration is live.** In the Constitution view the substrate (`BoundedAutonomyStack`) feeds the `ConstitutionalTruthEngine` each tick — the warrant gauge moves (0.90 → 0.88) and a strong **challenge demotes a canon claim Warranted → Provisional** (Correction Supremacy), a **silent-drift attempt surfaces** as a constitutional event, and **rollback restores a prior canon**.
+- **CRL §3.4** clauses (i)/(iii) are re-confirmed **live every tick** on the actual renormalized channels (drift & residual ≈ machine zero).
+
+**Honest findings from verification:**
+- ⚠️ The Constitution view's **autonomous** events ramp slowly — under the default `degrading` scenario, warrant only crosses the challenge threshold (~0.5) after ~30s of sim-time, so a brief run shows a *stable* canon. The immediate demonstration of correctability is the per-claim **challenge** button.
+- The original **Signal Multiplexer's** simulation intervals are **App-scoped** (not view-scoped): if started and then switched away, they keep ticking in the background (wasted CPU, no error). The three newer views scope and dispose their loops per view.
+
+> Reproduce: `npm run build && npm run preview`, then open the app and click through the four tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
 
 ## What You'll See
 
@@ -340,19 +372,22 @@ signal-multiplexer-viz/
 ├── src/
 │   ├── simulation/
 │   │   ├── MultiplexerEngine.js         # Multiplexer with time-series, scenarios
-│   │   └── ConservedRenormalization.js  # CQR reference kernel (O(N+log(1/ε)))
+│   │   ├── ConservedRenormalization.js  # CQR reference kernel (O(N+log(1/ε)))
+│   │   ├── BoundedAutonomyStack.js      # Eight-thread stack: antitone law, metabolic memory, analog veto
+│   │   ├── ConservationRenormalizationLayer.js  # The CRL — zero-sum gain budget Q=0 (§3.4 verified)
+│   │   └── ConstitutionalTruthEngine.js # Correctable Ground Truth: powers, correction, rollback
+│   ├── data/
+│   │   └── programCoverage.js           # 56-subcategory GHOST coverage map (FULL/HIGH/PARTIAL/GAP)
 │   ├── components/
-│   │   ├── OptimizationLoop.jsx         # 7-step loop visualization
-│   │   ├── ChannelVisualization.jsx     # D3.js channel/bandwidth charts
-│   │   ├── ProblemFormulation.jsx       # Mathematical formulation (KaTeX)
-│   │   ├── SolverVisualization.jsx      # Solver selection and results
-│   │   ├── ConstraintPanel.jsx          # Physics-informed constraints
-│   │   ├── PerformanceMetrics.jsx       # System metrics
-│   │   ├── ControlPanel.jsx             # Interactive controls
-│   │   ├── CodePanel.jsx                # Java code display
-│   │   ├── ConceptExplainer.jsx         # Educational component (6 concepts)
-│   │   └── AgentDeploymentViz.jsx       # Dual-purpose agent allocation viz
-│   ├── App.jsx                          # Main application
+│   │   ├── (multiplexer)                # OptimizationLoop, ChannelVisualization, ProblemFormulation,
+│   │   │                                #   SolverVisualization, ConstraintPanel, PerformanceMetrics,
+│   │   │                                #   ControlPanel, CodePanel, ConceptExplainer, AgentDeploymentViz
+│   │   ├── StackView.jsx + panels       # StackArchitecture, RefusalCascade, MetabolicMemory,
+│   │   │                                #   MonotonicityMonitor, TrustedScalars, ConservationRenormalizationPanel,
+│   │   │                                #   EvidentiaryLedger, StackControlPanel
+│   │   ├── ProgramCoverageMap.jsx       # Coverage dashboard (filter + domain grids + detail drawer)
+│   │   └── ConstitutionView.jsx + panels# GroundTruthCanon, SeparationOfPowers, ConstitutionalLog, UnknownRegister
+│   ├── App.jsx                          # Main application + 4-view header switcher
 │   └── index.css                        # Global styles
 ├── docs/
 │   ├── RENORMALIZATION_FRAMEWORK.md      # Complete CQR specification
