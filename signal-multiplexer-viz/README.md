@@ -6,13 +6,14 @@ Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic
 
 This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern. The system formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure.
 
-### Three views (header switcher)
+### Four views (header switcher)
 
 The app ships with a view switcher in the header:
 
 - **Signal Multiplexer** — the original adaptive-multiplexer simulation (optimization loop, channels, demux).
 - **Bounded Autonomy Stack** — see below.
 - **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
+- **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
 
 The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
@@ -661,6 +662,64 @@ it does not field-validate the substrate.
 
 ---
 
+### Source #3 — *Tense Grammar as State Management / Temporal State Management* (64 pp, 2026-05-27)
+
+> 🏛️ **Why this source mattered: it supplied the depth the substrate lacked — CORRECTABILITY.** The prior
+> build had a *static* projected/measured ledger and an LLC quarantine with no actual correction. This source's
+> **Part VI (Constitution of Truth)** demands the system remain correctable; **Part I** gives a real temporal
+> state model (reversible flow maps, realis/irrealis modality, versioned past/present/future); **Part II** gives
+> principled memory-erasure criteria. A new governance engine + view were built to make the system genuinely
+> correctable. See **the "Constitution of Truth" app view**.
+
+**EVD Header**
+
+| Field | Value |
+|-------|-------|
+| Source | `Temporal_State_Management.pdf` (64 pp · 2026-05-27 · 6 parts) |
+| Reference layer | This README's spine + the Bounded-Autonomy substrate (the thing being governed) |
+| Entanglement density | **Medium** (6 cleanly-separated parts; Part VI is the load-bearing one for this build) |
+| Conceptual units | **6 derivatives** (one per part) + common ground (the Constitution's supremacy) |
+
+**Derivative Angular-Positioning Table** (origin = README spine)
+
+| # | Derivative (source part) | α | β | γ | Standing vs. spine |
+|---|--------------------------|:---:|:---:|:---:|---|
+| **T1** | Constitution of Truth — correctable Ground Truth (Part VI) | 0.70 | 0.20 | 0.30 | **Implemented** — new governance engine; *defines* correctability |
+| **T2** | Temporal state model — reversible flow maps, realis/irrealis (Part I) | 0.80 | 0.30 | 0.25 | **Implemented** — versioned canon + rollback; modality on every claim |
+| **T3** | Principled memory erasure — correlation/τ-hierarchy/conservation (Part II) | 0.65 | 0.25 | 0.40 | **Implemented** — replaced ad-hoc eviction in the metabolic memory |
+| **T4** | Continuum-aware sensing (Part III) | 0.45 | 0.35 | 0.70 | Confirms Lane G (sensors-as-witnesses) |
+| **T5** | Constraint satisfaction as stress fields (Part V) | 0.75 | 0.55 | 0.55 | New analogy (constraint violation = stress); not yet built |
+| **T6** | Verification-before-fusion (Part VI §19) | 0.55 | 0.15 | 0.65 | Grounds the pre-fusion admissibility gate + Art. XXXVI = the antitone law |
+
+**What was built (the correctability depth):**
+- **`src/simulation/ConstitutionalTruthEngine.js`** — Ground Truth as the canon of *warranted* claims with
+  degrees of reliance (hypothesis → provisional → warranted → retracted, Art. VII); **separation of epistemic
+  powers** (Archive / Proposers / Verifiers / Adjudicators / Auditor, Art. VIII–XIV); **Right of Correction +
+  Correction Supremacy** (stronger admissible evidence beats canon consistency, Art. V.3 / XVIII);
+  **Anti-Silent-Drift** (every truth-judgment change surfaces as a constitutional event, Art. XIX); a versioned
+  **Archive** with **temporal rollback** (Part I reversibility); **realis/irrealis** modality on every claim
+  (unifying with the projected/measured seam); the **Unknown Register** + Self-Reference Constraint (Art. XXVIII/XXX);
+  and **conserved-fact permanence** (Part II §9.6.3 — conservation laws are permanent memory).
+- **Constitution-of-Truth view** (4th app tab) — `ConstitutionView` + `GroundTruthCanon`, `SeparationOfPowers`,
+  `ConstitutionalLog` (versioned events + rollback chips), `UnknownRegister`. The substrate's falling warrant /
+  risk / LLC jumps drive live challenges and corrections; the operator can challenge any claim, add independent
+  corroboration, attempt a silent drift (forced to surface), and roll the canon back to a prior epistemic state.
+- **Metabolic-memory erasure** (`BoundedAutonomyStack._ageMemory`) regrounded in Part II: analog entries erase by
+  correlation decay (|C|<ε) or the τ-hierarchy (t > α·τ, α≈3); re-quantized/conserved state is permanent memory.
+
+**Verified in a real browser** (Playwright + headless Chromium): the Constitution view renders with **zero console
+errors**; a strong challenge to a canon claim demotes it Warranted→Provisional (**correction prevails over
+consistency**); a silent-drift attempt surfaces as a constitutional event; **rollback restores a prior canon**
+(3 → after-run → back to 3). The standalone engine smoke test confirms genesis canon (3 warranted: 2 conserved +
+1 correctable), corroboration canonizes a provisional claim, conserved facts resist weak challenges, and erasure
+always leaves lineage in the Archive.
+
+**Honest flag.** This is a *constitutional design governing the simulation*, per the source's own standing — it
+makes the system demonstrably correctable; it does not certify a vehicle. Parts III–V (continuum sensing, quantum
+sensing, stress-field constraint satisfaction) are noted but not yet built.
+
+---
+
 ## Session Development (High-Granularity Chronicle)
 
 ### Phase 1: Dirac Delta Integration (Methodological Enrichment)
@@ -886,4 +945,4 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 
 **Last Updated**: June 2026  
 **Session ID**: claude/signal-multiplexer-visualization-016x1jqpdGEcPjHhPJZWH9NY  
-**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping + Memristive-Substrate Integration (Source #1) + Conservation-Renormalization Layer implemented & §3.4 verified on harness (Source #2)
+**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping + Memristive-Substrate Integration (Source #1) + Conservation-Renormalization Layer implemented & §3.4 verified on harness (Source #2) + Constitutional Truth Governance — correctable Ground Truth, separation of powers, temporal rollback (Source #3)

@@ -449,8 +449,14 @@ export class BoundedAutonomyStack {
         const value = e.deltaJ / Math.max(0.01, e.cost);
         const cleared = value >= tier.shadowPrice;
         if (cleared) this.metrics.retrievals++; else this.metrics.retrievalsDenied++;
-        // Also evict aged-out analog entries.
-        const agedOut = tier.substrate === 'analog' && (e.residence > tier.tau * 1.5 || e.weight < 0.05);
+        // Principled erasure (Temporal_State_Management Part II): an analog entry
+        // is erased when its correlation decays below ε (weight is the C(t) proxy)
+        // OR it exceeds the τ-hierarchy bound t > α·τ (α≈3 ⇒ ~95% decay, §9.3.1).
+        // Conserved / re-quantized (digitized) state is a conservation law (§9.6.3)
+        // — permanent memory, never aged out.
+        const EPS = 0.05, ALPHA = 3;
+        const agedOut = tier.substrate === 'analog' && !e.digitized &&
+          (e.weight < EPS || e.residence > ALPHA * tier.tau);
         return cleared && !agedOut;
       });
       this.memory.evictions += Math.max(0, before - tier.entries.length);

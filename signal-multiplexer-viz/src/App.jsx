@@ -16,6 +16,7 @@ import ConceptExplainer from './components/ConceptExplainer';
 import AgentDeploymentViz from './components/AgentDeploymentViz';
 import StackView from './components/StackView';
 import ProgramCoverageMap from './components/ProgramCoverageMap';
+import ConstitutionView from './components/ConstitutionView';
 import './App.css';
 
 function App() {
@@ -156,6 +157,8 @@ function App() {
             ? 'Bounded Autonomy on a Memristive Substrate'
             : activeView === 'coverage'
             ? 'GHOST Autonomy — Program Coverage Map'
+            : activeView === 'constitution'
+            ? 'The Constitution of Truth — Correctable Ground Truth'
             : 'Adaptive Signal Multiplexer with Dynamic Problem Formulation'}
         </h1>
         <p className="subtitle">
@@ -163,6 +166,8 @@ function App() {
             ? 'The full eight-thread safety stack: antitone monotonicity, metabolic memory, and the analog veto'
             : activeView === 'coverage'
             ? '56 research subcategories × main(8).tex chapters × source-material availability'
+            : activeView === 'constitution'
+            ? 'Separation of epistemic powers · correction supremacy · anti-silent-drift · temporal rollback'
             : 'Real-time visualization of intelligent coordination through continuous optimization'}
         </p>
         <nav className="view-switcher">
@@ -184,6 +189,12 @@ function App() {
           >
             Program Coverage Map
           </button>
+          <button
+            className={`view-tab ${activeView === 'constitution' ? 'active' : ''}`}
+            onClick={() => setActiveView('constitution')}
+          >
+            Constitution of Truth
+          </button>
         </nav>
         {activeView === 'multiplexer' && (
           <div className="header-actions">
@@ -197,6 +208,8 @@ function App() {
       {activeView === 'stack' && <StackView />}
 
       {activeView === 'coverage' && <ProgramCoverageMap />}
+
+      {activeView === 'constitution' && <ConstitutionView />}
 
       {activeView === 'multiplexer' && (
       <>
@@ -324,6 +337,15 @@ function App() {
             Coverage Map: from the GHOST Autonomy <em>Research Subcategory → Document Section Mapping</em>
             (Feb 2026). Coverage = source-material availability in project knowledge (a design corpus),
             not fabricated or measured silicon.
+          </p>
+        </footer>
+      )}
+
+      {activeView === 'constitution' && (
+        <footer className="app-footer">
+          <p>
+            Constitution of Truth (from <em>Temporal State Management</em>, Part VI): a claim that cannot be
+            challenged is not trusted — it is merely unexamined. The warrant travels with the decision.
           </p>
         </footer>
       )}

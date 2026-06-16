@@ -1,0 +1,36 @@
+.cview { display: flex; flex-direction: column; gap: 1.5rem; padding-top: 1.5rem; }
+
+.cview-banner {
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+  background: linear-gradient(135deg, #312e81, #1e1b4b); color: #e0e7ff;
+  border-radius: 8px; padding: 1.25rem 1.5rem;
+}
+.cview-title { margin: 0 0 0.4rem; font-size: 1.15rem; color: #fbbf24; border: none; padding: 0; }
+.cview-sub { margin: 0; font-size: 0.9rem; line-height: 1.5; opacity: 0.92; }
+.cview-substrate { display: flex; gap: 0.75rem; flex: 0 0 auto; }
+.cview-gauge {
+  display: flex; flex-direction: column; align-items: center;
+  background: rgba(255,255,255,0.08); border-radius: 6px; padding: 0.5rem 0.85rem;
+}
+.cview-g-k { font-size: 0.66rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.03em; }
+.cview-g-v { font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+
+.cview-grid {
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 1.5rem;
+  max-width: 1800px; margin: 0 auto; width: 100%; padding: 0 2rem; box-sizing: border-box;
+}
+.cview-col { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.cview-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.6rem; }
+.cview-btn {
+  flex: 1; min-width: 130px; padding: 0.65rem 0.8rem; border: none; border-radius: 6px;
+  font-size: 0.92rem; font-weight: 700; color: #fff; cursor: pointer; transition: all 0.15s;
+}
+.cview-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.cview-btn.run { background: linear-gradient(135deg, #f0932b, #eb4d4b); }
+.cview-btn.stop { background: linear-gradient(135deg, #6366f1, #4338ca); }
+.cview-btn.neutral { flex: 0 0 auto; min-width: 0; background: #57606f; }
+.cview-btn.drift { background: linear-gradient(135deg, #9333ea, #6b21a8); }
+.cview-help { margin: 0; font-size: 0.78rem; color: #64748b; line-height: 1.4; }
+
+@media (max-width: 1200px) { .cview-grid { grid-template-columns: 1fr; } }
