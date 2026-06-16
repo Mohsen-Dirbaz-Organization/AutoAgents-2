@@ -598,6 +598,60 @@ Common Ground → all (evidentiary seam governs every claim)
 
 ---
 
+### Source #2 — *Conservation-Renormalization for Real-Time Adaptive Autonomy* (GHOST internal synthesis, v1.0, 2026-06-06)
+
+> 🧩 **Special standing — this source is the *generative origin* of the reference layer.** Where Source #1
+> attaches *to* the spine, Source #2 *defines* it: the README's CQR/`S`/metabolic-memory/contestability
+> axes are this document's CRL, TPD, MMR, and Contestable Witness Protocol. Per EVD §7 (Reference-Layer
+> Definition) its derivatives sit **at/near the origin** (low β by construction) — low angular diversity
+> here is an expected *source feature*, not a clustering failure (§6.13/§9.10 do not fire).
+
+**EVD Header**
+
+| Field | Value |
+|-------|-------|
+| Source | `ConservationRenormalization_AdaptiveAutonomy.pdf` (GHOST · 14 pp · v1.0 · 2026-06-06) |
+| Reference layer | This README's design spine — which this document **generates** (Format 3 → *also* §7 Reference-Layer Definition) |
+| Entanglement density | **Medium** (five framework layers, cleanly sectioned §3–§7, sharing one premise: the Right of Contestability) |
+| Conceptual units | **6 derivatives + 1 common ground** (the Right of Contestability) |
+
+**Derivative Angular-Positioning Table** (origin = README spine; this source *is* the origin frame)
+
+| # | Derivative (source §) | α | β | γ | Standing vs. spine |
+|---|----------------------|:---:|:---:|:---:|---|
+| **E1** | CRL — zero-sum gain budget `Q = Σ wₖℓₖ = 0` (§3) | 0.75 | 0.05 | 0.30 | **Defines** the CQR ξ law (gauge-fixes gain so `c` is an RG invariant) |
+| **E2** | TPD — quantized topological phase labels (§4) | 0.80 | 0.10 | 0.35 | **Defines** the topological `S` invariant + manipulated-causality lever |
+| **E3** | MMR — charge-conserving Metabolic Memory Reservoir (§5) | 0.50 | 0.10 | 0.45 | **Defines** the metabolic-memory tiers (conserve charges, not values) |
+| **E4** | Contestable Witness Protocol — contestable→correctable→steerable (§6) | 0.60 | 0.10 | 0.30 | **Defines** the Contestability Ledger (warrant travels with the decision) |
+| **E5** | Complexity discipline — `O(channels)`, net cost ≤ original (§7) | 0.55 | 0.20 | 0.25 | **New budget constraint** every spine layer must satisfy |
+| **E6** | Gauge-covariance proposition `c(Rx)=c(x)` (§3.4) | 0.85 | 0.05 | 0.20 | **New verifiable theorem** — masking/inflation provably blocked |
+
+**Net position.** Not a divergent source — the *parent* of the spine. The genuinely **new, actionable**
+contributions beyond restating the spine precisely are: (a) the **exact zero-sum projection operator** (3.3)
+and the **§3.4 gauge-covariance proposition** (E6); (b) the explicit **complexity budget** (E5); (c) the
+ready-to-run **TPD-01 research prompt** (§4.4).
+
+**Effect on open obligations / validation status — a real upgrade.** The source's §7.1/§8 recommend, as
+step (a), *"implement the CRL on the simulation harness and verify the Proposition of §3.4 empirically."*
+**This is now done.** `src/simulation/ConservationRenormalizationLayer.js` implements the CRL (gauge
+factorization 3.1, zero-sum budget 3.2, projection 3.3) and runs live inside the Bounded-Autonomy-Stack
+view (`Q=0` panel); `verifyGaugeCovariance()` confirms all three clauses of §3.4 on the harness:
+
+- **(i)** `c(Rx) = c(x)` — conserved coordinate invariant (drift ≈ 5×10⁻¹⁶, machine zero);
+- **(ii)** masking blocked — a genuine defect (0.632) is masked on the *raw* signal (→0.035, a false accept)
+  but stays genuine (0.632) in the gauge-fixed *shape* sector the gain cannot reach;
+- **(iii)** `Q = 0` is an exact critical zero after projection (residual ≤ 5×10⁻¹⁶ every tick).
+
+This moves the §3.4 proposition from **Proposed** to **Verified on simulation harness** (still *simulation*,
+not silicon — the document's own standing for CRL/TPD/MMR remains *research proposal awaiting field validation*).
+
+**Honest flag.** Per the source's §8, CRL/TPD/MMR/Contestable-Witness are **research proposals**, presented as
+contestable claims with explicit warrants and falsifiers — they "await prototype validation on the simulation
+harness before any trusted-promotion." The harness verification above *is* that prototype validation for §3.4;
+it does not field-validate the substrate.
+
+---
+
 ## Session Development (High-Granularity Chronicle)
 
 ### Phase 1: Dirac Delta Integration (Methodological Enrichment)
@@ -823,4 +877,4 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 
 **Last Updated**: June 2026  
 **Session ID**: claude/signal-multiplexer-visualization-016x1jqpdGEcPjHhPJZWH9NY  
-**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping + Memristive-Substrate Integration (Source #1)
+**Framework Version**: CQR 1.0 + Dirac Triple Point + EPU Hardware Mapping + Memristive-Substrate Integration (Source #1) + Conservation-Renormalization Layer implemented & §3.4 verified on harness (Source #2)

@@ -18,6 +18,11 @@
  * =========================================================================
  */
 
+import {
+  ConservationRenormalizationLayer,
+  verifyGaugeCovariance
+} from './ConservationRenormalizationLayer.js';
+
 // Command modes, ordered MOST permissive -> MOST restrictive. The admissible
 // set is always a PREFIX-COMPLEMENT of this list: rising risk peels modes off
 // the permissive end, so U_ad can only ever shrink. STOP (⊥) is the terminal
@@ -152,8 +157,25 @@ export class BoundedAutonomyStack {
 
     this._lastEntryRefresh = 0;
 
+    // Conservation-Renormalization Layer (CRL). A coupled sensor multiplet whose
+    // tracks fuse into one object; each channel has a stable SHAPE (what it is
+    // looking at) and a time-varying GAIN (how loud AGC / fusion / attention
+    // turns it up). The CRL renormalizes the gains to a zero-sum budget Q=0 so
+    // the conserved fusion coordinate never moves while loudness is redistributed.
+    this.crl = new ConservationRenormalizationLayer();
+    this.sensorChannels = [
+      { name: 'radar', shape: [0.97, 0.24] },
+      { name: 'camera', shape: [0.60, 0.80] },
+      { name: 'ultrasonic', shape: [0.30, 0.95] },
+      { name: 'lidar', shape: [0.85, 0.53] },
+      { name: 'map-prior', shape: [0.10, 0.99] }
+    ];
+    // Source's recommended step (a): verify the §3.4 proposition on the harness.
+    this.crlVerification = verifyGaugeCovariance();
+
     // Prime derived state so getState() is valid before the first step().
     this._runCompiler();
+    this._renormalizeGains();
     this._computeAdmissibleSet();
   }
 
@@ -197,6 +219,7 @@ export class BoundedAutonomyStack {
     this._evolveWarrant();
     this._ingestObservations();   // Lane G + enforced causality (Lane C)
     this._computeRisk();          // R from warrant + trajectory threat
+    this._renormalizeGains();     // CRL: zero-sum gain budget Q=0 (§3)
     this._runCompiler();          // Lane D: φ -> ξ, S
     this._computeAdmissibleSet(); // Lanes A/B/S0–S4: the antitone narrowing
     this._checkMonotonicity();    // the PoC headline metric
@@ -260,6 +283,43 @@ export class BoundedAutonomyStack {
       reflexive.entries.splice(0, dropped);
       this.memory.evictions += dropped;
     }
+  }
+
+  // ---- CRL: renormalize the sensor-multiplet gains to a zero-sum budget ----
+  _renormalizeGains() {
+    const reflexive = this.memory.tiers[0];
+    const load = reflexive.entries.length / reflexive.capacity;
+    const t = this.simTime;
+    // Raw per-channel gains driven by the current regime. AGC / fusion-confidence
+    // / learned-attention all push these around — exactly the "leak" §2 warns of.
+    const gainFns = {
+      radar: 1 + 1.5 * this.risk.trajectoryThreat + 0.1 * Math.random(),
+      camera: 1 + 1.2 * (1 - this.risk.warrant),
+      ultrasonic: 0.8 + 0.6 * this.risk.R,
+      lidar: 1 + 0.9 * load,
+      'map-prior': 0.7 + 0.3 * (0.5 + 0.5 * Math.sin(t * 0.5))
+    };
+    const signals = this.sensorChannels.map(ch => {
+      const g = Math.max(0.05, gainFns[ch.name]);
+      return [ch.shape[0] * g, ch.shape[1] * g]; // x_k = g_k · ŷ_k
+    });
+    const r = this.crl.step(signals);
+    this.crlState = {
+      channels: this.sensorChannels.map((ch, k) => ({
+        name: ch.name,
+        gainRaw: r.gains[k],
+        ellRaw: r.ellRaw[k],
+        ellStar: r.ellStar[k],
+        gainStar: r.gainsStar[k],
+        amplified: r.ellStar[k] >= 0
+      })),
+      Qbefore: r.Qbefore,
+      Qafter: r.Qafter,
+      residual: r.residual,
+      conserved: r.conserved,
+      conservedDrift: r.conservedDrift,
+      verification: this.crlVerification
+    };
   }
 
   // ---- risk from warrant + trajectory threat ----
@@ -497,6 +557,7 @@ export class BoundedAutonomyStack {
       },
       scalars: { ...this.scalars },
       veto: { ...this.veto },
+      crl: this.crlState,
       ledger: this.ledger,
       metrics: { ...this.metrics },
       history: {
