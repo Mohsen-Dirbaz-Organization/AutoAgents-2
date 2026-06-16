@@ -13,15 +13,22 @@ function ConservationRenormalizationPanel({ crl }) {
 
   const maxAbs = Math.max(0.4, ...channels.map(c => Math.abs(c.ellStar)));
   const v = verification || {};
+  const live = crl.live || {};
 
   return (
     <div className="crl-panel">
       <div className="crl-verify">
-        <div className="crl-verify-title">§3.4 gauge-covariance — verified on harness</div>
+        <div className="crl-verify-title">
+          §3.4 gauge-covariance — proposition verified (canonical multiplet)
+        </div>
         <div className="crl-verify-rows">
           <Clause ok={v.clause_i} label="c(Rx) = c(x)" sub="conserved coordinate invariant" />
           <Clause ok={v.clause_ii} label="masking blocked" sub="gain can't hide a real defect" />
           <Clause ok={v.clause_iii} label="Q = 0 critical zero" sub="exact after projection" />
+        </div>
+        <div className={`crl-live ${live.verified ? 'ok' : 'warn'}`}>
+          {live.verified ? '✓' : '…'} clauses (i) &amp; (iii) re-confirmed <strong>live this tick</strong>
+          {' '}on the actual channels — drift {live.driftOk ? '≈0' : '⚠'}, residual {live.residualOk ? '≈0' : '⚠'}
         </div>
       </div>
 

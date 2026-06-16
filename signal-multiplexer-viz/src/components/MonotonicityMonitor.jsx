@@ -18,6 +18,7 @@ function MonotonicityMonitor({ history, monotonicity, conservativeDiscipline }) 
     svg.selectAll('*').remove();
 
     const width = svgRef.current.clientWidth;
+    if (!width) return; // container not laid out yet (e.g. hidden) — skip this draw
     const height = 240;
     const margin = { top: 16, right: 48, bottom: 28, left: 40 };
     const cw = width - margin.left - margin.right;

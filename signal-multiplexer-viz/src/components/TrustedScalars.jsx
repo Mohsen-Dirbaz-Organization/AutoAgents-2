@@ -13,11 +13,12 @@ function TrustedScalars({ scalars, history }) {
   const sparkRef = useRef();
 
   useEffect(() => {
-    if (!history || !history.xi || history.xi.length < 2) return;
+    if (!history || !history.xi || !history.llc || history.xi.length < 2) return;
     const svg = d3.select(sparkRef.current);
     svg.selectAll('*').remove();
 
     const width = sparkRef.current.clientWidth;
+    if (!width) return; // container not laid out yet (e.g. hidden) — skip this draw
     const height = 120;
     const margin = { top: 12, right: 12, bottom: 16, left: 12 };
     const cw = width - margin.left - margin.right;
@@ -41,8 +42,9 @@ function TrustedScalars({ scalars, history }) {
       .attr('fill', 'none').attr('stroke', '#9333ea').attr('stroke-width', 1.5)
       .attr('stroke-dasharray', '3 2').attr('d', lineLlc);
 
-    // Mark LLC jumps.
-    for (let i = 1; i < n; i++) {
+    // Mark LLC jumps (bounded by the shorter of the two series, defensively).
+    const nJump = Math.min(n, history.llc.length);
+    for (let i = 1; i < nJump; i++) {
       if (history.llc[i] - history.llc[i - 1] > 0.25) {
         g.append('circle').attr('cx', x(i)).attr('cy', yLlc(history.llc[i]))
           .attr('r', 4).attr('fill', '#dc143c');

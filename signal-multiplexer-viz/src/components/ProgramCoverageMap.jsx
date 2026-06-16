@@ -87,9 +87,11 @@ function ProgramCoverageMap() {
               <div className="pcm-domain-head">
                 <span className="pcm-domain-name">{domain}</span>
                 <span className="pcm-domain-tally">
-                  {COVERAGE_ORDER.map(k => dc[k] > 0 && (
-                    <span key={k} style={{ color: COVERAGE_META[k].color }}>{dc[k]} {k[0]}</span>
-                  )).filter(Boolean).reduce((a, b) => [a, ' · ', b])}
+                  {COVERAGE_ORDER.filter(k => dc[k] > 0).map((k, i, arr) => (
+                    <span key={k} style={{ color: COVERAGE_META[k].color }}>
+                      {dc[k]} {k[0]}{i < arr.length - 1 ? ' · ' : ''}
+                    </span>
+                  ))}
                 </span>
               </div>
               <div className="pcm-grid">

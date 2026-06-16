@@ -228,8 +228,10 @@ export class BoundedAutonomyStack {
     this._maybeAnalogVeto();      // Lane B S4: ~32 ns measured veto
     this._recordHistory();
 
-    this.emit('step', this.getState());
-    return this.getState();
+    // Build the snapshot once per tick (it deep-copies) and reuse it.
+    const snapshot = this.getState();
+    this.emit('step', snapshot);
+    return snapshot;
   }
 
   // ---- warrant dynamics ----
@@ -304,6 +306,13 @@ export class BoundedAutonomyStack {
       return [ch.shape[0] * g, ch.shape[1] * g]; // x_k = g_k · ŷ_k
     });
     const r = this.crl.step(signals);
+    // §3.4 re-confirmed LIVE on the actual per-tick channels: (i) the conserved
+    // coordinate did not move (drift ≈ 0) and (iii) Q = 0 is an exact critical
+    // zero after projection (residual ≈ 0). Clause (ii) — masking blocked —
+    // needs a genuine-defect example and is proved once by verifyGaugeCovariance.
+    const tol = this.crl.cfg.resTol;
+    const liveDriftOk = r.conservedDrift <= tol;     // clause (i), live
+    const liveResidualOk = r.residual <= tol;        // clause (iii), live
     this.crlState = {
       channels: this.sensorChannels.map((ch, k) => ({
         name: ch.name,
@@ -318,7 +327,10 @@ export class BoundedAutonomyStack {
       residual: r.residual,
       conserved: r.conserved,
       conservedDrift: r.conservedDrift,
-      verification: this.crlVerification
+      // Static proposition (all 3 clauses, canonical multiplet) ...
+      verification: this.crlVerification,
+      // ... plus the live per-tick re-confirmation of clauses (i) and (iii).
+      live: { driftOk: liveDriftOk, residualOk: liveResidualOk, verified: liveDriftOk && liveResidualOk }
     };
   }
 
@@ -579,7 +591,9 @@ export class BoundedAutonomyStack {
   reset() {
     const disc = this.conservativeDiscipline;
     const scn = { ...this.scenario };
+    const listeners = this.listeners; // preserve subscriptions across reset
     Object.assign(this, new BoundedAutonomyStack(this.config));
+    this.listeners = listeners;
     this.conservativeDiscipline = disc;
     this.scenario = scn;
     this.emit('reset', null);

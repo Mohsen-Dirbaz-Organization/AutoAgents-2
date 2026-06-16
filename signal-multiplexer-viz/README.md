@@ -640,12 +640,16 @@ ready-to-run **TPD-01 research prompt** (§4.4).
 step (a), *"implement the CRL on the simulation harness and verify the Proposition of §3.4 empirically."*
 **This is now done.** `src/simulation/ConservationRenormalizationLayer.js` implements the CRL (gauge
 factorization 3.1, zero-sum budget 3.2, projection 3.3) and runs live inside the Bounded-Autonomy-Stack
-view (`Q=0` panel); `verifyGaugeCovariance()` confirms all three clauses of §3.4 on the harness:
+view (`Q=0` panel). Verification happens at two levels:
 
-- **(i)** `c(Rx) = c(x)` — conserved coordinate invariant (drift ≈ 5×10⁻¹⁶, machine zero);
-- **(ii)** masking blocked — a genuine defect (0.632) is masked on the *raw* signal (→0.035, a false accept)
-  but stays genuine (0.632) in the gauge-fixed *shape* sector the gain cannot reach;
-- **(iii)** `Q = 0` is an exact critical zero after projection (residual ≤ 5×10⁻¹⁶ every tick).
+1. **The proposition (all three clauses) is proved on a canonical multiplet** by `verifyGaugeCovariance()`:
+   - **(i)** `c(Rx) = c(x)` — conserved coordinate invariant (drift ≈ 5×10⁻¹⁶, machine zero);
+   - **(ii)** masking blocked — a genuine defect (0.632) is masked on the *raw* signal (→0.035, a false accept)
+     but stays genuine (0.632) in the gauge-fixed *shape* sector the gain cannot reach;
+   - **(iii)** `Q = 0` is an exact critical zero after projection (residual ≈ 5×10⁻¹⁶).
+2. **Clauses (i) and (iii) are then re-confirmed *live, every tick*** on the actual renormalized sensor
+   channels (`crlState.live`): the per-tick conserved-coordinate drift and zero-sum residual are both
+   asserted ≤ tolerance against the real, time-varying gains — not just the canonical example.
 
 This moves the §3.4 proposition from **Proposed** to **Verified on simulation harness** (still *simulation*,
 not silicon — the document's own standing for CRL/TPD/MMR remains *research proposal awaiting field validation*).
