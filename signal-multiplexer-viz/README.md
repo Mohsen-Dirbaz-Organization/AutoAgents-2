@@ -6,18 +6,23 @@ Interactive web visualization for the **Adaptive Signal Multiplexer with Dynamic
 
 This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern. The system formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure.
 
-### Two views (header switcher)
+### Three views (header switcher)
 
-The app now ships with a view switcher in the header:
+The app ships with a view switcher in the header:
 
 - **Signal Multiplexer** — the original adaptive-multiplexer simulation (optimization loop, channels, demux).
-- **Bounded Autonomy Stack** — a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`). It renders, live:
+- **Bounded Autonomy Stack** — see below.
+- **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
+
+The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
   - the **S0 → S4 Architecture of Refusal**, showing the convex command box that can only ever *narrow*, plus the electrically-isolated **~32 ns analog veto** (the corpus's only *measured* latency);
   - **metabolic memory** — reflexive / tactical (analog) and strategic (digital Posit/quire) tiers, with the **τ = 5 s boundary** where analog state is re-quantized, and **shadow-price λ** retrieval admission;
   - the **antitone monotonicity monitor** — with WS-2 conservative discipline ON, monotonicity violations stay at **0%**; toggle it OFF to watch raw memristor non-idealities re-admit forbidden commands;
   - the **trusted scalars** ξ (continuous, saturating) and S (discrete parity) from the conservation-manifold compiler, plus the **LLC drift detector** that quarantines strategic consolidations on a phase-transition jump;
   - the **evidentiary ledger** preserving the projected / measured seam.
+
+  - the **Conservation-Renormalization Layer** (`Q=0`) — a live zero-sum gain budget (Source #2's CRL) with the §3.4 gauge-covariance proposition verified on the harness.
 
   The engine lives in `src/simulation/BoundedAutonomyStack.js` and is driven by `src/components/StackView.jsx`. Scenarios (nominal, degrading warrant, sensor drift, adversarial, recovery) and event injectors (drop warrant, inject drift, spoof spike) are in the control panel.
 

@@ -15,6 +15,7 @@ import AdaptationMetrics from './components/AdaptationMetrics';
 import ConceptExplainer from './components/ConceptExplainer';
 import AgentDeploymentViz from './components/AgentDeploymentViz';
 import StackView from './components/StackView';
+import ProgramCoverageMap from './components/ProgramCoverageMap';
 import './App.css';
 
 function App() {
@@ -153,11 +154,15 @@ function App() {
         <h1>
           {activeView === 'stack'
             ? 'Bounded Autonomy on a Memristive Substrate'
+            : activeView === 'coverage'
+            ? 'GHOST Autonomy — Program Coverage Map'
             : 'Adaptive Signal Multiplexer with Dynamic Problem Formulation'}
         </h1>
         <p className="subtitle">
           {activeView === 'stack'
             ? 'The full eight-thread safety stack: antitone monotonicity, metabolic memory, and the analog veto'
+            : activeView === 'coverage'
+            ? '56 research subcategories × main(8).tex chapters × source-material availability'
             : 'Real-time visualization of intelligent coordination through continuous optimization'}
         </p>
         <nav className="view-switcher">
@@ -173,6 +178,12 @@ function App() {
           >
             Bounded Autonomy Stack
           </button>
+          <button
+            className={`view-tab ${activeView === 'coverage' ? 'active' : ''}`}
+            onClick={() => setActiveView('coverage')}
+          >
+            Program Coverage Map
+          </button>
         </nav>
         {activeView === 'multiplexer' && (
           <div className="header-actions">
@@ -184,6 +195,8 @@ function App() {
       </header>
 
       {activeView === 'stack' && <StackView />}
+
+      {activeView === 'coverage' && <ProgramCoverageMap />}
 
       {activeView === 'multiplexer' && (
       <>
@@ -301,6 +314,16 @@ function App() {
             Architecture Philosophy: bound what an error is allowed to <em>do</em>, not whether it occurs.
             Every quantitative figure is <strong>projected</strong> unless marked <strong>measured</strong>
             — only the ~32 ns analog-veto witness is measured.
+          </p>
+        </footer>
+      )}
+
+      {activeView === 'coverage' && (
+        <footer className="app-footer">
+          <p>
+            Coverage Map: from the GHOST Autonomy <em>Research Subcategory → Document Section Mapping</em>
+            (Feb 2026). Coverage = source-material availability in project knowledge (a design corpus),
+            not fabricated or measured silicon.
           </p>
         </footer>
       )}
