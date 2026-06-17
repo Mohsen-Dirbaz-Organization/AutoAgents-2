@@ -533,6 +533,12 @@ at `(0,0,0)`; low β = "speaks the spine's own vocabulary," high β = "reaches i
 > A high-α derivative contributes an abstract law; a low-α one contributes concrete hardware/instances.
 > A high-γ derivative is deeply domain-embedded (memristor/automotive); a low-γ one is portable method.
 
+> 🔁 **V3 retrofit available.** The three source assessments below were produced under the **v0.2** protocol.
+> A V3-native re-run — identity-at-birth anchors, per-source constraint ledgers, reference-side DAGs +
+> homology, blind-spot/void coverage, and registry submission blocks — lives in
+> **[`EVD_V3_Registry_Retrofit_Sources_1-3.md`](./EVD_V3_Registry_Retrofit_Sources_1-3.md)** (closes Void V-4;
+> it also surfaced two new voids, V-5 `tpd-01-phase-detector-run` and V-6 `constitution-parts-iii-v`).
+
 ---
 
 ### Source #1 — *Bounded Autonomy on a Memristive Substrate* (Technical Reference, Rev 2026-05-26)
