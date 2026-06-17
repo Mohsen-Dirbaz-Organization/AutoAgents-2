@@ -846,7 +846,7 @@ corpus or a *measured* silicon device are not faked, they are reported **owed**.
 | **O-2** | Convergence proof for CQR flow on Δ_M | Theory / simulation | Lyapunov function or Monte Carlo bound | 🔵 Verified-in-sim — Monte-Carlo bound: R non-expansive (ratio ≤ 1), idempotent, Q≈0 to machine precision |
 | **O-3** | Cross-domain validation (memory vs. gasification) | Empirical study | Correlation r > 0.7 on memory corpus | 🟤 Owed — needs a real memory corpus; not synthesizable |
 | **O-4** | WCET of simplex projection | Measurement | **Resolved**: projection off real-time path; S-bit read is O(1) | 🟢 Resolved (architectural) |
-| **O-5** | Topological mapping validation | Theory | Explicit finite-N invariant or honest disclaimer | 🟡 Advanced — finite-N robustness margin measured; S flips at gap closing. Rigorous invariant owed |
+| **O-5** | Topological mapping validation | Theory | Explicit finite-N invariant or honest disclaimer | 🟡 Advanced — finite-N robustness margin measured; S flips at gap closing; **independent TPD-01 detector cross-validates** (Spearman 0.97, single monotone boundary). Rigorous invariant owed |
 | **O-7** | Impulsive stability bound | Proof / simulation | ‖w(t) - w*‖ bounded after Δw δ(t - tₖ) | 🟡 Advanced — single clamped impulse non-expansive + conservation-preserving; sustained run bounded. Lyapunov bound owed |
 | **O-8** | Ergodic convergence time | Simulation | Measure t_conv for ‖Cₜ - ρ_target‖ < ε | 🔵 Verified-in-sim — measured t_conv (median ≈ 31 steps, ε=0.02) |
 | **O-9** | Discrete channel-space geometry | Architectural decision | Define metric or flag as heuristic | 🟢 Resolved — Euclidean conserved metric on gauge-fixed shapes (CRL §3.1) |
@@ -980,7 +980,7 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 | Conservation structural | ✅ Grounded | Self-test: residual ~2e-16 |
 | ξ bin-level | ✅ Grounded | Gasification corpus validation |
 | ξ memory-domain | ⏳ Proposed | O-3: cross-domain validation owed |
-| S empirical locking | ✅ Grounded | Observed in plots; **in-sim** finite-N robustness margin measured (ValidationHarness O-5) |
+| S empirical locking | ✅ Grounded | Observed in plots; **in-sim** finite-N robustness margin + **independent TPD-01 cross-validation** (Spearman 0.97, single monotone boundary) |
 | S topological protection | ⏳ Proposed | O-5: rigorous finite-N invariant still owed (empirical locking only) |
 | Non-expansive flow | ✅ Grounded | 1-Lipschitz proof + **in-sim** Monte-Carlo bound (ValidationHarness O-2) |
 | Impulsive stability | 🟡 Advanced | O-7: **in-sim** single-impulse non-expansiveness + bounded run; Lyapunov bound owed |
