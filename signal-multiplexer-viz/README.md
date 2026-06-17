@@ -323,10 +323,11 @@ The app has been verified by **driving the running build in a real browser** (Vi
 - **Per-view interval lifecycle is clean.** On the Bounded Autonomy Stack the tick counter advances while running (0 → 12), **holds on pause** (12 → 12), and an unmount-mid-run then remount yields a **fresh engine** (tick 18 → tick 0). The Constitution view shares this hook pattern.
 - **Two-engine integration is live.** In the Constitution view the substrate (`BoundedAutonomyStack`) feeds the `ConstitutionalTruthEngine` each tick — the warrant gauge moves (0.90 → 0.88) and a strong **challenge demotes a canon claim Warranted → Provisional** (Correction Supremacy), a **silent-drift attempt surfaces** as a constitutional event, and **rollback restores a prior canon**.
 - **CRL §3.4** clauses (i)/(iii) are re-confirmed **live every tick** on the actual renormalized channels (drift & residual ≈ machine zero).
+- **Validation Frontier** (Stack view) renders all 10 open obligations with a 2 resolved / 2 verified-in-sim / 3 advanced / 3 owed split and **no regressions**; the **re-run** button re-runs the campaign under a fresh seed and the bars hold (not seed-specific).
 
 **Honest findings from verification:**
 - ⚠️ The Constitution view's **autonomous** events ramp slowly — under the default `degrading` scenario, warrant only crosses the challenge threshold (~0.5) after ~30s of sim-time, so a brief run shows a *stable* canon. The immediate demonstration of correctability is the per-claim **challenge** button.
-- The original **Signal Multiplexer's** simulation intervals are **App-scoped** (not view-scoped): if started and then switched away, they keep ticking in the background (wasted CPU, no error). The three newer views scope and dispose their loops per view.
+- ✅ **Fixed (Void V-3):** the original **Signal Multiplexer's** simulation intervals were **App-scoped** (not view-scoped) — started then switched away, they kept ticking in the background. The multiplexer is now stopped on navigation away from its view (`App.jsx`), matching the three newer views' view-scoped lifecycle.
 
 > Reproduce: `npm run build && npm run preview`, then open the app and click through the four tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
 
@@ -825,16 +826,32 @@ sensing, stress-field constraint satisfaction) are noted but not yet built.
 
 ### Open Obligations (Contestability → Correctability → Steerability)
 
-| **ID** | **Owed** | **Owner** | **Exit Condition** |
-|--------|----------|-----------|-------------------|
-| **O-1** | One-sided bound proof for ξ as salience scalar | Formal analysis | Published bound or counterexample |
-| **O-2** | Convergence proof for CQR flow on Δ_M | Theory / simulation | Lyapunov function or Monte Carlo bound |
-| **O-3** | Cross-domain validation (memory vs. gasification) | Empirical study | Correlation r > 0.7 on memory corpus |
-| **O-4** | WCET of simplex projection | Measurement | **Resolved**: projection off real-time path; S-bit read is O(1) |
-| **O-5** | Topological mapping validation | Theory | Explicit finite-N invariant or honest disclaimer |
-| **O-7** | Impulsive stability bound | Proof / simulation | ‖w(t) - w*‖ bounded after Δw δ(t - tₖ) |
-| **O-8** | Ergodic convergence time | Simulation | Measure t_conv for ‖Cₜ - ρ_target‖ < ε |
-| **O-9** | Discrete channel-space geometry | Architectural decision | Define metric or flag as heuristic |
+The **in-sim campaign** column below is produced by a runnable harness —
+`src/simulation/ValidationHarness.js`, surfaced live in the **Validation Frontier**
+panel of the Bounded Autonomy Stack view. The harness was built against the EVD V3
+extraction's Void Map (seed `validation-proof-campaign`, V-1), which named validation
+closure — *not another module* — as the project's true frontier. It is disciplined
+about the projected/measured seam: obligations whose exit condition needs an external
+corpus or a *measured* silicon device are not faked, they are reported **owed**.
+
+| **ID** | **Owed** | **Owner** | **Exit Condition** | **In-sim campaign** |
+|--------|----------|-----------|-------------------|---------------------|
+| **O-1** | One-sided bound proof for ξ as salience scalar | Formal analysis | Published bound or counterexample | 🟡 Advanced — monotone, no counterexample in 2000 trials; dither ≤ 1%. Formal bound owed |
+| **O-2** | Convergence proof for CQR flow on Δ_M | Theory / simulation | Lyapunov function or Monte Carlo bound | 🔵 Verified-in-sim — Monte-Carlo bound: R non-expansive (ratio ≤ 1), idempotent, Q≈0 to machine precision |
+| **O-3** | Cross-domain validation (memory vs. gasification) | Empirical study | Correlation r > 0.7 on memory corpus | 🟤 Owed — needs a real memory corpus; not synthesizable |
+| **O-4** | WCET of simplex projection | Measurement | **Resolved**: projection off real-time path; S-bit read is O(1) | 🟢 Resolved (architectural) |
+| **O-5** | Topological mapping validation | Theory | Explicit finite-N invariant or honest disclaimer | 🟡 Advanced — finite-N robustness margin measured; S flips at gap closing. Rigorous invariant owed |
+| **O-7** | Impulsive stability bound | Proof / simulation | ‖w(t) - w*‖ bounded after Δw δ(t - tₖ) | 🟡 Advanced — single clamped impulse non-expansive + conservation-preserving; sustained run bounded. Lyapunov bound owed |
+| **O-8** | Ergodic convergence time | Simulation | Measure t_conv for ‖Cₜ - ρ_target‖ < ε | 🔵 Verified-in-sim — measured t_conv (median ≈ 31 steps, ε=0.02) |
+| **O-9** | Discrete channel-space geometry | Architectural decision | Define metric or flag as heuristic | 🟢 Resolved — Euclidean conserved metric on gauge-fixed shapes (CRL §3.1) |
+
+> **What "verified-in-sim" does and does not mean.** It means a mathematical property
+> of the implemented operators was checked numerically to machine precision, or a
+> quantity the README asks us to *measure in simulation* was measured (for O-2 and O-8
+> that is literally the stated exit condition). It does **not** mean field-validated or
+> true of physical silicon. Device-monotonicity (**O-10**) and φ transfer (**O-11**)
+> remain **owed** — they need measured-device models and an automotive corpus the harness
+> deliberately will not fabricate.
 
 ### Right of Contestability
 
@@ -957,11 +974,11 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 | Conservation structural | ✅ Grounded | Self-test: residual ~2e-16 |
 | ξ bin-level | ✅ Grounded | Gasification corpus validation |
 | ξ memory-domain | ⏳ Proposed | O-3: cross-domain validation owed |
-| S empirical locking | ✅ Grounded | Observed in plots (RENORMALIZATION_FRAMEWORK.md) |
-| S topological protection | ⏳ Proposed | O-5: finite-N mapping owed |
-| Non-expansive flow | ✅ Grounded | 1-Lipschitz proof (composition) |
-| Impulsive stability | ⏳ Proposed | O-7: Lyapunov bound owed |
-| Ergodic convergence | ⏳ Proposed | O-8: finite-time measure owed |
+| S empirical locking | ✅ Grounded | Observed in plots; **in-sim** finite-N robustness margin measured (ValidationHarness O-5) |
+| S topological protection | ⏳ Proposed | O-5: rigorous finite-N invariant still owed (empirical locking only) |
+| Non-expansive flow | ✅ Grounded | 1-Lipschitz proof + **in-sim** Monte-Carlo bound (ValidationHarness O-2) |
+| Impulsive stability | 🟡 Advanced | O-7: **in-sim** single-impulse non-expansiveness + bounded run; Lyapunov bound owed |
+| Ergodic convergence | 🔵 Verified-in-sim | O-8: t_conv measured in-sim (median ≈ 31 steps); field finite-time guarantee owed |
 | Hardware latency budgets | ✅ Grounded | EPU overlays 3, 30, 40, 51 |
 | Witness algebra | ✅ Grounded | EPU overlays 10, 16, 35, 44 |
 | Analog-veto latency (~32 ns) | ✅ **Measured** | Memristive Substrate §2.2/§7 — the *only* measured latency in the corpus |

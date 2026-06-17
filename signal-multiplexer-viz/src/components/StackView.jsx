@@ -7,6 +7,7 @@ import MonotonicityMonitor from './MonotonicityMonitor';
 import TrustedScalars from './TrustedScalars';
 import ConservationRenormalizationPanel from './ConservationRenormalizationPanel';
 import EvidentiaryLedger from './EvidentiaryLedger';
+import ValidationFrontier from './ValidationFrontier';
 import StackControlPanel from './StackControlPanel';
 import './StackView.css';
 
@@ -159,6 +160,11 @@ function StackView() {
               veto={state.veto}
               metrics={state.metrics}
             />
+          </section>
+
+          <section className="section">
+            <h2>Validation Frontier — Open Obligations (O-1 … O-11)</h2>
+            <ValidationFrontier />
           </section>
         </div>
       </div>

@@ -425,9 +425,9 @@ Maximum dependency depth ≈ **4** (D6 → D5 → D3 → D2 → D1). DAG acyclic
 
 | Void | Class | Description / grounding | Generative seed (UNID A5: unminted unless chartered) |
 |---|---|---|---|
-| **V-1** | Demand | Open obligations O-1/O-2/O-3/O-5/O-7/O-8/O-10/O-11 unclosed: bounds, convergence, finite-N topology, impulse stability, cross-domain ξ/S, measured-device models | Seed: validation & proof campaign for CQR/S/Dirac/device-monotonicity. Candidate (α,β,γ)=(0.80,0.20,0.65). Handle: `validation-proof-campaign`. Unminted. |
+| **V-1** | Demand | **Partially closed (in-sim campaign).** Open obligations O-1/O-2/O-3/O-5/O-7/O-8/O-10/O-11: bounds, convergence, finite-N topology, impulse stability, cross-domain ξ/S, measured-device models | Seed **acted on**: `src/simulation/ValidationHarness.js` (live in the Validation Frontier panel) closes O-2/O-8 to *verified-in-sim* (the README's own accepted exit conditions), advances O-1/O-5/O-7, and holds O-3/O-10/O-11 **owed** (need external corpus / measured silicon — C-1). Formal proofs + hardware remain owed. Handle: `validation-proof-campaign` (now chartered, partially executed). |
 | **V-2** | Demand / project | Coverage map names 11 gaps / ~55–80 person-days but does not perform the work | Seed: gap-closure workstream plan (owner, exit condition, acquisition, target per gap). (0.55,0.10,0.50). Handle: `program-gap-closure-plan`. Unminted. |
-| **V-3** | Supply / implementation | Original Signal-Multiplexer intervals remain App-scoped; newer views dispose loops correctly | Seed: refactor the multiplexer lifecycle to the view-scoped hook pattern. (0.25,0.05,0.45). Handle: `multiplexer-lifecycle-refactor`. Unminted. |
+| **V-3** | Supply / implementation | **Closed.** Original Signal-Multiplexer intervals were App-scoped; newer views dispose loops correctly | Seed **executed**: `App.jsx` now stops the multiplexer simulation on navigation away from its view (view-scoped lifecycle, matching the three newer views). Handle: `multiplexer-lifecycle-refactor` (done). |
 | **V-4** | Structural | The Integration Registry's Source #1–#3 used v0.2 outputs; V3 identity/constraints/blind-spots/voids not retrofitted | Seed: re-run Source #1–#3 under V3 (identity-at-birth, constraints, reference-side DAGs, registry blocks). (0.65,0.05,0.35). Handle: `registry-v3-retrofit`. Unminted. |
 
 ---
@@ -563,8 +563,15 @@ Common Ground: evidence standing & the projected/measured seam
 
 The strongest extracted structure is the **safety-correctability loop**: conservation constrains allocation (D3) → phase labels detect regime change (D4) → impulses respond without breaking conservation (D5) → EPU geometry enforces representability & timing (D6) → the live stack demonstrates bounded behavior (D2) → the Constitution makes every claim correctable (D7) → the Coverage Map exposes what remains owed (D8).
 
-**The main frontier is not another conceptual module — it is validation closure** (V-1): mathematical proofs, finite-N topology, impulse stability, measured-device monotonicity, cross-domain ξ/S transfer; plus the V3 retrofit of the older source assessments (V-4). Per the README's own discipline and C-1, none of these is upgraded here; they are surfaced as grounded voids with actionable seeds.
+**The main frontier is not another conceptual module — it is validation closure** (V-1): mathematical proofs, finite-N topology, impulse stability, measured-device monotonicity, cross-domain ξ/S transfer; plus the V3 retrofit of the older source assessments (V-4). The extraction is treated as an *incomplete map guiding the effort*, so the frontier work has begun rather than merely being named.
+
+**Progress against the map (development pass following the extraction):**
+- **V-1 partially closed.** A runnable, seeded validation campaign (`src/simulation/ValidationHarness.js`, surfaced in the *Validation Frontier* panel) executes the obligations whose acceptance is a computation: **O-2** (Monte-Carlo non-expansiveness bound) and **O-8** (measured t_conv) reach *verified-in-sim* — exactly the README's stated exit conditions; **O-1/O-5/O-7** are *advanced* with in-sim evidence; **O-3/O-10/O-11** are held **owed** because they need an external corpus or *measured* silicon, which the harness deliberately will not fabricate (C-1). Formal proofs and hardware validation remain owed.
+- **V-3 closed.** The App-scoped multiplexer interval lifecycle is fixed — the simulation is now view-scoped.
+- **V-2 / V-4** remain open (gap-closure workstream; Source #1–#3 V3 retrofit).
+
+Consistent with the README's own discipline and C-1, nothing is upgraded to *measured*: the new evidence is clearly labelled *verified-in-sim* / *advanced*, and the projected/measured seam is preserved.
 
 ---
 
-*End of V3 extraction. This document is the standalone artifact requested; the same result is shared inline in the session. Identity records above are minted-but-pending steward validation (V3 §8.14).*
+*End of V3 extraction. This document is the standalone artifact requested; the same result is shared inline in the session. Identity records above are minted-but-pending steward validation (V3 §8.14). The "Progress against the map" note records a subsequent development pass that began executing the Void Map's seeds.*
