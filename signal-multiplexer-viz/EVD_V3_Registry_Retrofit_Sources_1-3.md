@@ -192,7 +192,7 @@ constitutionalized) and **Honors** C-4; T3 **Honors** C-1 (erasure leaves lineag
 
 | Void | Class | Grounding | Seed |
 |---|---|---|---|
-| **V-6** | Structural / Demand | Source #3 Parts **III** (continuum-aware sensing) and **V** (constraint satisfaction as stress fields) are documented derivatives (T4, T5) with no implementation; they attach to live reference dimensions | Seed: build a continuum-sensing witness for Lane G (T4) and a stress-field constraint-violation visualizer (T5), or explicitly park them with a dated rationale. (α,β,γ)≈(0.55,0.45,0.60). Handle: `constitution-parts-iii-v`. Unminted. |
+| **V-6** | Structural / Demand | Source #3 Parts **III** (continuum-aware sensing) and **V** (constraint satisfaction as stress fields) are documented derivatives (T4, T5) with no implementation; they attach to live reference dimensions | **Partially executed.** T5 built — `StressFieldPanel.jsx` renders constraint satisfaction as a live stress field (drivers vs protected invariants, contract-not-violate). T4 **parked (dated 2026-06-17)**: a continuum-sensing witness would duplicate the existing CRL sensor-multiplet panel + Lane G; revisit only if a distinct continuum observable is identified. Handle: `constitution-parts-iii-v` (T5 done, T4 parked). |
 
 **Registry submission block.**
 ```yaml
