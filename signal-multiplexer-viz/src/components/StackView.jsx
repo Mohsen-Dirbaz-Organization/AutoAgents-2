@@ -7,6 +7,8 @@ import MonotonicityMonitor from './MonotonicityMonitor';
 import TrustedScalars from './TrustedScalars';
 import ConservationRenormalizationPanel from './ConservationRenormalizationPanel';
 import EvidentiaryLedger from './EvidentiaryLedger';
+import ValidationFrontier from './ValidationFrontier';
+import StressFieldPanel from './StressFieldPanel';
 import StackControlPanel from './StackControlPanel';
 import './StackView.css';
 
@@ -119,6 +121,11 @@ function StackView() {
             <h2>Conservation-Renormalization Layer (Q = 0)</h2>
             <ConservationRenormalizationPanel crl={state.crl} />
           </section>
+
+          <section className="section">
+            <h2>Stress-Field Constraints (Part V)</h2>
+            <StressFieldPanel state={state} />
+          </section>
         </div>
 
         <div className="sv-col">
@@ -159,6 +166,11 @@ function StackView() {
               veto={state.veto}
               metrics={state.metrics}
             />
+          </section>
+
+          <section className="section">
+            <h2>Validation Frontier — Open Obligations (O-1 … O-11)</h2>
+            <ValidationFrontier />
           </section>
         </div>
       </div>

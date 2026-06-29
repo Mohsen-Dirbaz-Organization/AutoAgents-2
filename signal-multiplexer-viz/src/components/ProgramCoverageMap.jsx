@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import {
   COVERAGE_META, DOMAINS, SUBCATEGORIES, SOURCE_XREF, PROGRAM_SUMMARY
 } from '../data/programCoverage';
+import GapClosurePlan from './GapClosurePlan';
 import './ProgramCoverageMap.css';
 
 const COVERAGE_ORDER = ['FULL', 'HIGH', 'PARTIAL', 'GAP'];
@@ -151,19 +152,10 @@ function ProgramCoverageMap() {
         </div>
       )}
 
-      {/* Gap analysis */}
+      {/* Gap-closure plan (Void V-2) — gaps with owner / acquisition / exit, in waves */}
       <div className="pcm-gaps">
-        <h3>Strategic gaps — {gaps.length} subcategories, ~{PROGRAM_SUMMARY.gapEffortPersonDays} person-days</h3>
-        <div className="pcm-gap-rows">
-          {gaps.map(g => (
-            <button key={g.id} className="pcm-gap" onClick={() => setSelectedId(g.id)}>
-              <span className="pcm-gap-id">#{g.id}</span>
-              <span className="pcm-gap-name">{g.name}</span>
-              <span className={`pcm-gap-pri pri-${(g.gapPriority || '').toLowerCase()}`}>{g.gapPriority}</span>
-              <span className="pcm-gap-eff">{g.gapEffort}d</span>
-            </button>
-          ))}
-        </div>
+        <h3>Gap-closure plan — {gaps.length} gaps sequenced into waves</h3>
+        <GapClosurePlan onSelect={setSelectedId} />
       </div>
 
       {/* Source cross-reference */}

@@ -1,0 +1,79 @@
+.sf-panel { font-size: 0.85rem; }
+
+.sf-preamble {
+  margin: 0 0 0.9rem;
+  color: #555;
+  line-height: 1.5;
+  border-left: 3px solid #c0392b;
+  padding-left: 0.75rem;
+}
+
+.sf-rollup {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.sf-roll {
+  flex: 1;
+  background: #f6f7fb;
+  border-radius: 6px;
+  padding: 0.5rem;
+  text-align: center;
+}
+.sf-roll-num {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.sf-roll-lbl { font-size: 0.68rem; color: #888; }
+
+.sf-group { margin-bottom: 0.9rem; }
+.sf-group-head {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #667eea;
+  border-bottom: 1px solid #eef0f4;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.sf-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.sf-name { flex: 0 0 42%; color: #444; }
+.sf-track {
+  flex: 1;
+  height: 12px;
+  background: #eef0f4;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.sf-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+.sf-val {
+  flex: 0 0 38px;
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+}
+
+.sf-note {
+  margin: 0.6rem 0 0;
+  color: #8a6d1f;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  background: #fdf6e3;
+  border-left: 3px solid #DAA520;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0 4px 4px 0;
+}
