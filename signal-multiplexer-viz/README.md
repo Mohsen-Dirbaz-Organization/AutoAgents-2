@@ -1,14 +1,14 @@
 # Signal Multiplexer → Bounded-Autonomy Substrate Visualization
 
-Interactive React + D3 research visualization that began as an **Adaptive Signal Multiplexer with Dynamic Problem Formulation** and has grown into a **four-view exploration of a bounded-autonomy safety substrate** — extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, **Dirac-based impulsive control**, a runnable **eight-thread safety stack**, a **program coverage map**, and a **Constitution of Truth** governance layer that keeps the system correctable.
+Interactive React + D3 research visualization that began as an **Adaptive Signal Multiplexer with Dynamic Problem Formulation** and has grown into a **five-view exploration of a bounded-autonomy safety substrate** — extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, **Dirac-based impulsive control**, a runnable **eight-thread safety stack**, a **program coverage map**, a **Constitution of Truth** governance layer that keeps the system correctable, and an **Autonomous-Driving Event Fabric (F26)** doctrine view.
 
-> **Status (runtime-verified).** All four views render and interact in a real browser (Playwright + headless Chromium) with **zero console errors**; view transitions and per-view simulation lifecycles are clean. See [Verification Status](#verification-status-runtime) below.
+> **Status (runtime-verified).** All five views render and interact in a real browser (Playwright + headless Chromium) with **zero console errors**; view transitions and per-view simulation lifecycles are clean. See [Verification Status](#verification-status-runtime) below.
 
 ## Overview
 
 This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern — and then layers on the safety-substrate research the project has accreted across three integrated source documents (see the [Design-Space Integration Registry](#design-space-integration-registry-evd-protocol-assessments)). The original engine formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure; the newer views simulate the bounded-autonomy stack, map the program's coverage, and govern a correctable Ground Truth.
 
-### Four views (header switcher)
+### Five views (header switcher)
 
 The app ships with a view switcher in the header:
 
@@ -16,6 +16,7 @@ The app ships with a view switcher in the header:
 - **Bounded Autonomy Stack** — see below.
 - **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
 - **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
+- **Event Fabric (F26)** — the **F26 Autonomous-Driving Event-Fabric Integration Plan** rendered as a doctrine dashboard (see [`F26_Autonomous_Driving_Event_Fabric_Plan.md`](./F26_Autonomous_Driving_Event_Fabric_Plan.md); data in `src/data/eventFabric.js`). A **single timeline spine + twelve operational canvases** where the base unit is a *synchronized interaction trace*, not a pixel; the full **F1–F26** → autonomous-driving mapping; an **S01–S29 source-standing ledger** (established / proposed / projected / notional / open, with *projected/notional/open may not expand runtime authority*); and an honest **latency reconciliation** that keeps the "144 unique latencies" claim **unconfirmed** (parsed: 248 records / 237 exact / 84 unique numeric endpoints / 68 exact values). The 248 individual latency cards are represented by their summary counts (honest stub).
 
 The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
@@ -294,7 +295,7 @@ npm run preview
 
 ## How to Use
 
-Use the **header view-switcher** to move between the four views. Each owns its own simulation engine; switching away cleanly stops and disposes that view's loop.
+Use the **header view-switcher** to move between the five views. Each simulation view owns its own engine; switching away cleanly stops and disposes that view's loop (the Event Fabric view is a static doctrine dashboard with no engine).
 
 **Signal Multiplexer** (origin view)
 1. **Start the simulation** to begin the continuous optimization loop (7-step cycle, 100ms).
@@ -318,7 +319,7 @@ Use the **header view-switcher** to move between the four views. Each owns its o
 
 The app has been verified by **driving the running build in a real browser** (Vite production preview + Playwright + headless Chromium), not just by building/linting. What was observed:
 
-- **All four views render and switch correctly**, with the right titles, and survive 3× rapid `multiplexer → stack → coverage → constitution` churn cycles.
+- **All five views render and switch correctly**, with the right titles, and survive rapid `multiplexer → stack → coverage → constitution → event-fabric` churn cycles. The **Event Fabric (F26)** view renders its 13 canvases (spine + 12), full F1–F26 matrix, the S01–S29 source-standing ledger (filterable; narrows to the 1 *notional* source), and the latency reconciliation card showing **"144 unique latencies — NOT CONFIRMED"**.
 - **Zero console errors or warnings** across the entire session — including unmounting a view *mid-simulation* — i.e. no React leak warnings and no missing-key warnings.
 - **Per-view interval lifecycle is clean.** On the Bounded Autonomy Stack the tick counter advances while running (0 → 12), **holds on pause** (12 → 12), and an unmount-mid-run then remount yields a **fresh engine** (tick 18 → tick 0). The Constitution view shares this hook pattern.
 - **Two-engine integration is live.** In the Constitution view the substrate (`BoundedAutonomyStack`) feeds the `ConstitutionalTruthEngine` each tick — the warrant gauge moves (0.90 → 0.88) and a strong **challenge demotes a canon claim Warranted → Provisional** (Correction Supremacy), a **silent-drift attempt surfaces** as a constitutional event, and **rollback restores a prior canon**.
@@ -328,7 +329,7 @@ The app has been verified by **driving the running build in a real browser** (Vi
 - ⚠️ The Constitution view's **autonomous** events ramp slowly — under the default `degrading` scenario, warrant only crosses the challenge threshold (~0.5) after ~30s of sim-time, so a brief run shows a *stable* canon. The immediate demonstration of correctability is the per-claim **challenge** button.
 - The original **Signal Multiplexer's** simulation intervals are **App-scoped** (not view-scoped): if started and then switched away, they keep ticking in the background (wasted CPU, no error). The three newer views scope and dispose their loops per view.
 
-> Reproduce: `npm run build && npm run preview`, then open the app and click through the four tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
+> Reproduce: `npm run build && npm run preview`, then open the app and click through the five tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
 
 ## What You'll See
 
