@@ -17,6 +17,7 @@ import AgentDeploymentViz from './components/AgentDeploymentViz';
 import StackView from './components/StackView';
 import ProgramCoverageMap from './components/ProgramCoverageMap';
 import ConstitutionView from './components/ConstitutionView';
+import EventFabricView from './components/EventFabricView';
 import './App.css';
 
 function App() {
@@ -170,6 +171,8 @@ function App() {
             ? 'GHOST Autonomy — Program Coverage Map'
             : activeView === 'constitution'
             ? 'The Constitution of Truth — Correctable Ground Truth'
+            : activeView === 'eventfabric'
+            ? 'F26 Autonomous-Driving Event Fabric'
             : 'Adaptive Signal Multiplexer with Dynamic Problem Formulation'}
         </h1>
         <p className="subtitle">
@@ -179,6 +182,8 @@ function App() {
             ? '56 research subcategories × main(8).tex chapters × source-material availability'
             : activeView === 'constitution'
             ? 'Separation of epistemic powers · correction supremacy · anti-silent-drift · temporal rollback'
+            : activeView === 'eventfabric'
+            ? 'Single timeline · twelve canvases · synchronized interaction traces · source-standing discipline'
             : 'Real-time visualization of intelligent coordination through continuous optimization'}
         </p>
         <nav className="view-switcher">
@@ -206,6 +211,12 @@ function App() {
           >
             Constitution of Truth
           </button>
+          <button
+            className={`view-tab ${activeView === 'eventfabric' ? 'active' : ''}`}
+            onClick={() => setActiveView('eventfabric')}
+          >
+            Event Fabric (F26)
+          </button>
         </nav>
         {activeView === 'multiplexer' && (
           <div className="header-actions">
@@ -221,6 +232,8 @@ function App() {
       {activeView === 'coverage' && <ProgramCoverageMap />}
 
       {activeView === 'constitution' && <ConstitutionView />}
+
+      {activeView === 'eventfabric' && <EventFabricView />}
 
       {activeView === 'multiplexer' && (
       <>
@@ -357,6 +370,17 @@ function App() {
           <p>
             Constitution of Truth (from <em>Temporal State Management</em>, Part VI): a claim that cannot be
             challenged is not trusted — it is merely unexamined. The warrant travels with the decision.
+          </p>
+        </footer>
+      )}
+
+      {activeView === 'eventfabric' && (
+        <footer className="app-footer">
+          <p>
+            F26 Autonomous-Driving Event-Fabric Integration Plan: the base unit is a <em>synchronized
+            interaction trace</em>, not a pixel. Safety-bearing paths may only <strong>contract</strong>
+            authority; <strong>projected / notional / open</strong> claims may not expand it — and the
+            "144 unique latencies" claim is kept honestly <strong>unconfirmed</strong>.
           </p>
         </footer>
       )}
