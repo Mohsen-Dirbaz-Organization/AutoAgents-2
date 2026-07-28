@@ -305,7 +305,7 @@ Use the **header view-switcher** to move between the five views. Each simulation
 **Bounded Autonomy Stack**
 1. **Run stack** — watch the antitone monotonicity monitor hold **0% violations** with conservative discipline ON.
 2. **Toggle discipline OFF + Adversarial scenario** — raw device non-idealities re-admit forbidden commands and the violation rate climbs.
-3. The **CRL `Q=0` panel** re-confirms the §3.4 clauses (i)/(iii) live every tick on the real channels.
+3. The **CRL `Q=0` panel** runs the live **adversarial masking probe** (§3.4(ii)) each tick — the falsifiable check — and reports the constructed drift/residual identities as diagnostics only.
 
 **Program Coverage Map**
 1. Click the **coverage cards** to filter; click any **subcategory cell** to open its detail drawer (target chapters + source files).
@@ -323,7 +323,7 @@ The app has been verified by **driving the running build in a real browser** (Vi
 - **Zero console errors or warnings** across the entire session — including unmounting a view *mid-simulation* — i.e. no React leak warnings and no missing-key warnings.
 - **Per-view interval lifecycle is clean.** On the Bounded Autonomy Stack the tick counter advances while running (0 → 12), **holds on pause** (12 → 12), and an unmount-mid-run then remount yields a **fresh engine** (tick 18 → tick 0). The Constitution view shares this hook pattern.
 - **Two-engine integration is live.** In the Constitution view the substrate (`BoundedAutonomyStack`) feeds the `ConstitutionalTruthEngine` each tick — the warrant gauge moves (0.90 → 0.88) and a strong **challenge demotes a canon claim Warranted → Provisional** (Correction Supremacy), a **silent-drift attempt surfaces** as a constitutional event, and **rollback restores a prior canon**.
-- **CRL §3.4** clauses (i)/(iii) are re-confirmed **live every tick** on the actual renormalized channels (drift & residual ≈ machine zero).
+- **CRL §3.4** — the live **masking probe** (clause (ii), adversarial and falsifiable) passes each tick; clauses (i)/(iii) are reported as *constructed* diagnostics, per the EPU Companion's retirement of guaranteed-pass checks.
 
 **Honest findings from verification:**
 - ⚠️ The Constitution view's **autonomous** events ramp slowly — under the default `degrading` scenario, warrant only crosses the challenge threshold (~0.5) after ~30s of sim-time, so a brief run shows a *stable* canon. The immediate demonstration of correctability is the per-claim **challenge** button.
@@ -388,14 +388,12 @@ signal-multiplexer-viz/
 │   │   │                                #   EvidentiaryLedger, StackControlPanel
 │   │   ├── ProgramCoverageMap.jsx       # Coverage dashboard (filter + domain grids + detail drawer)
 │   │   └── ConstitutionView.jsx + panels# GroundTruthCanon, SeparationOfPowers, ConstitutionalLog, UnknownRegister
-│   ├── App.jsx                          # Main application + 4-view header switcher
+│   ├── App.jsx                          # Main application + header view switcher
 │   └── index.css                        # Global styles
-├── docs/
-│   ├── RENORMALIZATION_FRAMEWORK.md      # Complete CQR specification
-│   ├── RESEARCH_PROMPT_TOPOLOGICAL_PHASE.md  # 2016 Nobel extraction prompt
-│   ├── CORRESPONDENCE_PRINCIPLE_PROPOSAL.md  # Quantum/classical bridge
-│   ├── Dirac function report.pdf         # Multi-agent Dirac delta applications
-│   └── PICAPD_compressed168.pdf          # EPU hardware overlays (68 pages)
+├── RENORMALIZATION_FRAMEWORK.md          # Complete CQR specification (repo root)
+├── RESEARCH_PROMPT_TOPOLOGICAL_PHASE.md  # 2016 Nobel extraction prompt (repo root)
+├── CORRESPONDENCE_PRINCIPLE_PROPOSAL.md  # Quantum/classical bridge (repo root)
+├── Dirac function report.pdf             # Multi-agent Dirac delta applications (repo root)
 ├── README.md                             # This file
 └── package.json                          # Dependencies + scripts
 ```
@@ -670,8 +668,9 @@ Common Ground → all (evidentiary seam governs every claim)
 
 **Net position.** Not a divergent source — the *parent* of the spine. The genuinely **new, actionable**
 contributions beyond restating the spine precisely are: (a) the **exact zero-sum projection operator** (3.3)
-and the **§3.4 gauge-covariance proposition** (E6); (b) the explicit **complexity budget** (E5); (c) the
-ready-to-run **TPD-01 research prompt** (§4.4).
+and the **§3.4 gauge-covariance proposition** (E6); (b) the explicit **complexity budget** (E5); (c) a
+**TPD-01 research prompt** (§4.4 of the source PDF — the PDF itself is not shipped in this repo, so the
+prompt is recorded here as *referenced, unrun*).
 
 **Effect on open obligations / validation status — a real upgrade.** The source's §7.1/§8 recommend, as
 step (a), *"implement the CRL on the simulation harness and verify the Proposition of §3.4 empirically."*
@@ -679,17 +678,27 @@ step (a), *"implement the CRL on the simulation harness and verify the Propositi
 factorization 3.1, zero-sum budget 3.2, projection 3.3) and runs live inside the Bounded-Autonomy-Stack
 view (`Q=0` panel). Verification happens at two levels:
 
-1. **The proposition (all three clauses) is proved on a canonical multiplet** by `verifyGaugeCovariance()`:
-   - **(i)** `c(Rx) = c(x)` — conserved coordinate invariant (drift ≈ 5×10⁻¹⁶, machine zero);
-   - **(ii)** masking blocked — a genuine defect (0.632) is masked on the *raw* signal (→0.035, a false accept)
-     but stays genuine (0.632) in the gauge-fixed *shape* sector the gain cannot reach;
-   - **(iii)** `Q = 0` is an exact critical zero after projection (residual ≈ 5×10⁻¹⁶).
-2. **Clauses (i) and (iii) are then re-confirmed *live, every tick*** on the actual renormalized sensor
-   channels (`crlState.live`): the per-tick conserved-coordinate drift and zero-sum residual are both
-   asserted ≤ tolerance against the real, time-varying gains — not just the canonical example.
+1. **The proposition is checked per-clause with an explicit standing** by `verifyGaugeCovariance()`
+   (EPU Companion claim ladder — a definitional identity is *constructed*, not *established*):
+   - **(i)** `c(Rx) = c(x)` — **constructed**: the renormalization rescales gains and leaves shapes
+     untouched *by definition*, so this holds by construction. The reported drift (≈ 5×10⁻¹⁶) is a
+     rounding-fault **diagnostic**, not empirical verification — a check that cannot fail proves nothing.
+   - **(ii)** masking blocked — **established-in-sim, and falsifiable**: a genuine defect (0.632) is
+     masked on the *raw* signal (→0.035, a false accept) but stays genuine (0.632) in the gauge-fixed
+     *shape* sector. Point the detector at the raw band and this check **fails** — its pass carries
+     information.
+   - **(iii)** `Q = 0` after projection — **constructed**: the projection removes the weighted mean by
+     algebraic identity. The residual (≈ 5×10⁻¹⁶) is likewise a diagnostic.
+2. **The live, per-tick check is the adversarial masking probe** (`crlState.probe`): each tick an
+   adversarial compensating gain is applied to a genuine defect and the shape band must still **detect**
+   it. Unlike the retired drift/residual assertions (guaranteed-pass no-ops, now `crlState.diagnostics`
+   with standing *constructed*), this probe can fail, so its pass is evidence.
 
-This moves the §3.4 proposition from **Proposed** to **Verified on simulation harness** (still *simulation*,
-not silicon — the document's own standing for CRL/TPD/MMR remains *research proposal awaiting field validation*).
+**Net standing.** Clause (ii) is *established-in-sim* (falsifiable, adversarial, live); clauses (i)/(iii)
+are *constructed* (design semantics only). The earlier claim that (i)/(iii) were "re-confirmed live every
+tick" was a guaranteed-pass no-op and has been retired per the EPU Companion (Deck B retirement #3: a
+check that cannot fail has no truth value to lose). Still *simulation*, not silicon — the source's own
+standing for CRL/TPD/MMR remains *research proposal awaiting field validation*.
 
 **Honest flag.** Per the source's §8, CRL/TPD/MMR/Contestable-Witness are **research proposals**, presented as
 contestable claims with explicit warrants and falsifiers — they "await prototype validation on the simulation
@@ -724,7 +733,7 @@ it does not field-validate the substrate.
 | **T2** | Temporal state model — reversible flow maps, realis/irrealis (Part I) | 0.80 | 0.30 | 0.25 | **Implemented** — versioned canon + rollback; modality on every claim |
 | **T3** | Principled memory erasure — correlation/τ-hierarchy/conservation (Part II) | 0.65 | 0.25 | 0.40 | **Implemented** — replaced ad-hoc eviction in the metabolic memory |
 | **T4** | Continuum-aware sensing (Part III) | 0.45 | 0.35 | 0.70 | Confirms Lane G (sensors-as-witnesses) |
-| **T5** | Constraint satisfaction as stress fields (Part V) | 0.75 | 0.55 | 0.55 | New analogy (constraint violation = stress); not yet built |
+| **T5** | ~~Constraint satisfaction as stress fields (Part V)~~ | — | — | — | **RETIRED** (EPU Companion, Deck B): the "constraint stress tensor" is undefined on a state manifold — no mass density, traction field, momentum or subbody balance, so no construction produces the object. What the idea actually uses is the active-constraint Jacobian, i.e. a polytope — which MPC already provides. Removed, not owed. |
 | **T6** | Verification-before-fusion (Part VI §19) | 0.55 | 0.15 | 0.65 | Grounds the pre-fusion admissibility gate + Art. XXXVI = the antitone law |
 
 **What was built (the correctability depth):**
@@ -751,8 +760,11 @@ consistency**); a silent-drift attempt surfaces as a constitutional event; **rol
 always leaves lineage in the Archive.
 
 **Honest flag.** This is a *constitutional design governing the simulation*, per the source's own standing — it
-makes the system demonstrably correctable; it does not certify a vehicle. Parts III–V (continuum sensing, quantum
-sensing, stress-field constraint satisfaction) are noted but not yet built.
+makes the system demonstrably correctable; it does not certify a vehicle. Parts III–IV (continuum sensing, quantum
+sensing) are noted but not built. Part V (stress-field constraint satisfaction, T5) is **retired, not owed** —
+see the retirement register in the Canon &amp; Integrity view: the EPU Companion shows the construct is undefined
+(no derivation produces a stress tensor on a state manifold), and per its release rule retired constructs are
+removed rather than given a provisional standing that implies a path to evidence.
 
 ---
 

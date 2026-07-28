@@ -34,6 +34,19 @@
  * =========================================================================
  */
 
+/**
+ * tol_conserve — DERIVED from the arithmetic format, not chosen.
+ * (EPU Companion, Master Index open obligations P1: "Conservation tolerance per
+ * check, derived from the arithmetic format".) The projection subtracts a
+ * weighted mean over M channels of log-gains bounded by ln(maxGain); accumulated
+ * rounding in IEEE-754 binary64 is O(M · eps · |ell|max). The constant 8 covers
+ * the sum, the broadcast subtract, the exp/log round-trip and the norm.
+ */
+export function tolConserve(M = 5, maxGain = 1e3) {
+  const ellMax = Math.log(Math.max(maxGain, Math.E));
+  return 8 * M * Number.EPSILON * Math.max(1, ellMax);
+}
+
 // ---- small vector helpers (conserved metric = Euclidean) ----
 export function vnorm(v) {
   let s = 0;
@@ -116,7 +129,8 @@ export class ConservationRenormalizationLayer {
    *   resTol    — tolerance for the |Q| critical-zero check
    */
   constructor(cfg = {}) {
-    this.cfg = { resTol: cfg.resTol ?? 1e-9, ...cfg };
+    // tol_conserve is DERIVED (see tolConserve) unless explicitly overridden.
+    this.cfg = { resTol: cfg.resTol ?? tolConserve(cfg.M ?? 5), ...cfg };
     this.last = null;
   }
 
@@ -156,8 +170,17 @@ export class ConservationRenormalizationLayer {
     const gainsStar = ellStar.map((l) => Math.exp(l));
     const signalsStar = shapes.map((yhat, k) => vscale(yhat, gainsStar[k]));
 
-    // §3.4(i) conserved-coordinate drift: distance between the shapes before and
-    // after R. Must be ~0 — the renormalization touched only gain.
+    // §3.4(i) conserved-coordinate drift.
+    //
+    // STANDING: **constructed**, not established. signalsStar[k] is shapes[k]
+    // scaled by the strictly positive gainsStar[k], so vunit(signalsStar[k]) is
+    // shapes[k] up to rounding — this quantity is zero BY CONSTRUCTION and the
+    // comparison cannot fail. It is reported as a numerical DIAGNOSTIC (it does
+    // detect a rounding/implementation fault) and must never be presented as
+    // empirical verification of the proposition. See noOpAudit() and
+    // maskingProbe() for the falsifiable content of §3.4.
+    // (EPU Companion, Deck B retirement #3: a check that cannot fail is retired
+    // as a guaranteed-pass no-op.)
     let conservedDrift = 0;
     for (let k = 0; k < M; k++) {
       conservedDrift += vdiffNorm(shapes[k], vunit(signalsStar[k]));
@@ -166,8 +189,13 @@ export class ConservationRenormalizationLayer {
     const out = {
       gains, shapes, ellRaw, ellStar, gainsStar, signalsStar,
       weights: w, Qbefore, Qafter, residual,
+      // Likewise **constructed**: zeroSumProject removes the weighted mean, so
+      // Q after projection is zero by algebraic identity, not by measurement.
       conserved: residual <= this.cfg.resTol,
-      conservedDrift
+      conservedDrift,
+      // Explicit standing so consumers cannot mistake a definitional identity
+      // for evidence.
+      standing: { conservedDrift: 'constructed', residual: 'constructed' }
     };
     this.last = out;
     return out;
@@ -234,6 +262,15 @@ export function verifyGaugeCovariance(opts = {}) {
     clause_ii,
     clause_iii,
     pass: clause_i && clause_ii && clause_iii,
+    // Per-clause STANDING (EPU Companion claim ladder). Clauses (i) and (iii)
+    // are true by definition/algebra — they support design semantics only.
+    // Clause (ii) is the falsifiable content: it compares a raw-band detector
+    // against a shape-band detector on an adversarial input, and it CAN fail.
+    standing: {
+      clause_i: 'constructed',
+      clause_ii: 'established-in-sim',
+      clause_iii: 'constructed'
+    },
     detail: {
       conservedDrift: r.conservedDrift,
       Qbefore: r.Qbefore,
@@ -244,6 +281,106 @@ export function verifyGaugeCovariance(opts = {}) {
       defectRawMasked,
       epsilon
     }
+  };
+}
+
+/**
+ * maskingProbe — the FALSIFIABLE runtime check for §3.4(ii).
+ *
+ * An adversary applies a compensating gain chosen to hide a genuine graded
+ * defect. A band that reads the RAW signal is fooled (false accept); a band that
+ * reads the gauge-fixed SHAPE is not. Unlike conservedDrift/residual this check
+ * has a real truth value: point `readShape` at the raw signal and it fails.
+ *
+ * @param {{a?:number[], b?:number[], epsilon?:number, maskGain?:number,
+ *          readShape?:boolean}} opts
+ *        readShape=false sabotages the detector (used by noOpAudit).
+ */
+export function maskingProbe(opts = {}) {
+  const a = opts.a ?? [1.0, 0.5];
+  const b = opts.b ?? [1.0, 0.0];
+  const epsilon = opts.epsilon ?? 0.05;
+  const maskGain = opts.maskGain ?? 0.05;
+  const readShape = opts.readShape !== false;
+  const sigma = 1;
+
+  const truthDefect = gradedDefectNorm(vunit(a), vunit(b), sigma);
+  const genuine = truthDefect > epsilon;          // ground truth: a real defect
+
+  const aRaw = vscale(a, maskGain);               // adversarial compensating gain
+  const measured = readShape
+    ? gradedDefectNorm(vunit(aRaw), vunit(b), sigma)   // gauge-fixed band
+    : gradedDefectNorm(aRaw, b, sigma);                // sabotaged: raw band
+
+  const detected = measured > epsilon;
+  return {
+    genuine,
+    detected,
+    masked: genuine && !detected,
+    truthDefect,
+    measured,
+    epsilon,
+    maskGain,
+    readShape,
+    // The probe PASSES only when a genuine defect is still detected after the
+    // adversary's compensating gain.
+    pass: genuine && detected
+  };
+}
+
+/**
+ * noOpAudit — the tautology detector the EPU Companion's Deck B retirement #3
+ * demands ("a check that cannot fail"). Each registered check is re-run against
+ * a deliberately SABOTAGED variant; a check that still passes has no truth value
+ * and is reported as guaranteed-pass.
+ *
+ * @returns {{checks:object[], guaranteedPass:number, falsifiable:number}}
+ */
+export function noOpAudit() {
+  const crl = new ConservationRenormalizationLayer();
+  const signals = [[3.0, 0.4], [0.2, 1.7], [1.1, 1.1], [2.5, 0.1], [0.05, 0.9]];
+  const r = crl.step(signals);
+  const tol = crl.cfg.resTol;
+
+  const checks = [
+    {
+      id: 'clause_i_live',
+      label: '§3.4(i) live conserved-coordinate drift ≈ 0',
+      passesNormally: r.conservedDrift <= tol,
+      // Sabotage: the quantity is vunit(scale(shape, g>0)) vs shape. There is no
+      // input for which it differs — the sabotage is that the comparison is
+      // structurally identical, so it passes unconditionally.
+      passesWhenSabotaged: true,
+      verdict: 'guaranteed-pass',
+      note: 'Zero by construction: unit(shape·g) ≡ shape for any g>0. Diagnostic only.'
+    },
+    {
+      id: 'clause_iii_live',
+      label: '§3.4(iii) live |Q| residual ≈ 0 after projection',
+      passesNormally: r.residual <= tol,
+      passesWhenSabotaged: true,
+      verdict: 'guaranteed-pass',
+      note: 'Zero by algebraic identity: projection removes the weighted mean. Diagnostic only.'
+    },
+    {
+      id: 'clause_ii_masking',
+      label: '§3.4(ii) compensating gain cannot mask a genuine defect',
+      passesNormally: maskingProbe().pass,
+      // Sabotage: read the raw signal instead of the gauge-fixed shape.
+      passesWhenSabotaged: maskingProbe({ readShape: false }).pass,
+      verdict: null,
+      note: 'Falsifiable: reading the raw band instead of the shape band makes it fail.'
+    }
+  ];
+  for (const c of checks) {
+    if (c.verdict === null) {
+      c.verdict = c.passesWhenSabotaged ? 'guaranteed-pass' : 'falsifiable';
+    }
+  }
+  return {
+    checks,
+    guaranteedPass: checks.filter((c) => c.verdict === 'guaranteed-pass').length,
+    falsifiable: checks.filter((c) => c.verdict === 'falsifiable').length
   };
 }
 

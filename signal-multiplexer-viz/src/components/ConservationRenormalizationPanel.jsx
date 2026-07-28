@@ -4,8 +4,12 @@ import './ConservationRenormalizationPanel.css';
  * The Conservation-Renormalization Layer (CRL), live on the harness. Loudness
  * is moved across the sensor multiplet so the weighted log-gain budget stays
  * pinned at Q = 0; the conserved fusion coordinate (read from shape only) does
- * not move. This panel also reports the §3.4 gauge-covariance proposition,
- * verified empirically — the source's recommended first step.
+ * not move.
+ *
+ * Standing discipline (EPU Companion): clauses (i)/(iii) are CONSTRUCTED —
+ * true by definition/algebra, so their per-tick values are diagnostics, not
+ * verification. The falsifiable live check is the adversarial MASKING PROBE
+ * (clause (ii)): a compensating gain must still be detected by the shape band.
  */
 function ConservationRenormalizationPanel({ crl }) {
   if (!crl) return null;
@@ -13,22 +17,28 @@ function ConservationRenormalizationPanel({ crl }) {
 
   const maxAbs = Math.max(0.4, ...channels.map(c => Math.abs(c.ellStar)));
   const v = verification || {};
-  const live = crl.live || {};
+  const probe = crl.probe || {};
+  const diag = crl.diagnostics || {};
 
   return (
     <div className="crl-panel">
       <div className="crl-verify">
         <div className="crl-verify-title">
-          §3.4 gauge-covariance — proposition verified (canonical multiplet)
+          §3.4 gauge-covariance — clause standing (canonical multiplet)
         </div>
         <div className="crl-verify-rows">
-          <Clause ok={v.clause_i} label="c(Rx) = c(x)" sub="conserved coordinate invariant" />
-          <Clause ok={v.clause_ii} label="masking blocked" sub="gain can't hide a real defect" />
-          <Clause ok={v.clause_iii} label="Q = 0 critical zero" sub="exact after projection" />
+          <Clause ok={v.clause_i} label="c(Rx) = c(x) · constructed" sub="true by definition — design semantics only" />
+          <Clause ok={v.clause_ii} label="masking blocked · falsifiable" sub="adversarial: CAN fail (raw band does)" />
+          <Clause ok={v.clause_iii} label="Q = 0 · constructed" sub="algebraic identity of the projection" />
         </div>
-        <div className={`crl-live ${live.verified ? 'ok' : 'warn'}`}>
-          {live.verified ? '✓' : '…'} clauses (i) &amp; (iii) re-confirmed <strong>live this tick</strong>
-          {' '}on the actual channels — drift {live.driftOk ? '≈0' : '⚠'}, residual {live.residualOk ? '≈0' : '⚠'}
+        <div className={`crl-live ${probe.pass ? 'ok' : 'warn'}`}>
+          {probe.pass ? '✓' : '⚠'} <strong>live masking probe</strong> — adversarial gain applied; genuine
+          defect {probe.detected ? 'DETECTED' : 'MASKED (violation!)'} in the shape band
+          {' '}(measured {typeof probe.measured === 'number' ? probe.measured.toFixed(3) : '…'} &gt; ε {probe.epsilon})
+        </div>
+        <div className="crl-live diag">
+          diagnostics (constructed, cannot fail): drift {diag.driftWithinTol ? '≈0' : '⚠ fault'},
+          residual {diag.residualWithinTol ? '≈0' : '⚠ fault'} — rounding-fault detectors, not evidence
         </div>
       </div>
 

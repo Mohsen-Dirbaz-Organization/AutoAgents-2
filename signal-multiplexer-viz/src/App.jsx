@@ -66,6 +66,16 @@ function App() {
     };
   }, []);
 
+  // View-scoped multiplexer lifecycle: the four simulation intervals are
+  // App-owned, so navigating away would leave them ticking in the background.
+  // Stop the simulation whenever we leave the multiplexer view.
+  useEffect(() => {
+    if (activeView !== 'multiplexer' && isRunning) {
+      stopSimulation();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeView]);
+
   const updateState = () => {
     setState(engine.getState());
   };
