@@ -750,3 +750,102 @@ export const PROGRAM_SUMMARY = {
   gapEffortPersonDays: '55-80',
   note: 'Coverage is source-material availability (design corpus), not fabricated/measured silicon.'
 };
+
+// =========================================================================
+// GAP-CLOSURE PLAN (Void V-2: program-gap-closure-plan)
+// -------------------------------------------------------------------------
+// The coverage map named 11 gaps and a ~55-80 person-day total, but did not
+// say *how* they close. This turns each gap into a workstream item with an
+// owner, an acquisition route (how the source material is obtained), an exit
+// condition (what closes the obligation), and a target coverage — then
+// sequences them into waves by what they unblock. Honest framing is preserved:
+// closing a gap raises *source-material coverage*, not built/measured silicon.
+// =========================================================================
+
+export const WAVES = [
+  { id: 1, name: 'Wave 1 — Qualification-blocking', rationale: 'Gates AEC-Q100 / ISO 16750-3 qualification; do first.' },
+  { id: 2, name: 'Wave 2 — Design-supporting', rationale: 'Needed for packaging & reliability robustness, not a hard gate.' },
+  { id: 3, name: 'Wave 3 — Future roadmap', rationale: 'Research-stage; parked behind the product MVP.' }
+];
+
+// Per-gap closure detail, keyed by subcategory id. Only the 11 GAP rows appear.
+export const GAP_CLOSURE = {
+  // Wave 1 — HIGH priority, qualification-blocking
+  2:  { wave: 1, owner: 'Reliability & Test Eng', target: 'HIGH',
+        acquisition: 'License ISO 16750-3 / ISO 21; ingest AEC-Q100 random-vibration profiles',
+        exit: 'Bit-precise random-vibration profiles + g_RMS budgets feed Ch.39 silicon results' },
+  3:  { wave: 1, owner: 'Reliability & Test Eng', target: 'HIGH',
+        acquisition: 'SAE / road-load spectra datasets (highway, urban, off-road)',
+        exit: 'Environment-specific PSD spectra parameterize sensor reliability models (Ch.14.3)' },
+  30: { wave: 1, owner: 'Functional Safety / Qualification', target: 'HIGH',
+        acquisition: 'Purchase ISO 16750-3; map to the AEC-Q100 stress matrix',
+        exit: 'Vibration PSD profiles + a test plan close the AEC-Q100 packaging gate' },
+  // Wave 2 — MEDIUM priority, design-supporting
+  1:  { wave: 2, owner: 'Sensor Physics', target: 'PARTIAL',
+        acquisition: 'Vendor datasheets + ISO 16750-3-derived noise models',
+        exit: 'A PCB-level noise budget for EPU packaging (Ch.44)' },
+  44: { wave: 2, owner: 'Signal Processing / DSP', target: 'PARTIAL',
+        acquisition: 'MEMS-compensation literature; co-design with the STOP-5 bitvector',
+        exit: 'A vibration-rejection filter spec integrated with STOP-5 (Ch.25)' },
+  45: { wave: 2, owner: 'Packaging & Mechanical (cross-team)', target: 'PARTIAL',
+        acquisition: 'FEA modal-analysis collaboration; chassis-mount measurement data',
+        exit: 'A modal map + isolation strategy for the EPU board (Ch.44)' },
+  // Wave 3 — LOW priority, future roadmap
+  6:  { wave: 3, owner: 'Advanced Sensing R&D', target: 'PARTIAL',
+        acquisition: 'Literature survey (cold-atom / NV-center); vendor whitepapers',
+        exit: 'A roadmap brief on quantum inertial relevance for GPS-denied ODD (Ch.38)' },
+  7:  { wave: 3, owner: 'Advanced Sensing R&D', target: 'PARTIAL',
+        acquisition: 'Photon-counting LiDAR literature',
+        exit: 'A feasibility note: low-SNR perception gains vs. cost' },
+  24: { wave: 3, owner: 'Numerics Team', target: 'PARTIAL',
+        acquisition: 'Posit Working-Group standard + a fixed-point comparison study',
+        exit: 'A dynamic-range trade study: Posit vs. Q-format for Ch.24' },
+  51: { wave: 3, owner: 'Advanced Sensing R&D', target: 'PARTIAL',
+        acquisition: 'Cold-atom interferometry literature + partnership scouting',
+        exit: 'A sovereign-navigation roadmap entry (Ch.13 Quad-Plus)' },
+  52: { wave: 3, owner: 'Advanced Sensing R&D', target: 'PARTIAL',
+        acquisition: 'NV-center magnetometry literature',
+        exit: 'A road-surface magnetic-mapping feasibility note' }
+};
+
+// Parse a "lo-hi" effort string into { lo, hi } person-days.
+function _effortRange(s) {
+  const [lo, hi] = String(s || '0-0').split('-').map(Number);
+  return { lo: lo || 0, hi: hi || lo || 0 };
+}
+
+// The plan: every GAP subcategory, augmented with its closure detail + parsed
+// effort, sorted by wave then by descending effort (heavier items first).
+export const GAP_CLOSURE_PLAN = SUBCATEGORIES
+  .filter(s => s.coverage === 'GAP')
+  .map(s => {
+    const plan = GAP_CLOSURE[s.id] || { wave: 3, owner: 'Unassigned', target: 'PARTIAL', acquisition: 'TBD', exit: 'TBD' };
+    const effort = _effortRange(s.gapEffort);
+    return {
+      id: s.id, name: s.name, domain: s.domain,
+      priority: s.gapPriority || 'LOW',
+      effortLabel: s.gapEffort, effortLo: effort.lo, effortHi: effort.hi,
+      ...plan
+    };
+  })
+  .sort((a, b) => a.wave - b.wave || b.effortHi - a.effortHi);
+
+// Roll-up: totals + per-wave + per-priority breakdown, all derived.
+export const GAP_PLAN_SUMMARY = (() => {
+  const lo = GAP_CLOSURE_PLAN.reduce((a, g) => a + g.effortLo, 0);
+  const hi = GAP_CLOSURE_PLAN.reduce((a, g) => a + g.effortHi, 0);
+  const byWave = WAVES.map(w => {
+    const items = GAP_CLOSURE_PLAN.filter(g => g.wave === w.id);
+    return {
+      ...w,
+      count: items.length,
+      effortLo: items.reduce((a, g) => a + g.effortLo, 0),
+      effortHi: items.reduce((a, g) => a + g.effortHi, 0)
+    };
+  });
+  const byPriority = ['HIGH', 'MEDIUM', 'LOW'].reduce((acc, p) => {
+    acc[p] = GAP_CLOSURE_PLAN.filter(g => g.priority === p).length;
+    return acc;
+  }, {});
+  return { gaps: GAP_CLOSURE_PLAN.length, effortLo: lo, effortHi: hi, byWave, byPriority };
+})();

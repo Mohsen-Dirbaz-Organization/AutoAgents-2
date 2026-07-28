@@ -67,9 +67,13 @@ function App() {
     };
   }, []);
 
-  // View-scoped multiplexer lifecycle: the four simulation intervals are
+// View-scoped multiplexer lifecycle: the four simulation intervals are
   // App-owned, so navigating away would leave them ticking in the background.
   // Stop the simulation whenever we leave the multiplexer view.
+  // V-3 (multiplexer-lifecycle-refactor): the multiplexer simulation is
+  // view-scoped. The original engine's four intervals were App-scoped, so
+  // switching to another view left them ticking in the background. Stop the
+  // simulation whenever we navigate away from the multiplexer view.
   useEffect(() => {
     if (activeView !== 'multiplexer' && isRunning) {
       stopSimulation();
