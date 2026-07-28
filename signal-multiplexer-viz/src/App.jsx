@@ -18,6 +18,7 @@ import StackView from './components/StackView';
 import ProgramCoverageMap from './components/ProgramCoverageMap';
 import ConstitutionView from './components/ConstitutionView';
 import EventFabricView from './components/EventFabricView';
+import CanonView from './components/CanonView';
 import './App.css';
 
 function App() {
@@ -172,6 +173,8 @@ function App() {
             ? 'The Constitution of Truth — Correctable Ground Truth'
             : activeView === 'eventfabric'
             ? 'F26 Autonomous-Driving Event Fabric'
+            : activeView === 'canon'
+            ? 'Canon & Integrity — One Ledger, Many Renderings'
             : 'Adaptive Signal Multiplexer with Dynamic Problem Formulation'}
         </h1>
         <p className="subtitle">
@@ -183,6 +186,8 @@ function App() {
             ? 'Separation of epistemic powers · correction supremacy · anti-silent-drift · temporal rollback'
             : activeView === 'eventfabric'
             ? 'Single timeline · twelve canvases · synchronized interaction traces · source-standing discipline'
+            : activeView === 'canon'
+            ? 'Definition of Done · number cards · symbol register · retirement register · no guaranteed-pass checks'
             : 'Real-time visualization of intelligent coordination through continuous optimization'}
         </p>
         <nav className="view-switcher">
@@ -216,6 +221,12 @@ function App() {
           >
             Event Fabric (F26)
           </button>
+          <button
+            className={`view-tab ${activeView === 'canon' ? 'active' : ''}`}
+            onClick={() => setActiveView('canon')}
+          >
+            Canon &amp; Integrity
+          </button>
         </nav>
         {activeView === 'multiplexer' && (
           <div className="header-actions">
@@ -233,6 +244,8 @@ function App() {
       {activeView === 'constitution' && <ConstitutionView />}
 
       {activeView === 'eventfabric' && <EventFabricView />}
+
+      {activeView === 'canon' && <CanonView />}
 
       {activeView === 'multiplexer' && (
       <>
@@ -380,6 +393,17 @@ function App() {
             interaction trace</em>, not a pixel. Safety-bearing paths may only <strong>contract</strong>
             authority; <strong>projected / notional / open</strong> claims may not expand it — and the
             "144 unique latencies" claim is kept honestly <strong>unconfirmed</strong>.
+          </p>
+        </footer>
+      )}
+
+      {activeView === 'canon' && (
+        <footer className="app-footer">
+          <p>
+            Canon &amp; Integrity (EPU Companion set, docs 07–17): <em>"The remedy is not to correct each
+            figure by hand. It is to make an uncorrected figure impossible to release."</em> A check that
+            cannot fail has no truth value; a target is never phrased as achieved; retired constructs are
+            removed, not owed.
           </p>
         </footer>
       )}

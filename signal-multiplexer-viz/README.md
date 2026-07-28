@@ -1,14 +1,14 @@
 # Signal Multiplexer → Bounded-Autonomy Substrate Visualization
 
-Interactive React + D3 research visualization that began as an **Adaptive Signal Multiplexer with Dynamic Problem Formulation** and has grown into a **five-view exploration of a bounded-autonomy safety substrate** — extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, **Dirac-based impulsive control**, a runnable **eight-thread safety stack**, a **program coverage map**, a **Constitution of Truth** governance layer that keeps the system correctable, and an **Autonomous-Driving Event Fabric (F26)** doctrine view.
+Interactive React + D3 research visualization that began as an **Adaptive Signal Multiplexer with Dynamic Problem Formulation** and has grown into a **six-view exploration of a bounded-autonomy safety substrate** — extended with **Conserved-Quantity Renormalization (CQR)**, **topological phase discovery**, **Dirac-based impulsive control**, a runnable **eight-thread safety stack**, a **program coverage map**, a **Constitution of Truth** governance layer that keeps the system correctable, an **Autonomous-Driving Event Fabric (F26)** doctrine view, and a **Canon &amp; Integrity** layer that mechanically enforces the EPU Companion's Definition of Done.
 
-> **Status (runtime-verified).** All five views render and interact in a real browser (Playwright + headless Chromium) with **zero console errors**; view transitions and per-view simulation lifecycles are clean. See [Verification Status](#verification-status-runtime) below.
+> **Status (runtime-verified).** All six views render and interact in a real browser (Playwright + headless Chromium) with **zero console errors**; view transitions and per-view simulation lifecycles are clean. See [Verification Status](#verification-status-runtime) below.
 
 ## Overview
 
 This visualization demonstrates how signal multiplexing can be treated as a **continuous mathematical reasoning task** rather than a fixed engineering pattern — and then layers on the safety-substrate research the project has accreted across three integrated source documents (see the [Design-Space Integration Registry](#design-space-integration-registry-evd-protocol-assessments)). The original engine formulates and solves optimization problems in real-time (100ms cycles), adapts to changing conditions, and selects appropriate solvers based on detected problem structure; the newer views simulate the bounded-autonomy stack, map the program's coverage, and govern a correctable Ground Truth.
 
-### Five views (header switcher)
+### Six views (header switcher)
 
 The app ships with a view switcher in the header:
 
@@ -17,6 +17,7 @@ The app ships with a view switcher in the header:
 - **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
 - **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
 - **Event Fabric (F26)** — the **F26 Autonomous-Driving Event-Fabric Integration Plan** rendered as a doctrine dashboard (see [`F26_Autonomous_Driving_Event_Fabric_Plan.md`](./F26_Autonomous_Driving_Event_Fabric_Plan.md); data in `src/data/eventFabric.js`). A **single timeline spine + twelve operational canvases** where the base unit is a *synchronized interaction trace*, not a pixel; the full **F1–F26** → autonomous-driving mapping; an **S01–S29 source-standing ledger** (established / proposed / projected / notional / open, with *projected/notional/open may not expand runtime authority*); and an honest **latency reconciliation** that keeps the "144 unique latencies" claim **unconfirmed** (parsed: 248 records / 237 exact / 84 unique numeric endpoints / 68 exact values). The 248 individual latency cards are represented by their summary counts (honest stub).
+- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
 
 The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
@@ -295,7 +296,7 @@ npm run preview
 
 ## How to Use
 
-Use the **header view-switcher** to move between the five views. Each simulation view owns its own engine; switching away cleanly stops and disposes that view's loop (the Event Fabric view is a static doctrine dashboard with no engine).
+Use the **header view-switcher** to move between the six views. Each simulation view owns its own engine; switching away cleanly stops and disposes that view's loop (the Event Fabric view is a static doctrine dashboard with no engine).
 
 **Signal Multiplexer** (origin view)
 1. **Start the simulation** to begin the continuous optimization loop (7-step cycle, 100ms).
@@ -319,17 +320,18 @@ Use the **header view-switcher** to move between the five views. Each simulation
 
 The app has been verified by **driving the running build in a real browser** (Vite production preview + Playwright + headless Chromium), not just by building/linting. What was observed:
 
-- **All five views render and switch correctly**, with the right titles, and survive rapid `multiplexer → stack → coverage → constitution → event-fabric` churn cycles. The **Event Fabric (F26)** view renders its 13 canvases (spine + 12), full F1–F26 matrix, the S01–S29 source-standing ledger (filterable; narrows to the 1 *notional* source), and the latency reconciliation card showing **"144 unique latencies — NOT CONFIRMED"**.
+- **All six views render and switch correctly**, with the right titles, and survive rapid `multiplexer → stack → coverage → constitution → event-fabric` churn cycles. The **Event Fabric (F26)** view renders its 13 canvases (spine + 12), full F1–F26 matrix, the S01–S29 source-standing ledger (filterable; narrows to the 1 *notional* source), and the latency reconciliation card showing **"144 unique latencies — NOT CONFIRMED"**.
 - **Zero console errors or warnings** across the entire session — including unmounting a view *mid-simulation* — i.e. no React leak warnings and no missing-key warnings.
 - **Per-view interval lifecycle is clean.** On the Bounded Autonomy Stack the tick counter advances while running (0 → 12), **holds on pause** (12 → 12), and an unmount-mid-run then remount yields a **fresh engine** (tick 18 → tick 0). The Constitution view shares this hook pattern.
 - **Two-engine integration is live.** In the Constitution view the substrate (`BoundedAutonomyStack`) feeds the `ConstitutionalTruthEngine` each tick — the warrant gauge moves (0.90 → 0.88) and a strong **challenge demotes a canon claim Warranted → Provisional** (Correction Supremacy), a **silent-drift attempt surfaces** as a constitutional event, and **rollback restores a prior canon**.
-- **CRL §3.4** — the live **masking probe** (clause (ii), adversarial and falsifiable) passes each tick; clauses (i)/(iii) are reported as *constructed* diagnostics, per the EPU Companion's retirement of guaranteed-pass checks.
+- **CRL §3.4** — the live **masking probe** (clause (ii), adversarial and falsifiable) passes each tick; clauses (i)/(iii) are reported as *constructed* diagnostics, per the EPU Companion's retirement of guaranteed-pass checks. Falsifiability was proven both ways: the sabotaged probe (raw band) **fails**, and a deliberately corrupted number card flips the validator to **NOT RELEASABLE** with the exact C4 finding, then restores clean.
+- **Canon &amp; Integrity view** — renders **RELEASABLE** with the 8/8 Definition-of-Done scorecard, exactly **2 listed orphan findings** (device non-ideality hazard; field-validation requirement — listed, not suppressed, per DoD-6), 8 claims, 17 number cards (the *measured* filter isolates the single ~32 ns veto card), 6 symbol rows, 4 retirements, 7 gate contracts, and the 14-row P0–P3 obligations ledger; **Re-run validation** stays releasable.
 
 **Honest findings from verification:**
 - ⚠️ The Constitution view's **autonomous** events ramp slowly — under the default `degrading` scenario, warrant only crosses the challenge threshold (~0.5) after ~30s of sim-time, so a brief run shows a *stable* canon. The immediate demonstration of correctability is the per-claim **challenge** button.
 - The original **Signal Multiplexer's** simulation intervals are **App-scoped** (not view-scoped): if started and then switched away, they keep ticking in the background (wasted CPU, no error). The three newer views scope and dispose their loops per view.
 
-> Reproduce: `npm run build && npm run preview`, then open the app and click through the five tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
+> Reproduce: `npm run build && npm run preview`, then open the app and click through the six tabs. (The Playwright scripts used for verification are not committed — the project ships no test harness; verification was manual-equivalent runtime observation.)
 
 ## What You'll See
 
@@ -838,16 +840,30 @@ removed rather than given a provisional standing that implies a path to evidence
 
 ### Open Obligations (Contestability → Correctability → Steerability)
 
-| **ID** | **Owed** | **Owner** | **Exit Condition** |
-|--------|----------|-----------|-------------------|
-| **O-1** | One-sided bound proof for ξ as salience scalar | Formal analysis | Published bound or counterexample |
-| **O-2** | Convergence proof for CQR flow on Δ_M | Theory / simulation | Lyapunov function or Monte Carlo bound |
-| **O-3** | Cross-domain validation (memory vs. gasification) | Empirical study | Correlation r > 0.7 on memory corpus |
-| **O-4** | WCET of simplex projection | Measurement | **Resolved**: projection off real-time path; S-bit read is O(1) |
-| **O-5** | Topological mapping validation | Theory | Explicit finite-N invariant or honest disclaimer |
-| **O-7** | Impulsive stability bound | Proof / simulation | ‖w(t) - w*‖ bounded after Δw δ(t - tₖ) |
-| **O-8** | Ergodic convergence time | Simulation | Measure t_conv for ‖Cₜ - ρ_target‖ < ε |
-| **O-9** | Discrete channel-space geometry | Architectural decision | Define metric or flag as heuristic |
+<!-- CANON:OBLIGATIONS:BEGIN (generated by scripts/render-canon.mjs — do not edit) -->
+
+The single obligations ledger lives in `src/data/canon/obligations.js` (rendered live in the
+**Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md)); it absorbs the earlier O-1…O-11 and
+Void-Map V-1…V-4 lists. Current state — generated, not hand-maintained:
+
+| Pri | Obligation | Status |
+|---|---|---|
+| P0 | Retire the retired vocabulary everywhere; apply the errata at source. | closed |
+| P0 | Withdraw "achieved" phrasing from any claim lacking an artifact identifier; every number carries kind + configuration. | closed |
+| P1 | Threshold provenance for every gate, derived from hazards. | closed-in-sim |
+| P1 | Conservation tolerance per check, derived from the arithmetic format. | closed |
+| P1 | Monotone admission must survive device non-ideality on MEASURED memristor models (violation rate → 0 under discipline). | open |
+| P1 | φ-compiler transfer gasification → automotive: cross-domain correlation r > 0.7 + deterministic-surrogate rank corr ≥ 0.85. | open |
+| P2 | Formal bounds still owed: one-sided bound for xi_feature (O-1); Lyapunov/convergence for the CQR flow (O-2); rigorous finite-N invariant for S_parity (O-5); impulsive stability (O-7); finite-time ergodic guarantee (O-8). | open |
+| P2 | Close the 11 GAP subcategories of the coverage map (num.gap_effort_pd_lo–hi person-days of source acquisition). | open |
+| P2 | Canonical counting convention + reconciled ledger for the bundle's latency records (the "144" claim stays NOT CONFIRMED until then); itemize the 248 cards. | open |
+| P3 | Registry hygiene for Source #1–#3 assessments (identity anchors, constraint scoring) — now as register EXTENSIONS, not new documents. | open |
+| P3 | Review charter with the contradiction register as its first matter. | open |
+| P2 | WCET of the simplex projection: resolved architecturally — projection off the hard real-time path; only the latched S_parity-bit read is on it. | closed |
+| P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | closed |
+| P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | closed |
+
+<!-- CANON:OBLIGATIONS:END -->
 
 ### Right of Contestability
 
@@ -984,10 +1000,9 @@ E = ∫ |Cₜ(q) - ρ_target(q)|² dq
 
 ### Open Obligations (extended)
 
-| ID | Owed | Owner | Exit |
-|----|------|-------|------|
-| O-10 | Device-monotonicity under non-ideality | PoC Workstream A | Monotonicity violation rate → 0 under conservative discipline on measured-device models |
-| O-11 | φ transfer gasification → automotive perception | Conservation-Manifold Compiler team | Cross-domain validation + deterministic-surrogate rank corr ≥ 0.85 |
+O-10 (device-monotonicity) and O-11 (φ transfer) are absorbed into the canonical obligations
+register — `src/data/canon/obligations.js` entries `ob.device_monotonicity` and `ob.phi_transfer`
+(both **open**, owners external). See the generated table above and [`CANON.md`](./CANON.md).
 
 ---
 
