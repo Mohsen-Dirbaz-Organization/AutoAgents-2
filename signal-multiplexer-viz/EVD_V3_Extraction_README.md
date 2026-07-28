@@ -8,6 +8,13 @@
 
 > This is a **self-referential extraction**: the README is both the source and (via its own stated purpose, §3.2) the basis of the reference layer. Every output element is traceable to a README location (Def 2.4); no projected/proposed claim is upgraded to measured (C-1).
 
+> **ERRATUM (2026-07-28, historical snapshot).** This extraction describes the README **as of 2026-06-16**
+> ("four-view"). The app has since grown to six views (Event Fabric F26; Canon &amp; Integrity), the Void Map
+> below is **superseded** by the canonical obligations register (`src/data/canon/obligations.js`, which
+> absorbs V-1…V-4 with lineage), and derivative **T5** in the Source #3 registry (stress fields) has been
+> **retired** — see the retirement register. Per the EPU Companion's maintenance rule this document is kept
+> as a dated snapshot rather than silently rewritten; the registers are the living source of truth.
+
 ---
 
 ## §8.2 — Output Header

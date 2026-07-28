@@ -20,7 +20,8 @@
 
 import {
   ConservationRenormalizationLayer,
-  verifyGaugeCovariance
+  verifyGaugeCovariance,
+  maskingProbe
 } from './ConservationRenormalizationLayer.js';
 
 // Command modes, ordered MOST permissive -> MOST restrictive. The admissible
@@ -99,11 +100,16 @@ export class BoundedAutonomyStack {
     this._prevR = 0.1;
     this._prevAdmittedCount = COMMAND_MODES.length;
 
-    // φ-compiler trusted scalars.
+    // φ-compiler trusted scalars. Canonical names per the EPU Companion symbol
+    // register (the short keys are retained as programmatic aliases):
+    //   xi  = xi_feature  (unitless log-ratio feature; NOT phi_risk — no
+    //                      one-sided calibration exists)
+    //   S   = S_parity    (±1 structural parity; distinct from S_safety)
+    //   llc = llc_estimate (local learning coefficient)
     this.scalars = {
-      xi: 0,          // continuous log-deviation invariant ξ (bounded, saturating)
-      S: 1,           // discrete structural-parity invariant S (±1)
-      llc: 1.0,       // local learning coefficient estimate
+      xi: 0,          // xi_feature — continuous, bounded, tanh-saturating
+      S: 1,           // S_parity — discrete ±1
+      llc: 1.0,       // llc_estimate
       llcJump: false,
       quarantines: 0
     };
@@ -306,13 +312,16 @@ export class BoundedAutonomyStack {
       return [ch.shape[0] * g, ch.shape[1] * g]; // x_k = g_k · ŷ_k
     });
     const r = this.crl.step(signals);
-    // §3.4 re-confirmed LIVE on the actual per-tick channels: (i) the conserved
-    // coordinate did not move (drift ≈ 0) and (iii) Q = 0 is an exact critical
-    // zero after projection (residual ≈ 0). Clause (ii) — masking blocked —
-    // needs a genuine-defect example and is proved once by verifyGaugeCovariance.
+    // HONESTY FIX (EPU Companion, Deck B retirement #3). The old "live per-tick
+    // verification" of clauses (i)/(iii) was a guaranteed-pass no-op: drift is
+    // zero by construction and the residual is zero by algebraic identity, so
+    // neither could ever fail. They are now reported as DIAGNOSTICS with
+    // standing 'constructed'. The falsifiable runtime content of §3.4 is the
+    // masking probe: an adversarial compensating gain must still be DETECTED by
+    // the gauge-fixed shape band. That probe can fail (point it at the raw band
+    // and it does), so its pass carries information.
     const tol = this.crl.cfg.resTol;
-    const liveDriftOk = r.conservedDrift <= tol;     // clause (i), live
-    const liveResidualOk = r.residual <= tol;        // clause (iii), live
+    const probe = maskingProbe();                    // clause (ii), adversarial, live
     this.crlState = {
       channels: this.sensorChannels.map((ch, k) => ({
         name: ch.name,
@@ -327,10 +336,25 @@ export class BoundedAutonomyStack {
       residual: r.residual,
       conserved: r.conserved,
       conservedDrift: r.conservedDrift,
-      // Static proposition (all 3 clauses, canonical multiplet) ...
+      // Static proposition (all 3 clauses, canonical multiplet), with per-clause
+      // standing: (i)/(iii) constructed, (ii) established-in-sim.
       verification: this.crlVerification,
-      // ... plus the live per-tick re-confirmation of clauses (i) and (iii).
-      live: { driftOk: liveDriftOk, residualOk: liveResidualOk, verified: liveDriftOk && liveResidualOk }
+      // Diagnostics (constructed — cannot fail; fault detectors only) ...
+      diagnostics: {
+        driftWithinTol: r.conservedDrift <= tol,
+        residualWithinTol: r.residual <= tol,
+        standing: 'constructed'
+      },
+      // ... and the live FALSIFIABLE check: masking detected under adversarial gain.
+      probe: {
+        genuine: probe.genuine,
+        detected: probe.detected,
+        masked: probe.masked,
+        measured: probe.measured,
+        epsilon: probe.epsilon,
+        pass: probe.pass,
+        standing: 'established-in-sim'
+      }
     };
   }
 
@@ -349,14 +373,22 @@ export class BoundedAutonomyStack {
     this.risk.dR = this.risk.R - this._prevR;
   }
 
-  // ---- Lane D: conservation-manifold compiler φ -> ξ, S ----
+  // ---- Lane D: conservation-manifold compiler φ -> xi_feature, S_parity ----
+  // SYMBOL DISCIPLINE (EPU Companion, Glossary 1/3 collision register):
+  //   ξ here is `xi_feature` — a unitless log-ratio FEATURE from the
+  //   gasification pipeline. It is NOT `phi_risk`; asserting it "tracks
+  //   physical risk" requires a one-sided calibration this project does not
+  //   have. In this simulation it is DRIVEN from risk.R, which is a modelling
+  //   choice, not evidence of the correlation.
+  //   S here is `S_parity` — the ±1 structural parity label. Distinct from
+  //   S_safety (EPU safety-case scalar), S_between/S_within (scatter matrices)
+  //   and s_entropy, which share the glyph in the wider corpus.
   _runCompiler() {
-    // ξ: bounded, saturating log-deviation invariant correlating monotonically
-    // with physical risk. Saturating via tanh so it cannot run away.
+    // xi_feature: bounded, saturating log-deviation feature (tanh-saturated).
     const deviation = this.risk.R * 3.0;
     this.scalars.xi = Math.tanh(deviation) * (1 + 0.02 * (Math.random() - 0.5));
-    // S: discrete structural-parity invariant. Flips at phase transitions —
-    // we flip S when ξ crosses the 0.5 saturation knee.
+    // S_parity: discrete structural-parity label. Flips at phase transitions —
+    // we flip it when xi_feature crosses the 0.5 saturation knee.
     const knee = 0.5;
     const newS = this.scalars.xi >= knee ? -1 : 1;
     if (newS !== this.scalars.S) this.emit('parity_flip', newS);
@@ -454,9 +486,13 @@ export class BoundedAutonomyStack {
         // OR it exceeds the τ-hierarchy bound t > α·τ (α≈3 ⇒ ~95% decay, §9.3.1).
         // Conserved / re-quantized (digitized) state is a conservation law (§9.6.3)
         // — permanent memory, never aged out.
-        const EPS = 0.05, ALPHA = 3;
+        // eps_correlation / alpha_tau — disambiguated from the ε/α glyph
+        // collisions in the wider corpus (EPU Companion symbol register: ε is
+        // also tol_closure, eps_action, eps_dp there; this one is the
+        // correlation-decay threshold of Temporal_State_Management §9.1.1).
+        const eps_correlation = 0.05, alpha_tau = 3;
         const agedOut = tier.substrate === 'analog' && !e.digitized &&
-          (e.weight < EPS || e.residence > ALPHA * tier.tau);
+          (e.weight < eps_correlation || e.residence > alpha_tau * tier.tau);
         return cleared && !agedOut;
       });
       this.memory.evictions += Math.max(0, before - tier.entries.length);

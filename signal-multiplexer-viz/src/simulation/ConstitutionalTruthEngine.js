@@ -315,7 +315,10 @@ export class ConstitutionalTruthEngine {
 
   // Part II erasure: correlation decay + τ-hierarchy; conserved canon is exempt.
   _ageClaims() {
-    const EPS = 0.05;     // measurement precision (§9.1.1)
+    // eps_correlation — correlation-decay threshold (§9.1.1). Disambiguated
+    // from the corpus's other ε denotations (tol_closure, eps_action, eps_dp)
+    // per the EPU Companion symbol register.
+    const EPS = 0.05;
     for (const c of this.claims.values()) {
       if (c.reliance === 'warranted' || c.conserved) continue; // conservation = permanent memory
       // Correlation decays for unsupported claims (stretched toward ε).

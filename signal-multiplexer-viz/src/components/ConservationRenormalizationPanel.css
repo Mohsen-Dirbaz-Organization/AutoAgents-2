@@ -42,6 +42,7 @@
 }
 .crl-live.ok { background: #d1fae5; color: #065f46; }
 .crl-live.warn { background: #fef3c7; color: #92400e; }
+.crl-live.diag { background: #f1f3f7; color: #667; font-size: 0.72rem; margin-top: 0.3rem; }
 
 .crl-budget-label {
   font-size: 0.78rem;
