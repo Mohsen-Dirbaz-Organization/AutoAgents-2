@@ -7,6 +7,8 @@ import { GATES } from '../data/canon/gates';
 import { RETIREMENTS } from '../data/canon/retirements';
 import { OBLIGATIONS, PRIORITY_META } from '../data/canon/obligations';
 import { runCanonValidation } from '../simulation/CanonValidator';
+import { runPlanningAnalysis } from '../simulation/PlanningEngine';
+import { TASKS } from '../data/canon/planning';
 import './CanonView.css';
 
 const KIND_META = {
@@ -25,6 +27,7 @@ function CanonView() {
   const [result, setResult] = useState(() => runCanonValidation());
   const [sevFilter, setSevFilter] = useState(null);
   const [kindFilter, setKindFilter] = useState(null);
+  const planning = useMemo(() => runPlanningAnalysis(), []);
 
   const rerun = () => setResult(runCanonValidation());
 
@@ -209,6 +212,11 @@ function CanonView() {
       </section>
 
       <section className="section full-width">
+        <h2>Planning module — Rigorous Planning Framework, instantiated on the open obligations</h2>
+        <PlanningPanel planning={planning} />
+      </section>
+
+      <section className="section full-width">
         <h2>Open-obligations register (P0–P3) — supersedes O-1…O-11 and the Void Map</h2>
         <table className="cn-obligations">
           <thead><tr><th>Pri</th><th>Obligation</th><th>Owner</th><th>Status</th><th>Absorbs</th></tr></thead>
@@ -227,6 +235,101 @@ function CanonView() {
       </section>
     </div>
   );
+}
+
+/**
+ * PlanningPanel — renders the PlanningResult (Part X schema): every field is
+ * ⟨value, method, grade⟩; grades are surfaced, not hidden.
+ */
+function PlanningPanel({ planning }) {
+  const { result: r, invariants } = planning;
+  const b = r.bounds.value;
+  const effortOf = (id) => TASKS.find((t) => t.id === id)?.effortPd;
+
+  return (
+    <div className="cn-planning">
+      <p className="cn-note">
+        The framework's output schema is populated from the concrete instance (the open obligations):
+        {' '}{r.instance.value.tasks} tasks · {r.instance.value.artifacts} artifacts · {r.instance.value.causalArcs} genuine
+        causal arcs. Efforts are person-days, grade <b>modelled</b> — every bound below inherits that caveat.
+      </p>
+
+      <div className="cn-plan-grid">
+        <div className="cn-plan-card">
+          <div className="cn-plan-head">Bounds <Grade f={r.bounds} /></div>
+          <div className="cn-plan-big">
+            <span title="total work">W₁ = {b.W1} pd</span>
+            <span title="critical path">W∞ = {b.Winf} pd</span>
+            <span title="parallelism ceiling">Π = {b.Pi.toFixed(2)}</span>
+          </div>
+          <div className="cn-plan-line">
+            critical path: {b.criticalPath.map((id) => `${id} (${effortOf(id)}pd)`).join(' → ')}
+          </div>
+          <div className="cn-plan-line warn">{b.ladderCost}</div>
+        </div>
+
+        <div className="cn-plan-card">
+          <div className="cn-plan-head">Brent/Graham bands <Grade f={r.schedule} /></div>
+          <table className="cn-plan-bands">
+            <thead><tr><th>K</th><th>lower</th><th>Brent upper</th><th>Graham factor</th></tr></thead>
+            <tbody>
+              {r.schedule.value.bands.map((band) => (
+                <tr key={band.K}>
+                  <td>{band.K}</td>
+                  <td>{band.lower.toFixed(1)} pd</td>
+                  <td>{band.upper.toFixed(1)} pd</td>
+                  <td>{band.grahamFactor.toFixed(2)}×</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="cn-plan-line">{r.schedule.value.ceiling}</div>
+        </div>
+
+        <div className="cn-plan-card">
+          <div className="cn-plan-head">Hazard census &amp; contention <Grade f={r.hazards} /></div>
+          <div className="cn-plan-big">
+            <span>RAW {r.hazards.value.RAW}</span>
+            <span>WAW {r.hazards.value.WAW}</span>
+            <span>WAR {r.hazards.value.WAR}</span>
+          </div>
+          <div className="cn-plan-line">
+            dominant contention scope: <code>{r.contention.value.dominant?.scope}</code>
+            {' '}({Math.round(r.contention.value.dominantShare * 100)}% of contended pairs)
+          </div>
+          <div className="cn-plan-line">{r.structure.value.feedback}</div>
+        </div>
+
+        <div className="cn-plan-card">
+          <div className="cn-plan-head">Independence (Thm 2.2) <Grade f={r.independence} /></div>
+          <div className="cn-plan-line">
+            <b>{r.independence.value.icNotIr.length}</b> pairs are causally independent (I<sub>c</sub>) but
+            resource-dependent (¬I<sub>r</sub>) — reorderable, not concurrent without arbitration.
+          </div>
+          <div className="cn-plan-line warn">{r.independence.value.frozenConventions.statement}</div>
+          <ul className="cn-plan-frozen">
+            {r.independence.value.frozenConventions.frozen.map((f) => <li key={f}>{f}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <div className="cn-plan-foot">
+        <span className="cn-plan-head">Debts (V12):</span>
+        {r.registers.value.debts.map((d) => (
+          <span key={d.task} className="cn-plan-debt" title={d.debt}>{d.task}</span>
+        ))}
+        <span className="cn-plan-inv">
+          {invariants.map((i) => (
+            <span key={i.id} className={i.pass ? 'ok' : 'bad'} title={i.text}>{i.pass ? '✓' : '✕'} {i.id}</span>
+          ))}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Grade({ f }) {
+  return <span className="cn-grade" title={`method ${f.method}`}>{f.method} · {f.grade}</span>;
 }
 
 export default CanonView;

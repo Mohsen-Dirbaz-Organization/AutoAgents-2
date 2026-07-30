@@ -22,8 +22,10 @@ const { GATES } = await import(join(root, 'src/data/canon/gates.js'));
 const { RETIREMENTS } = await import(join(root, 'src/data/canon/retirements.js'));
 const { OBLIGATIONS } = await import(join(root, 'src/data/canon/obligations.js'));
 const { runCanonValidation } = await import(join(root, 'src/simulation/CanonValidator.js'));
+const { runPlanningAnalysis } = await import(join(root, 'src/simulation/PlanningEngine.js'));
 
 const v = runCanonValidation();
+const plan = runPlanningAnalysis();
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 // ---------- CANON.md ----------
@@ -70,6 +72,26 @@ ${RETIREMENTS.map((r) => `- **${esc(r.construct)}** — ${esc(r.reason)} *Dispos
 | Pri | Obligation | Owner | Status | Absorbs |
 |---|---|---|---|---|
 ${OBLIGATIONS.map((o) => `| ${o.priority} | ${esc(o.text)} | ${esc(o.owner)} | ${o.status} | ${o.absorbs.join(', ') || '—'} |`).join('\n')}
+
+## Planning module (Rigorous Planning Framework, instantiated)
+Instance: ${plan.result.instance.value.tasks} open tasks · ${plan.result.instance.value.artifacts} artifacts · ${plan.result.instance.value.causalArcs} genuine causal arcs. Efforts are **modelled** person-days; every bound inherits that grade.
+
+| Field | Value | Method · grade |
+|---|---|---|
+| Work W₁ | ${plan.result.bounds.value.W1} pd | ${plan.result.bounds.method} · ${plan.result.bounds.grade} |
+| Span W∞ | ${plan.result.bounds.value.Winf} pd (critical path: ${plan.result.bounds.value.criticalPath.join(' → ')}) | ${plan.result.bounds.method} · ${plan.result.bounds.grade} |
+| Parallelism Π | ${plan.result.bounds.value.Pi.toFixed(2)} (blanket P0–P3 ladder would give ${plan.result.bounds.value.ladderPi.toFixed(2)}) | ${plan.result.bounds.method} · ${plan.result.bounds.grade} |
+| Hazards | RAW ${plan.result.hazards.value.RAW} · WAW ${plan.result.hazards.value.WAW} · WAR ${plan.result.hazards.value.WAR} | ${plan.result.hazards.method} · ${plan.result.hazards.grade} |
+| Dominant contention | \`${plan.result.contention.value.dominant?.scope}\` (${Math.round(plan.result.contention.value.dominantShare * 100)}%) | ${plan.result.contention.method} · ${plan.result.contention.grade} |
+| Structure | ${esc(plan.result.structure.value.feedback)} | ${plan.result.structure.method} · ${plan.result.structure.grade} |
+| Ic∧¬Ir pairs | ${plan.result.independence.value.icNotIr.length} (reorderable, not concurrent without arbitration) | ${plan.result.independence.method} · ${plan.result.independence.grade} |
+| Debts | ${plan.result.registers.value.debts.map((d) => `\`${d.task}\``).join(', ') || 'asserted empty'} | ${plan.result.registers.method} · ${plan.result.registers.grade} |
+
+Brent/Graham band (free assignment): ${plan.result.schedule.value.bands.map((b) => `K=${b.K}: [${b.lower.toFixed(1)}, ${b.upper.toFixed(1)}] pd`).join(' · ')}.
+${esc(plan.result.schedule.value.ceiling)}
+
+Schema invariants: ${plan.invariants.map((i) => `${i.pass ? '✅' : '❌'} ${i.id}`).join(' · ')}.
+Frozen convention set C (Cor. 2.4 — Ii is established by freezing, not scheduling): ${plan.result.independence.value.frozenConventions.frozen.map((f) => esc(f)).join('; ')}.
 
 ## Validator findings (${v.findings.length})
 ${v.findings.length === 0 ? '_None._' : v.findings.map((f) => `- **${f.severity.toUpperCase()}** \`${f.id}\` — ${esc(f.message)}`).join('\n')}

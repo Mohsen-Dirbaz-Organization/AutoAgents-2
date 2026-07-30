@@ -79,7 +79,8 @@ export const OBLIGATIONS = [
     owner: 'formal analysis (open)',
     status: 'open',
     closure: null,
-    absorbs: ['O-1', 'O-2', 'O-5', 'O-7', 'O-8', 'Void V-1 (proof slice)']
+    absorbs: ['O-1', 'O-2', 'O-5', 'O-7', 'O-8', 'Void V-1 (proof slice)'],
+    note: 'In-sim evidence exists (ValidationHarness / Validation Frontier): O-2 Monte-Carlo non-expansiveness bound and O-8 measured t_conv reach verified-in-sim (their stated exit conditions); O-1/O-5/O-7 advanced (TPD-01 cross-validation for O-5). The FORMAL proofs remain owed — in-sim evidence does not close them.'
   },
   {
     obligation_id: 'ob.gap_closure',

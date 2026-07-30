@@ -103,6 +103,26 @@
 | P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | this repo | closed | O-9 |
 | P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | this repo | closed | Void V-3 |
 
+## Planning module (Rigorous Planning Framework, instantiated)
+Instance: 7 open tasks · 13 artifacts · 5 genuine causal arcs. Efforts are **modelled** person-days; every bound inherits that grade.
+
+| Field | Value | Method · grade |
+|---|---|---|
+| Work W₁ | 137.5 pd | A7 · exact |
+| Span W∞ | 67.5 pd (critical path: ob.gap_closure) | A7 · exact |
+| Parallelism Π | 2.04 (blanket P0–P3 ladder would give 1.49) | A7 · exact |
+| Hazards | RAW 6 · WAW 4 · WAR 0 | A2 · exact |
+| Dominant contention | `scope.repo.registers` (60%) | A4 · exact |
+| Structure | all SCCs are singletons: no feedback to tear (the framework's best case) | A5 · exact |
+| Ic∧¬Ir pairs | 9 (reorderable, not concurrent without arbitration) | A2 · exact |
+| Debts | `ob.device_monotonicity`, `ob.phi_transfer` | A9 · modelled |
+
+Brent/Graham band (free assignment): K=1: [137.5, 137.5] pd · K=2: [68.8, 102.5] pd · K=3: [67.5, 90.8] pd · K=4: [67.5, 85.0] pd.
+speed-up ceiling is min(K, Π) = min(K, 2.04) — agents beyond Π cannot repay coordination (Cor. 4.3)
+
+Schema invariants: ✅ V4 · ✅ V11 · ✅ V12.
+Frozen convention set C (Cor. 2.4 — Ii is established by freezing, not scheduling): symbol collision register (canon/symbols.js) — one glyph, one type; claim-standing ladder (canon/standing.js) — five rungs, fixed authority; number-card schema (canon/numbers.js) — kind/configuration/uncertainty mandatory; gate-contract shape (canon/gates.js) — interface/invariant/provenance/reason-code.
+
 ## Validator findings (2)
 - **WARNING** `C6:hz.device_nonideality` — ORPHAN HAZARD (no mechanism): Real memristor non-ideality (drift, read noise, retention loss) re-admits forbidden commands on physical hardware.
 - **WARNING** `C6:req.field_validation` — ORPHAN REQUIREMENT (no hazard traces to it): CRL/TPD/MMR require field validation before any trusted promotion (source §8).

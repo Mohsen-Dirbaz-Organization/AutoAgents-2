@@ -36,6 +36,7 @@ import { RETIREMENTS } from '../data/canon/retirements.js';
 import { OBLIGATIONS } from '../data/canon/obligations.js';
 import { SUBCATEGORIES } from '../data/programCoverage.js';
 import { maskingProbe, tolConserve } from './ConservationRenormalizationLayer.js';
+import { runPlanningAnalysis } from './PlanningEngine.js';
 
 const finding = (check, severity, subject, message, remedy) =>
   ({ id: `${check}:${subject}`, check, severity, subject, message, remedy });
@@ -226,6 +227,33 @@ function checkStanding(out) {
   }
 }
 
+// ---- C9 — planning-module invariants (Rigorous Planning Framework, Part X) ----
+// The PlanningResult's own invariants (V4/V11/V12) become canon findings: a
+// planning field without a method+grade, a Π that does not equal W1/W∞, or a
+// silent-completeness debts register is a blocking release defect.
+function checkPlanning(out) {
+  let analysis;
+  try {
+    analysis = runPlanningAnalysis();
+  } catch (e) {
+    out.push(finding('C9', 'blocking', 'planning-engine',
+      `Planning analysis failed to run: ${e.message}.`, 'Fix PlanningEngine/canon/planning.js.'));
+    return;
+  }
+  for (const inv of analysis.invariants) {
+    if (!inv.pass) {
+      out.push(finding('C9', 'blocking', `planning.${inv.id}`,
+        `Planning schema invariant ${inv.id} violated: ${inv.text}.`,
+        'A field with no method is inadmissible (Part X §10.1).'));
+    }
+  }
+  if (!analysis.result.structure.value || analysis.result.structure.value.maxScc > 1) {
+    out.push(finding('C9', 'warning', 'planning.structure',
+      'The obligations digraph contains feedback (non-singleton SCC) — tearing (A6) is required before sequencing.',
+      'Select tears within components (Prop. 3.3), each with an assumption and a verifier task.'));
+  }
+}
+
 /** Run the full validation. Deterministic; safe to call from render handlers. */
 export function runCanonValidation() {
   const findings = [];
@@ -236,6 +264,7 @@ export function runCanonValidation() {
   checkTraceability(findings);
   checkNoOps(findings);
   checkStanding(findings);
+  checkPlanning(findings);
 
   const counts = {
     blocking: findings.filter((f) => f.severity === 'blocking').length,

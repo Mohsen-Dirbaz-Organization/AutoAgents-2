@@ -107,3 +107,24 @@
 .cn-ob-status { white-space: nowrap; color: #444; font-weight: 600; }
 .cn-ob-closure { color: #22a06b; cursor: help; }
 .cn-ob-absorbs { color: #888; font-size: 0.7rem; }
+
+/* Planning module */
+.cn-planning { font-size: 0.82rem; }
+.cn-plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.6rem; }
+@media (max-width: 900px) { .cn-plan-grid { grid-template-columns: 1fr; } }
+.cn-plan-card { border: 1px solid #eef0f4; border-radius: 6px; background: #fafbfc; padding: 0.6rem 0.75rem; }
+.cn-plan-head { font-weight: 700; color: #2b6cb0; margin-bottom: 0.35rem; display: flex; align-items: baseline; gap: 0.5rem; }
+.cn-grade { font-size: 0.62rem; font-weight: 700; color: #6b46c1; background: #f1ecfb; padding: 0.06rem 0.4rem; border-radius: 999px; white-space: nowrap; }
+.cn-plan-big { display: flex; gap: 1rem; font-weight: 800; color: #333; font-variant-numeric: tabular-nums; margin-bottom: 0.3rem; flex-wrap: wrap; }
+.cn-plan-line { color: #555; font-size: 0.76rem; line-height: 1.45; margin-bottom: 0.2rem; }
+.cn-plan-line.warn { color: #8a6d1f; background: #fdf6e3; border-left: 3px solid #DAA520; padding: 0.25rem 0.5rem; border-radius: 0 4px 4px 0; }
+.cn-plan-bands { border-collapse: collapse; margin-bottom: 0.35rem; }
+.cn-plan-bands th { text-align: left; font-size: 0.64rem; text-transform: uppercase; color: #667eea; border-bottom: 1px solid #667eea; padding: 0.15rem 0.55rem 0.15rem 0; }
+.cn-plan-bands td { padding: 0.15rem 0.55rem 0.15rem 0; font-variant-numeric: tabular-nums; color: #444; border-bottom: 1px solid #eef0f4; }
+.cn-plan-frozen { margin: 0.2rem 0 0; padding-left: 1.05rem; }
+.cn-plan-frozen li { font-size: 0.72rem; color: #666; line-height: 1.45; }
+.cn-plan-foot { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
+.cn-plan-debt { background: #fdecea; color: #7a2a20; border: 1px solid #e8a99f; border-radius: 999px; font-size: 0.68rem; font-weight: 700; padding: 0.08rem 0.5rem; cursor: help; }
+.cn-plan-inv { margin-left: auto; display: flex; gap: 0.45rem; font-size: 0.72rem; font-weight: 800; }
+.cn-plan-inv .ok { color: #22a06b; }
+.cn-plan-inv .bad { color: #c0392b; }
