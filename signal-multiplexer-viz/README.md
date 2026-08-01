@@ -17,7 +17,7 @@ The app ships with a view switcher in the header:
 - **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
 - **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
 - **Event Fabric (F26)** — the **F26 Autonomous-Driving Event-Fabric Integration Plan** rendered as a doctrine dashboard (see [`F26_Autonomous_Driving_Event_Fabric_Plan.md`](./F26_Autonomous_Driving_Event_Fabric_Plan.md); data in `src/data/eventFabric.js`). A **single timeline spine + twelve operational canvases** where the base unit is a *synchronized interaction trace*, not a pixel; the full **F1–F26** → autonomous-driving mapping; an **S01–S29 source-standing ledger** (established / proposed / projected / notional / open, with *projected/notional/open may not expand runtime authority*); and an honest **latency reconciliation** that keeps the "144 unique latencies" claim **unconfirmed** (parsed: 248 records / 237 exact / 84 unique numeric endpoints / 68 exact values). The 248 individual latency cards are represented by their summary counts (honest stub).
-- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. It also carries a **planning module** (the Rigorous Planning Management Framework, instantiated live on the open obligations — work/span/Π, Brent–Graham bands, hazard census, the Ic/Ir independence matrix) and an **evidence-composition module** (the Lemma Composition and Introduction-Order Formalism: ground truth is order-invariant *by construction*, and every registered claim's introduction order is checked so that no partial reading of the evidence licenses more than the complete evidence would — the "officer overrides the green light" hazard, made mechanical). Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
+- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. It also carries a **planning module** (the Rigorous Planning Management Framework, instantiated live on the open obligations — work/span/Π, Brent–Graham bands, hazard census, the Ic/Ir independence matrix) and an **evidence-composition module** (the Lemma Composition and Introduction-Order Formalism: ground truth is order-invariant *by construction*, and every registered claim's introduction order is checked so that no partial reading of the evidence licenses more than the complete evidence would — the "officer overrides the green light" hazard, made mechanical) and a **level &amp; locality module** (Multi-Level Policy: an ordinal derivation axis `G ≺ R ≺ C`, orthogonal to storage location — `level ⫫ locus` — enforcing that ratio-level gates cite a *basis*, classification-level gates cite a *registry*, independent scope-namespaces don't collide, and weakening evidence never promotes a claim's standing). Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
 
 The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
@@ -900,6 +900,7 @@ Void-Map V-1…V-4 lists. Current state — generated, not hand-maintained:
 | P2 | WCET of the simplex projection: resolved architecturally — projection off the hard real-time path; only the latched S_parity-bit read is on it. | closed |
 | P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | closed |
 | P1 | Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license 'proceed' when the complete evidence would not. | closed |
+| P1 | Every consequential quantity's derivation level (G/R/C) is explicit; R needs a cited basis, C a cited registry; scope namespaces used as independence axes must not collide; and weakening evidence must never promote a claim's standing (demotion, not mutation). | closed |
 | P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | closed |
 
 <!-- CANON:OBLIGATIONS:END -->
@@ -952,6 +953,41 @@ catches it, then restoring. Exchangeability is answered structurally, not by per
 components are exchangeable iff they touch no common scope (Def. of the opening challenge's own
 question) — reused for both toy instances and for pairs in the runtime domain. Rendered live in the
 **Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md).
+
+### Level &amp; locality — Multi-Level Policy
+
+**Level is derivation depth, not storage location: `level ⫫ locus`.** `src/data/canon/level.js` +
+`LevelEngine.js` instantiate a sibling formalism to the Planning module above (it reuses the same
+Π = W₁/W∞ vocabulary and generalizes Cor. 2.4 — "apparatus precedes architecture, like informational
+independence it cannot be scheduled into existence"). Three levels, each with its own required
+apparatus: **G** (Ground — `v_G`, no apparatus, native units), **R** (Referenced — `v_R = f(v_G, B)`,
+requires a stated *basis* `B`), **C** (Classified — `v_C = g(v_R|v_G, registry@ver)`, requires a
+versioned *registry*). The satisfaction identity `EO(φ) = Lev_spec ⊖ min(Lev_evidence, Lev_horizon)`
+governs whether a record may **issue** or must **defer** — the gap itself is the typed evidence
+obligation, not something closed by asserting the higher level.
+
+The sharpest generalization for this project is **MLP-7, demotion not mutation**:
+`E′ ⪯ E ⟹ Auth(x;E′) ⊆ Auth(x;E)` — weaker evidence may only narrow authority, never widen it. This is
+`clm.antitone` (canon/claims.js), restated as a law over evidence strength in general rather than one
+risk scalar. `LevelEngine.js` doesn't just assert this — it **scenario-tests it against
+`ConstitutionalTruthEngine`** (3 scenarios, 10 challenge/corroborate steps, 0 violations), and proves
+its own detector is falsifiable first (a synthetic evidence-weakens-but-reliance-promotes case is
+confirmed caught before the real-engine PASS is trusted — the same discipline as the CRL's masking
+probe, applied to a stateful engine instead of a pure function).
+
+Two more audits, both real (not decorative): **gate-level inheritance (5.4)** — every gate in
+`canon/gates.js` now declares its level; the two chosen-not-derived thresholds
+(`gate.masking_probe`'s ε = 0.05, `gate.llc_quarantine`'s Δllc &gt; 0.25) are honestly flagged as
+G-level "apparatus not yet frozen" warnings rather than silently passed — exactly the "retro-fitted
+gate" MLP warns against. **The multiplication licence (MLP-5)** — an axis is independent iff its
+registry space is disjoint — checked as a real regression guard: the two independently-authored scope
+namespaces (`canon/planning.js`, `canon/evidence.js`) must never collide; verified by deliberately
+injecting a collision, confirming `CanonValidator` check **C12** blocks release, then restoring.
+
+The source document's own MP-01…MP-12 mini-plan taxonomy is retained as **reference data**
+(`MP_FAMILIES`, standing *external-reference*) rather than force-fitted onto this repo's actual module
+structure — no false correspondence is claimed. Rendered live in the **Canon &amp; Integrity** view and
+in [`CANON.md`](./CANON.md).
 
 ### Right of Contestability
 

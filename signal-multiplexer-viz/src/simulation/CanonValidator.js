@@ -38,6 +38,7 @@ import { SUBCATEGORIES } from '../data/programCoverage.js';
 import { maskingProbe, tolConserve } from './ConservationRenormalizationLayer.js';
 import { runPlanningAnalysis } from './PlanningEngine.js';
 import { runEvidenceCompositionAnalysis } from './EvidenceCompositionEngine.js';
+import { runLevelAnalysis } from './LevelEngine.js';
 
 const finding = (check, severity, subject, message, remedy) =>
   ({ id: `${check}:${subject}`, check, severity, subject, message, remedy });
@@ -287,6 +288,49 @@ function checkEvidenceOrder(out) {
   }
 }
 
+// ---- C12 — level & locality discipline (Multi-Level Policy) ----
+// MLP-5 (multiplication licence): the two independently-authored scope
+// namespaces (canon/planning.js, canon/evidence.js) must not collide.
+// Gate-level inheritance (5.4): R-level gates need a basis, C-level gates
+// need a registry; a G-level gate carrying an apparatusNote is a warning.
+// MLP-7 (demotion, not mutation): scenario-tested against
+// ConstitutionalTruthEngine, with a self-check that the detector itself is
+// falsifiable (not a disguised no-op).
+function checkLevelDiscipline(out) {
+  let level;
+  try {
+    level = runLevelAnalysis();
+  } catch (e) {
+    out.push(finding('C12', 'blocking', 'level-engine',
+      `Level analysis failed to run: ${e.message}.`, 'Fix LevelEngine.js.'));
+    return;
+  }
+  if (!level.multiplication.disjoint) {
+    for (const c of level.multiplication.collisions) {
+      out.push(finding('C12', 'blocking', `scope:${c.id}`,
+        `Multiplication licence violated (MLP-5): scope id "${c.id}" is used by both ${c.sourceA} and ${c.sourceB} — the two axes are not disjoint.`,
+        'Rename one of the colliding scope ids.'));
+    }
+  }
+  for (const f of level.gateInheritance.findings) {
+    out.push(finding('C12', f.severity, f.gate, f.message,
+      f.severity === 'blocking' ? 'Declare the missing basis/registry in canon/gates.js.' : 'Declare a basis/registry to promote this gate\'s level, or accept the gap explicitly.'));
+  }
+  if (!level.noOpAudit.detected) {
+    out.push(finding('C12', 'blocking', 'demotion-detector',
+      'The demotion-not-mutation DETECTOR did not catch a synthetic violation — it would be a guaranteed-pass no-op.',
+      'Fix runScenario\'s comparison logic in LevelEngine.js.'));
+  }
+  if (!level.demotion.pass) {
+    for (const s of level.demotion.scenarios) {
+      for (const v of s.violations) {
+        out.push(finding('C12', 'blocking', `demotion:${s.label}`,
+          `MLP-7 violated: ${v}`, 'Trace ConstitutionalTruthEngine\'s challenge/_adjudicate path for a promotion-on-weakening bug.'));
+      }
+    }
+  }
+}
+
 /** Run the full validation. Deterministic; safe to call from render handlers. */
 export function runCanonValidation() {
   const findings = [];
@@ -299,6 +343,7 @@ export function runCanonValidation() {
   checkStanding(findings);
   checkPlanning(findings);
   checkEvidenceOrder(findings);
+  checkLevelDiscipline(findings);
 
   const counts = {
     blocking: findings.filter((f) => f.severity === 'blocking').length,

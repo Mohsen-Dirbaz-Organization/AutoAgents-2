@@ -9,8 +9,10 @@ import { OBLIGATIONS, PRIORITY_META } from '../data/canon/obligations';
 import { runCanonValidation } from '../simulation/CanonValidator';
 import { runPlanningAnalysis } from '../simulation/PlanningEngine';
 import { runEvidenceCompositionAnalysis } from '../simulation/EvidenceCompositionEngine';
+import { runLevelAnalysis } from '../simulation/LevelEngine';
 import { TASKS } from '../data/canon/planning';
 import { THESIS as EVIDENCE_THESIS } from '../data/canon/evidence';
+import { LEVEL, LEVEL_ORDER, APPARATUS_EXAMPLES, AXIOMS, THESIS as LEVEL_THESIS } from '../data/canon/level';
 import './CanonView.css';
 
 const KIND_META = {
@@ -31,6 +33,7 @@ function CanonView() {
   const [kindFilter, setKindFilter] = useState(null);
   const planning = useMemo(() => runPlanningAnalysis(), []);
   const evidence = useMemo(() => runEvidenceCompositionAnalysis(), []);
+  const level = useMemo(() => runLevelAnalysis(), []);
 
   const rerun = () => setResult(runCanonValidation());
 
@@ -225,6 +228,11 @@ function CanonView() {
       </section>
 
       <section className="section full-width">
+        <h2>Level &amp; locality — Multi-Level Policy</h2>
+        <LevelPanel level={level} />
+      </section>
+
+      <section className="section full-width">
         <h2>Open-obligations register (P0–P3) — supersedes O-1…O-11 and the Void Map</h2>
         <table className="cn-obligations">
           <thead><tr><th>Pri</th><th>Obligation</th><th>Owner</th><th>Status</th><th>Absorbs</th></tr></thead>
@@ -399,6 +407,130 @@ function EvidenceCompositionPanel({ results }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+/**
+ * LevelPanel — Multi-Level Policy (canon/level.js + LevelEngine.js) rendered
+ * live. Level (G≺R≺C, derivation depth) is orthogonal to locus (where a
+ * value is stored) — level ⫫ locus. Four audits: the multiplication licence
+ * (no scope-namespace collision), gate-level inheritance (do R/C gates cite
+ * their apparatus), demotion-not-mutation (scenario-tested against the
+ * Constitution engine, with a self-check that the detector is falsifiable),
+ * and the satisfaction identity (issue vs. defer).
+ */
+function LevelPanel({ level }) {
+  return (
+    <div className="cn-level">
+      <p className="cn-note">
+        &ldquo;{LEVEL_THESIS.rule}&rdquo; {LEVEL_THESIS.quote}
+      </p>
+
+      <div className="cn-level-ladder">
+        {LEVEL_ORDER.map((k) => (
+          <div key={k} className="cn-level-rung" style={{ '--c': LEVEL[k].color }}>
+            <div className="cn-level-rung-head">
+              <span className="cn-level-badge" style={{ background: LEVEL[k].color }}>{k}</span>
+              <span className="cn-level-name">{LEVEL[k].label}</span>
+              <span className="cn-level-apparatus">apparatus: {LEVEL[k].apparatus}</span>
+            </div>
+            <div className="cn-level-form">{LEVEL[k].form}</div>
+            <div className="cn-level-meaning">{LEVEL[k].meaning}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="cn-level-grid">
+        <div className="cn-level-col">
+          <div className="cn-level-h3">Apparatus examples — grounded in this repo</div>
+          <ul className="cn-level-examples">
+            {APPARATUS_EXAMPLES.map((e) => (
+              <li key={e.quantity} className="cn-level-example">
+                <span className="cn-level-ex-badge" style={{ background: LEVEL[e.level].color }}>{e.level}</span>
+                <div>
+                  <div className="cn-level-ex-q">{e.quantity}</div>
+                  <div className="cn-level-ex-d">{e.basis ? `basis: ${e.basis}` : e.registry ? `registry: ${e.registry}` : ''}</div>
+                  <div className="cn-level-ex-d">{e.detail}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div className="cn-level-h3">Satisfaction identity — EO(φ) = Lev_spec ⊖ min(Lev_evidence, Lev_horizon)</div>
+          <table className="cn-level-eo">
+            <thead><tr><th>spec</th><th>evidence</th><th>horizon</th><th>licence</th><th>gap</th><th>verdict</th></tr></thead>
+            <tbody>
+              {level.exampleObligations.map((eo, i) => (
+                <tr key={i} className={eo.verdict}>
+                  <td><span className="cn-level-badge sm" style={{ background: LEVEL[eo.specLevel].color }}>{eo.specLevel}</span></td>
+                  <td><span className="cn-level-badge sm" style={{ background: LEVEL[eo.evidenceLevel].color }}>{eo.evidenceLevel}</span></td>
+                  <td><span className="cn-level-badge sm" style={{ background: LEVEL[eo.horizonLevel].color }}>{eo.horizonLevel}</span></td>
+                  <td><span className="cn-level-badge sm" style={{ background: LEVEL[eo.licenceLevel].color }}>{eo.licenceLevel}</span></td>
+                  <td>{eo.gap}</td>
+                  <td className={`cn-level-verdict ${eo.verdict}`}>{eo.verdict}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="cn-level-col">
+          <div className="cn-level-h3">
+            Multiplication licence (MLP-5)
+            <span className={`cn-level-check ${level.multiplication.disjoint ? 'ok' : 'bad'}`}>
+              {level.multiplication.disjoint ? '✓ disjoint' : '✕ collision'}
+            </span>
+          </div>
+          <p className="cn-level-p">
+            {level.multiplication.planningScopeCount} planning scopes · {level.multiplication.evidenceScopeCount} evidence scopes —
+            two independently-authored namespaces, checked for accidental collision.
+          </p>
+
+          <div className="cn-level-h3">Gate-level inheritance (5.4)</div>
+          <table className="cn-level-gates">
+            <thead><tr><th>Gate</th><th>Level</th><th>Apparatus</th></tr></thead>
+            <tbody>
+              {level.gateInheritance.gates.map((g) => (
+                <tr key={g.id}>
+                  <td className="cn-level-gate-id">{g.id}</td>
+                  <td><span className="cn-level-badge sm" style={{ background: LEVEL[g.level].color }}>{g.level}</span></td>
+                  <td className="cn-level-gate-app">{g.basis || g.registry || <em>none declared</em>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {level.gateInheritance.findings.filter((f) => f.severity === 'warning').map((f) => (
+            <div key={f.gate} className="cn-level-smell">⚠ <b>{f.gate}</b>: {f.message}</div>
+          ))}
+
+          <div className="cn-level-h3">
+            Demotion, not mutation (MLP-7)
+            <span className={`cn-level-check ${level.demotion.pass ? 'ok' : 'bad'}`}>
+              {level.demotion.pass ? '✓ no violation' : '✕ violation found'}
+            </span>
+          </div>
+          <p className="cn-level-p">
+            standing <span className="cn-grade">{level.demotion.standing}</span> — scenario-tested against
+            ConstitutionalTruthEngine, {level.demotion.scenarios.length} scenarios,
+            {' '}{level.demotion.scenarios.reduce((n, s) => n + s.steps.length, 0)} steps total.
+            Detector self-check: {level.noOpAudit.detected ? '✓ falsifiable' : '✕ broken (guaranteed-pass)'}.
+          </p>
+          <div className="cn-level-scenarios">
+            {level.demotion.scenarios.map((s) => (
+              <div key={s.label} className="cn-level-scenario">
+                <b>{s.label}</b> — {s.steps.map((st) => `${st.evidenceBefore.toFixed(2)}→${st.evidenceAfter.toFixed(2)} (${st.relianceBefore}→${st.relianceAfter})`).join('  ·  ')}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="cn-level-axioms">
+        {AXIOMS.map((a) => (
+          <span key={a.id} className="cn-level-ax"><b>{a.id}</b> {a.text}</span>
+        ))}
+      </div>
     </div>
   );
 }

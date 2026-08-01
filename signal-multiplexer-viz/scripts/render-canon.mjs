@@ -24,10 +24,12 @@ const { OBLIGATIONS } = await import(join(root, 'src/data/canon/obligations.js')
 const { runCanonValidation } = await import(join(root, 'src/simulation/CanonValidator.js'));
 const { runPlanningAnalysis } = await import(join(root, 'src/simulation/PlanningEngine.js'));
 const { runEvidenceCompositionAnalysis } = await import(join(root, 'src/simulation/EvidenceCompositionEngine.js'));
+const { runLevelAnalysis } = await import(join(root, 'src/simulation/LevelEngine.js'));
 
 const v = runCanonValidation();
 const plan = runPlanningAnalysis();
 const evidence = runEvidenceCompositionAnalysis();
+const lvl = runLevelAnalysis();
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 // ---------- CANON.md ----------
@@ -101,6 +103,13 @@ Frozen convention set C (Cor. 2.4 — Ii is established by freezing, not schedul
 | Instance | Intent | Ground truth | Unsafe prefixes | Result |
 |---|---|---|---|---|
 ${evidence.map((r) => `| ${esc(r.instance.title)} | ${r.instance.intent} | ${r.full.label} | ${r.unsafePositions.map((u) => `k=${u.k}`).join(', ') || 'none'} | ${r.intentSatisfied ? '✅' : '❌'} |`).join('\n')}
+
+## Level & locality (Multi-Level Policy)
+Level (G≺R≺C, derivation depth) is orthogonal to locus (level ⫫ locus).
+
+- Multiplication licence (MLP-5): ${lvl.multiplication.planningScopeCount} planning scopes vs ${lvl.multiplication.evidenceScopeCount} evidence scopes — ${lvl.multiplication.disjoint ? 'disjoint (PASS)' : 'COLLISION: ' + esc(JSON.stringify(lvl.multiplication.collisions))}.
+- Gate-level inheritance (5.4): ${lvl.gateInheritance.gates.map((g) => `${g.id}=${g.level}`).join(', ')}.
+- Demotion, not mutation (MLP-7): standing \`${lvl.demotion.standing}\`, ${lvl.demotion.scenarios.length} scenarios, pass=${lvl.demotion.pass}. Detector self-check: ${lvl.noOpAudit.detected ? 'falsifiable' : 'BROKEN'}.
 
 ## Validator findings (${v.findings.length})
 ${v.findings.length === 0 ? '_None._' : v.findings.map((f) => `- **${f.severity.toUpperCase()}** \`${f.id}\` — ${esc(f.message)}`).join('\n')}

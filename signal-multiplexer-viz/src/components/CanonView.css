@@ -151,3 +151,48 @@
 .cn-ev-smell { color: #8a6d1f; font-size: 0.75rem; line-height: 1.4; background: #fdf6e3; border-left: 3px solid #DAA520; padding: 0.3rem 0.55rem; border-radius: 0 4px 4px 0; margin-bottom: 0.35rem; }
 .cn-ev-exch { color: #888; font-size: 0.72rem; }
 .cn-ev-exch code { font-size: 0.68rem; background: #f1ecfb; color: #6b46c1; padding: 0.05rem 0.3rem; border-radius: 4px; }
+
+/* Level & locality */
+.cn-level { font-size: 0.82rem; }
+.cn-level-ladder { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 0.6rem 0 1rem; }
+@media (max-width: 760px) { .cn-level-ladder { grid-template-columns: 1fr; } }
+.cn-level-rung { border: 1px solid #eef0f4; border-top: 3px solid var(--c); border-radius: 6px; background: #fafbfc; padding: 0.5rem 0.65rem; }
+.cn-level-rung-head { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.25rem; flex-wrap: wrap; }
+.cn-level-badge { color: #fff; font-weight: 800; font-size: 0.72rem; width: 20px; height: 20px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; }
+.cn-level-badge.sm { width: 16px; height: 16px; font-size: 0.62rem; border-radius: 4px; }
+.cn-level-name { font-weight: 700; color: #333; }
+.cn-level-apparatus { font-size: 0.68rem; color: #999; margin-left: auto; }
+.cn-level-form { font-family: ui-monospace, monospace; font-size: 0.76rem; color: var(--c); margin-bottom: 0.2rem; }
+.cn-level-meaning { color: #666; font-size: 0.73rem; line-height: 1.4; }
+
+.cn-level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+@media (max-width: 900px) { .cn-level-grid { grid-template-columns: 1fr; } }
+.cn-level-h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #667eea; margin: 0.7rem 0 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+.cn-level-h3:first-child { margin-top: 0; }
+.cn-level-check { font-size: 0.66rem; font-weight: 800; text-transform: none; letter-spacing: 0; padding: 0.06rem 0.45rem; border-radius: 999px; }
+.cn-level-check.ok { background: #e8f7ee; color: #1e5631; }
+.cn-level-check.bad { background: #fdecea; color: #9b2c2c; }
+
+.cn-level-examples { list-style: none; margin: 0; padding: 0; }
+.cn-level-example { display: flex; gap: 0.5rem; padding: 0.4rem 0; border-bottom: 1px solid #eef0f4; }
+.cn-level-ex-q { font-weight: 600; color: #333; font-size: 0.78rem; }
+.cn-level-ex-d { color: #888; font-size: 0.71rem; line-height: 1.4; }
+.cn-level-ex-badge { color: #fff; font-weight: 800; font-size: 0.66rem; width: 18px; height: 18px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+
+.cn-level-eo, .cn-level-gates { width: 100%; border-collapse: collapse; font-size: 0.74rem; }
+.cn-level-eo th, .cn-level-gates th { text-align: left; font-size: 0.64rem; text-transform: uppercase; color: #999; padding: 0.2rem 0.4rem 0.2rem 0; border-bottom: 1px solid #ddd; }
+.cn-level-eo td, .cn-level-gates td { padding: 0.28rem 0.4rem 0.28rem 0; border-bottom: 1px solid #eef0f4; color: #555; }
+.cn-level-verdict.issue { color: #22a06b; font-weight: 700; }
+.cn-level-verdict.defer { color: #b9770b; font-weight: 700; }
+.cn-level-gate-id { font-family: ui-monospace, monospace; font-size: 0.7rem; color: #333; }
+.cn-level-gate-app { font-size: 0.7rem; color: #777; }
+
+.cn-level-p { color: #666; font-size: 0.76rem; line-height: 1.45; margin: 0 0 0.3rem; }
+.cn-level-smell { color: #8a6d1f; font-size: 0.73rem; line-height: 1.4; background: #fdf6e3; border-left: 3px solid #DAA520; padding: 0.3rem 0.55rem; border-radius: 0 4px 4px 0; margin-bottom: 0.3rem; }
+.cn-level-scenarios { display: flex; flex-direction: column; gap: 0.3rem; }
+.cn-level-scenario { font-size: 0.7rem; color: #666; line-height: 1.5; background: #fafbfc; border-radius: 4px; padding: 0.35rem 0.5rem; }
+.cn-level-scenario b { color: #333; }
+
+.cn-level-axioms { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; margin-top: 1rem; padding-top: 0.7rem; border-top: 1px solid #eef0f4; }
+.cn-level-ax { font-size: 0.68rem; color: #777; }
+.cn-level-ax b { color: #333; }

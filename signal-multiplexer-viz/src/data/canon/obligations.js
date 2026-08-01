@@ -148,6 +148,15 @@ export const OBLIGATIONS = [
     absorbs: ['opening challenge (session dialogue, 2026-07-28): "which evidence components are independent and exchangeable, and which must be introduced before others"']
   },
   {
+    obligation_id: 'ob.level_locality_discipline',
+    priority: 'P1',
+    text: 'Every consequential quantity\'s derivation level (G/R/C) is explicit; R needs a cited basis, C a cited registry; scope namespaces used as independence axes must not collide; and weakening evidence must never promote a claim\'s standing (demotion, not mutation).',
+    owner: 'this repo',
+    status: 'closed',
+    closure: 'Multi-Level Policy instantiated (canon/level.js, LevelEngine.js). Multiplication licence (MLP-5) verified disjoint across canon/planning.js and canon/evidence.js scope namespaces (falsified by deliberate collision, restored). Gate-level inheritance (5.4) applied to all 7 gates.js entries — 2 honest apparatus-not-frozen warnings surfaced (gate.masking_probe epsilon, gate.llc_quarantine delta), not silently passed. Demotion-not-mutation (MLP-7) scenario-tested against ConstitutionalTruthEngine (3 scenarios, 10 steps, 0 violations), with the detector\'s own falsifiability proven against a synthetic violation before trusting its pass on the real engine.',
+    absorbs: ['session dialogue, 2026-07-28: MLP_visual_abstract.html incorporation request']
+  },
+  {
     obligation_id: 'ob.multiplexer_lifecycle',
     priority: 'P2',
     text: 'Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background).',
