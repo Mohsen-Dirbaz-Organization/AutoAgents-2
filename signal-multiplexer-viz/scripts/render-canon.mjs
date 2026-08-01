@@ -25,11 +25,13 @@ const { runCanonValidation } = await import(join(root, 'src/simulation/CanonVali
 const { runPlanningAnalysis } = await import(join(root, 'src/simulation/PlanningEngine.js'));
 const { runEvidenceCompositionAnalysis } = await import(join(root, 'src/simulation/EvidenceCompositionEngine.js'));
 const { runLevelAnalysis } = await import(join(root, 'src/simulation/LevelEngine.js'));
+const { runPcgArchiveAudit } = await import(join(root, 'src/simulation/PcgEngine.js'));
 
 const v = runCanonValidation();
 const plan = runPlanningAnalysis();
 const evidence = runEvidenceCompositionAnalysis();
 const lvl = runLevelAnalysis();
+const pcg = runPcgArchiveAudit();
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 // ---------- CANON.md ----------
@@ -110,6 +112,13 @@ Level (G≺R≺C, derivation depth) is orthogonal to locus (level ⫫ locus).
 - Multiplication licence (MLP-5): ${lvl.multiplication.planningScopeCount} planning scopes vs ${lvl.multiplication.evidenceScopeCount} evidence scopes — ${lvl.multiplication.disjoint ? 'disjoint (PASS)' : 'COLLISION: ' + esc(JSON.stringify(lvl.multiplication.collisions))}.
 - Gate-level inheritance (5.4): ${lvl.gateInheritance.gates.map((g) => `${g.id}=${g.level}`).join(', ')}.
 - Demotion, not mutation (MLP-7): standing \`${lvl.demotion.standing}\`, ${lvl.demotion.scenarios.length} scenarios, pass=${lvl.demotion.pass}. Detector self-check: ${lvl.noOpAudit.detected ? 'falsifiable' : 'BROKEN'}.
+
+## Archive record format (Process Characterization Grammar)
+record = 〈Aspect·Modality·Level〉 + value + U + provenance. Every ConstitutionalTruthEngine.archive event now carries a well-formed \`.record\`.
+
+- Driven scenario: ${pcg.archiveLength} archive events, ${pcg.recordedCount} carrying records, ${pcg.allValid ? 'all well-formed (PASS)' : 'ILL-FORMED RECORDS PRESENT'}.
+- gate.challenge liveness (A3): ${pcg.gateLiveness.dead ? 'DEAD' : `${pcg.gateLiveness.occurrences} instance-of occurrences`}.
+- Record-validator self-check: ${pcg.noOpAudit.detected ? 'falsifiable' : 'BROKEN'}.
 
 ## Validator findings (${v.findings.length})
 ${v.findings.length === 0 ? '_None._' : v.findings.map((f) => `- **${f.severity.toUpperCase()}** \`${f.id}\` — ${esc(f.message)}`).join('\n')}

@@ -39,6 +39,7 @@ import { maskingProbe, tolConserve } from './ConservationRenormalizationLayer.js
 import { runPlanningAnalysis } from './PlanningEngine.js';
 import { runEvidenceCompositionAnalysis } from './EvidenceCompositionEngine.js';
 import { runLevelAnalysis } from './LevelEngine.js';
+import { runPcgArchiveAudit } from './PcgEngine.js';
 
 const finding = (check, severity, subject, message, remedy) =>
   ({ id: `${check}:${subject}`, check, severity, subject, message, remedy });
@@ -331,6 +332,39 @@ function checkLevelDiscipline(out) {
   }
 }
 
+// ---- C13 — archive record format (Process Characterization Grammar) ----
+// "Versioned events in the archive should follow the attached record
+// format." Drives ConstitutionalTruthEngine through a scenario and validates
+// every resulting archive event's attached PCG record (CC1–CC4, W1/W2/W4),
+// after proving the record validator itself can catch a synthetic violation.
+function checkArchiveRecordFormat(out) {
+  let audit;
+  try {
+    audit = runPcgArchiveAudit();
+  } catch (e) {
+    out.push(finding('C13', 'blocking', 'pcg-engine',
+      `Archive record audit failed to run: ${e.message}.`, 'Fix PcgEngine.js/PcgRecords.js.'));
+    return;
+  }
+  if (!audit.noOpAudit.detected) {
+    out.push(finding('C13', 'blocking', 'record-validator',
+      'The PCG record validator did not catch a synthetic ill-formed record — it would be a guaranteed-pass no-op.',
+      'Fix validateRecord in PcgRecords.js.'));
+  }
+  for (const v of audit.validations) {
+    if (!v.pass) {
+      out.push(finding('C13', 'blocking', v.event.record.id,
+        `Archive record ill-formed: ${v.violations.join('; ')}`,
+        'Fix the record builder for this event type in PcgRecords.js.'));
+    }
+  }
+  if (audit.gateLiveness.dead) {
+    out.push(finding('C13', 'warning', audit.gateLiveness.gate,
+      'A3 (§8.5): gate.challenge has zero instance-of occurrences in the audited window — a dead rule.',
+      'Confirm the audit scenario still exercises this gate.'));
+  }
+}
+
 /** Run the full validation. Deterministic; safe to call from render handlers. */
 export function runCanonValidation() {
   const findings = [];
@@ -344,6 +378,7 @@ export function runCanonValidation() {
   checkPlanning(findings);
   checkEvidenceOrder(findings);
   checkLevelDiscipline(findings);
+  checkArchiveRecordFormat(findings);
 
   const counts = {
     blocking: findings.filter((f) => f.severity === 'blocking').length,

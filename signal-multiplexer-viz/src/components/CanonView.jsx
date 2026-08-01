@@ -10,9 +10,11 @@ import { runCanonValidation } from '../simulation/CanonValidator';
 import { runPlanningAnalysis } from '../simulation/PlanningEngine';
 import { runEvidenceCompositionAnalysis } from '../simulation/EvidenceCompositionEngine';
 import { runLevelAnalysis } from '../simulation/LevelEngine';
+import { runPcgArchiveAudit } from '../simulation/PcgEngine';
 import { TASKS } from '../data/canon/planning';
 import { THESIS as EVIDENCE_THESIS } from '../data/canon/evidence';
 import { LEVEL, LEVEL_ORDER, APPARATUS_EXAMPLES, AXIOMS, THESIS as LEVEL_THESIS } from '../data/canon/level';
+import { ASPECTS, ASPECT_ORDER, MODALITIES, MODALITY_PRECEDENCE, RECORD_SCHEMA, ARCHIVE_DISPOSITION, THESIS as PCG_THESIS } from '../data/canon/pcg';
 import './CanonView.css';
 
 const KIND_META = {
@@ -34,6 +36,7 @@ function CanonView() {
   const planning = useMemo(() => runPlanningAnalysis(), []);
   const evidence = useMemo(() => runEvidenceCompositionAnalysis(), []);
   const level = useMemo(() => runLevelAnalysis(), []);
+  const pcg = useMemo(() => runPcgArchiveAudit(), []);
 
   const rerun = () => setResult(runCanonValidation());
 
@@ -230,6 +233,11 @@ function CanonView() {
       <section className="section full-width">
         <h2>Level &amp; locality — Multi-Level Policy</h2>
         <LevelPanel level={level} />
+      </section>
+
+      <section className="section full-width">
+        <h2>Archive record format — Process Characterization Grammar</h2>
+        <PcgPanel pcg={pcg} />
       </section>
 
       <section className="section full-width">
@@ -530,6 +538,97 @@ function LevelPanel({ level }) {
         {AXIOMS.map((a) => (
           <span key={a.id} className="cn-level-ax"><b>{a.id}</b> {a.text}</span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * PcgPanel — the Process Characterization Grammar (canon/pcg.js +
+ * PcgEngine.js/PcgRecords.js), rendered against LIVE archive records. Every
+ * ConstitutionalTruthEngine.archive event now carries a `.record` field
+ * (record = 〈Aspect·Modality·Level〉 + value + U + provenance); this panel
+ * drives a scenario and shows the well-formedness result on the real output,
+ * not a static example.
+ */
+function PcgPanel({ pcg }) {
+  return (
+    <div className="cn-pcg">
+      <p className="cn-note">{PCG_THESIS.rule}</p>
+
+      <div className="cn-pcg-grid">
+        <div className="cn-pcg-col">
+          <div className="cn-level-h3">Aspect — six closed subjects</div>
+          <div className="cn-pcg-chips">
+            {ASPECT_ORDER.map((k) => (
+              <span key={k} className="cn-pcg-chip" title={ASPECTS[k].decisionTest}>
+                <b>{k}</b> {ASPECTS[k].name}
+              </span>
+            ))}
+          </div>
+          <div className="cn-level-h3">Modality — four forces, total precedence</div>
+          <div className="cn-pcg-precedence">
+            {MODALITY_PRECEDENCE.map((k, i) => (
+              <span key={k}>
+                <span className="cn-pcg-chip" title={MODALITIES[k].forceTest}><b>{k}</b> {MODALITIES[k].force}</span>
+                {i < MODALITY_PRECEDENCE.length - 1 && <span className="cn-pcg-prec-arrow">≻</span>}
+              </span>
+            ))}
+          </div>
+          <div className="cn-level-h3">Content-record schema (§6.1)</div>
+          <table className="cn-level-gates">
+            <thead><tr><th>Field</th><th>Obligation</th></tr></thead>
+            <tbody>
+              {RECORD_SCHEMA.map((f) => (
+                <tr key={f.field}>
+                  <td className="cn-level-gate-id">{f.field}</td>
+                  <td>{f.obligation}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="cn-level-h3">archive.disposition registry (v{ARCHIVE_DISPOSITION.version})</div>
+          <p className="cn-level-p">{ARCHIVE_DISPOSITION.domain}. Erasure cites THIS registry, not RELIANCE — {'`erased`'} is not a RELIANCE member.</p>
+          <div className="cn-pcg-chips">
+            {Object.keys(ARCHIVE_DISPOSITION.classes).map((c) => (
+              <span key={c} className="cn-pcg-chip" title={ARCHIVE_DISPOSITION.classes[c]}>{c}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="cn-pcg-col">
+          <div className="cn-level-h3">
+            Live archive audit
+            <span className={`cn-level-check ${pcg.allValid ? 'ok' : 'bad'}`}>
+              {pcg.allValid ? `✓ ${pcg.recordedCount}/${pcg.recordedCount} well-formed` : '✕ ill-formed records found'}
+            </span>
+          </div>
+          <p className="cn-level-p">
+            A scenario drives ConstitutionalTruthEngine through canonization, reclassification,
+            silent-drift surfacing, retraction, and erasure — {pcg.archiveLength} archive events, each
+            validated against CC1–CC4 / W1 / W2 / W4. gate.challenge liveness (A3, §8.5):
+            {' '}{pcg.gateLiveness.dead ? 'DEAD (0 occurrences)' : `${pcg.gateLiveness.occurrences} instance-of occurrences`}.
+            Record-validator self-check: {pcg.noOpAudit.detected ? '✓ falsifiable' : '✕ broken (guaranteed-pass)'}.
+          </p>
+
+          <div className="cn-pcg-records">
+            {pcg.sample.map((rec) => (
+              <div key={rec.id} className="cn-pcg-record">
+                <div className="cn-pcg-record-head">
+                  <span className="cn-pcg-addr">{rec.address.aspect}·{rec.address.modality}·{rec.address.level}</span>
+                  <code className="cn-pcg-id">{rec.id}</code>
+                </div>
+                <div className="cn-pcg-record-line"><b>value</b> {rec.value.relation}: {rec.value.from} → {rec.value.to}</div>
+                <div className="cn-pcg-record-line"><b>U</b> {rec.U.kind} P={rec.U.P}</div>
+                <div className="cn-pcg-record-line"><b>provenance</b> {rec.provenance.registry} · {rec.provenance.method}</div>
+                {rec.links.length > 0 && (
+                  <div className="cn-pcg-record-line"><b>links</b> {rec.links.map((l) => `${l.type}→${l.target}`).join(', ')}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

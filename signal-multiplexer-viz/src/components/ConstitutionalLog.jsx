@@ -38,6 +38,11 @@ function ConstitutionalLog({ archive, snapshots, onRollback }) {
               <span className="clog-ev-v">v{e.v}</span>
               <span className="clog-ev-body">
                 <span className="clog-ev-label" style={{ color: m.color }}>{m.label}</span>
+                {e.record && (
+                  <span className="clog-ev-addr" title="PCG record address 〈aspect · modality · level〉">
+                    {e.record.address.aspect}·{e.record.address.modality}·{e.record.address.level}
+                  </span>
+                )}
                 <span className="clog-ev-stmt">{e.statement}</span>
                 {e.reason && <span className="clog-ev-reason">{e.reason}</span>}
               </span>

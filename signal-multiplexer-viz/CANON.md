@@ -103,6 +103,8 @@
 | P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | this repo | closed | O-9 |
 | P1 | Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license 'proceed' when the complete evidence would not. | this repo | closed | opening challenge (session dialogue, 2026-07-28): "which evidence components are independent and exchangeable, and which must be introduced before others" |
 | P1 | Every consequential quantity's derivation level (G/R/C) is explicit; R needs a cited basis, C a cited registry; scope namespaces used as independence axes must not collide; and weakening evidence must never promote a claim's standing (demotion, not mutation). | this repo | closed | session dialogue, 2026-07-28: MLP_visual_abstract.html incorporation request |
+| P1 | Versioned events in ConstitutionalTruthEngine.archive follow a well-formed PCG record: 〈Aspect·Modality·Level〉 + value + U + provenance, checked against CC1–CC4 / W1 / W2 / W4. | this repo | closed | session dialogue, 2026-07-28: process_characterization_grammar.pdf incorporation request |
+| P3 | A claim already at reliance=retracted, hit with a further strong challenge, is silently re-adjudicated to `hypothesis` (a rank increase, MLP-7-relevant) with UNCHANGED evidence before the retraction check re-fires it back to `retracted` within the same challenge() call — because _adjudicate does not treat `retracted` as terminal. | this repo (engine) | open | — |
 | P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | this repo | closed | Void V-3 |
 
 ## Planning module (Rigorous Planning Framework, instantiated)
@@ -140,6 +142,13 @@ Level (G≺R≺C, derivation depth) is orthogonal to locus (level ⫫ locus).
 - Multiplication licence (MLP-5): 8 planning scopes vs 3 evidence scopes — disjoint (PASS).
 - Gate-level inheritance (5.4): gate.monotonicity=G, gate.analog_veto=G, gate.conservation=R, gate.masking_probe=G, gate.llc_quarantine=G, gate.requantize=C, gate.challenge=C.
 - Demotion, not mutation (MLP-7): standing `established-in-sim`, 3 scenarios, pass=true. Detector self-check: falsifiable.
+
+## Archive record format (Process Characterization Grammar)
+record = 〈Aspect·Modality·Level〉 + value + U + provenance. Every ConstitutionalTruthEngine.archive event now carries a well-formed `.record`.
+
+- Driven scenario: 11 archive events, 11 carrying records, all well-formed (PASS).
+- gate.challenge liveness (A3): 8 instance-of occurrences.
+- Record-validator self-check: falsifiable.
 
 ## Validator findings (4)
 - **WARNING** `C6:hz.device_nonideality` — ORPHAN HAZARD (no mechanism): Real memristor non-ideality (drift, read noise, retention loss) re-admits forbidden commands on physical hardware.

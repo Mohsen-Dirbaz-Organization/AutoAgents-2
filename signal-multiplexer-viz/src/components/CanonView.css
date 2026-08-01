@@ -196,3 +196,21 @@
 .cn-level-axioms { display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; margin-top: 1rem; padding-top: 0.7rem; border-top: 1px solid #eef0f4; }
 .cn-level-ax { font-size: 0.68rem; color: #777; }
 .cn-level-ax b { color: #333; }
+
+/* PCG archive-record panel */
+.cn-pcg { font-size: 0.82rem; }
+.cn-pcg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+@media (max-width: 900px) { .cn-pcg-grid { grid-template-columns: 1fr; } }
+.cn-pcg-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.3rem; }
+.cn-pcg-chip { font-size: 0.7rem; color: #444; background: #f6f7fb; border: 1px solid #e2e5ec; border-radius: 999px; padding: 0.12rem 0.5rem; cursor: help; }
+.cn-pcg-chip b { color: #6b46c1; margin-right: 0.25rem; }
+.cn-pcg-precedence { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem; margin-bottom: 0.3rem; }
+.cn-pcg-prec-arrow { color: #b9770b; font-weight: 800; margin: 0 0.15rem; }
+
+.cn-pcg-records { display: flex; flex-direction: column; gap: 0.4rem; max-height: 480px; overflow-y: auto; }
+.cn-pcg-record { border: 1px solid #eef0f4; border-left: 3px solid #6b46c1; border-radius: 6px; background: #fafbfc; padding: 0.4rem 0.6rem; }
+.cn-pcg-record-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+.cn-pcg-addr { font-family: ui-monospace, monospace; font-weight: 800; color: #6b46c1; background: #f1ecfb; padding: 0.06rem 0.4rem; border-radius: 4px; font-size: 0.72rem; }
+.cn-pcg-id { font-size: 0.66rem; color: #999; }
+.cn-pcg-record-line { font-size: 0.71rem; color: #666; line-height: 1.45; }
+.cn-pcg-record-line b { color: #999; text-transform: uppercase; font-size: 0.6rem; margin-right: 0.3rem; }

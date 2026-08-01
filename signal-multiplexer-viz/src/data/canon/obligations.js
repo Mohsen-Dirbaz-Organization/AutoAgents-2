@@ -157,6 +157,25 @@ export const OBLIGATIONS = [
     absorbs: ['session dialogue, 2026-07-28: MLP_visual_abstract.html incorporation request']
   },
   {
+    obligation_id: 'ob.archive_record_format',
+    priority: 'P1',
+    text: 'Versioned events in ConstitutionalTruthEngine.archive follow a well-formed PCG record: 〈Aspect·Modality·Level〉 + value + U + provenance, checked against CC1–CC4 / W1 / W2 / W4.',
+    owner: 'this repo',
+    status: 'closed',
+    closure: 'Process Characterization Grammar instantiated (canon/pcg.js, PcgRecords.js, PcgEngine.js). Every archive event now additionally carries `.record`: reliance transitions are FL·DID·C (registry RELIANCE, instance-of gate.challenge — mirroring the spec\'s own R05 example); erasure is AT·DID·C against a new archive.disposition registry (not RELIANCE — `erased` is not a RELIANCE member, which was the pre-existing bug this retrofit fixes). CanonValidator C13 validates every record from a driven scenario (11 events, 5 event types, 0 ill-formed), with the record validator\'s own falsifiability proven first. Additive only — existing archive/lineage fields and ConstitutionalLog.jsx are unchanged; the PCG address is now also shown inline there.',
+    absorbs: ['session dialogue, 2026-07-28: process_characterization_grammar.pdf incorporation request']
+  },
+  {
+    obligation_id: 'ob.retraction_churn_engine_note',
+    priority: 'P3',
+    text: 'A claim already at reliance=retracted, hit with a further strong challenge, is silently re-adjudicated to `hypothesis` (a rank increase, MLP-7-relevant) with UNCHANGED evidence before the retraction check re-fires it back to `retracted` within the same challenge() call — because _adjudicate does not treat `retracted` as terminal.',
+    owner: 'this repo (engine)',
+    status: 'open',
+    closure: null,
+    absorbs: [],
+    note: 'Discovered while driving the PCG archive audit scenario (ob.archive_record_format); both resulting archive records are individually well-formed PCG records, so this is not a record-format defect — it is a pre-existing engine-behavior nuance, out of scope for this incorporation. The demo scenario caps repeated challenges at 2 hits to avoid exercising the churn.'
+  },
+  {
     obligation_id: 'ob.multiplexer_lifecycle',
     priority: 'P2',
     text: 'Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background).',
