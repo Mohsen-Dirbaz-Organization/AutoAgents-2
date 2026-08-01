@@ -8,7 +8,9 @@ import { RETIREMENTS } from '../data/canon/retirements';
 import { OBLIGATIONS, PRIORITY_META } from '../data/canon/obligations';
 import { runCanonValidation } from '../simulation/CanonValidator';
 import { runPlanningAnalysis } from '../simulation/PlanningEngine';
+import { runEvidenceCompositionAnalysis } from '../simulation/EvidenceCompositionEngine';
 import { TASKS } from '../data/canon/planning';
+import { THESIS as EVIDENCE_THESIS } from '../data/canon/evidence';
 import './CanonView.css';
 
 const KIND_META = {
@@ -28,6 +30,7 @@ function CanonView() {
   const [sevFilter, setSevFilter] = useState(null);
   const [kindFilter, setKindFilter] = useState(null);
   const planning = useMemo(() => runPlanningAnalysis(), []);
+  const evidence = useMemo(() => runEvidenceCompositionAnalysis(), []);
 
   const rerun = () => setResult(runCanonValidation());
 
@@ -217,6 +220,11 @@ function CanonView() {
       </section>
 
       <section className="section full-width">
+        <h2>Evidence composition — Lemma Composition and Introduction-Order Formalism</h2>
+        <EvidenceCompositionPanel results={evidence} />
+      </section>
+
+      <section className="section full-width">
         <h2>Open-obligations register (P0–P3) — supersedes O-1…O-11 and the Void Map</h2>
         <table className="cn-obligations">
           <thead><tr><th>Pri</th><th>Obligation</th><th>Owner</th><th>Status</th><th>Absorbs</th></tr></thead>
@@ -330,6 +338,69 @@ function PlanningPanel({ planning }) {
 
 function Grade({ f }) {
   return <span className="cn-grade" title={`method ${f.method}`}>{f.method} · {f.grade}</span>;
+}
+
+const LABEL_META = {
+  proceed: { color: '#c0392b', text: 'proceed' },   // the ONE label that licenses action — red when premature
+  caution: { color: '#DAA520', text: 'caution' },
+  stop: { color: '#22a06b', text: 'stop' }           // restrictive = safe, shown green here (safety framing, not traffic-light framing)
+};
+
+/**
+ * EvidenceCompositionPanel — the Lemma Composition and Introduction-Order
+ * Formalism (canon/evidence.js), rendered live. Ground truth is order-
+ * invariant by construction (standing: constructed); the prefix trace is the
+ * falsifiable content — a step licensing 'proceed' before the full evidence
+ * would is flagged, exactly the officer/light hazard from the opening
+ * challenge.
+ */
+function EvidenceCompositionPanel({ results }) {
+  return (
+    <div className="cn-evidence">
+      <p className="cn-note">
+        &ldquo;{EVIDENCE_THESIS.quote}&rdquo; {EVIDENCE_THESIS.tuple} {EVIDENCE_THESIS.layering}.
+        {' '}{EVIDENCE_THESIS.rule}
+      </p>
+      {results.map((r) => (
+        <div key={r.instance.id} className={`cn-ev-card ${r.intentSatisfied ? 'ok' : 'bad'}`}>
+          <div className="cn-ev-head">
+            <span className="cn-ev-title">{r.instance.title}</span>
+            <span className={`cn-ev-intent ${r.intentSatisfied ? 'ok' : 'bad'}`}>
+              {r.instance.intent}{r.intentSatisfied ? ' ✓' : ' ✕'}
+            </span>
+          </div>
+          <div className="cn-ev-truth">
+            ground truth <span className="cn-grade" title="order-invariant by construction — see file header">A2 · constructed</span>:
+            {' '}<b style={{ color: LABEL_META[r.full.label].color }}>{LABEL_META[r.full.label].text}</b>
+          </div>
+          <div className="cn-ev-trace">
+            {r.trace.map((t) => (
+              <span
+                key={t.k}
+                className={`cn-ev-step ${t.unsafe ? 'unsafe' : 'safe'}`}
+                title={`${t.componentId} → ${t.label}${t.unsafe ? ' — licenses proceed before the full evidence would' : ''}`}
+              >
+                <span className="cn-ev-step-k">{t.k}</span>
+                <span className="cn-ev-step-id">{t.componentId}</span>
+                <span className="cn-ev-step-label" style={{ color: LABEL_META[t.label].color }}>{t.label}</span>
+              </span>
+            ))}
+          </div>
+          {r.instance.note && <div className="cn-ev-note">{r.instance.note}</div>}
+          {r.formationSmells.length > 0 && (
+            <div className="cn-ev-smell">⚠ {r.formationSmells[0].message}</div>
+          )}
+          <div className="cn-ev-exch">
+            {r.exchangeablePairs.filter((p) => p.exchangeable).length} exchangeable pair(s)
+            {' · '}{r.exchangeablePairs.filter((p) => !p.exchangeable).length} order-critical pair(s)
+            {r.instance.components.some((c) => c.crossRef) && (
+              <span> · cross-ref <code>{r.instance.components.find((c) => c.crossRef).crossRef}</code></span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default CanonView;

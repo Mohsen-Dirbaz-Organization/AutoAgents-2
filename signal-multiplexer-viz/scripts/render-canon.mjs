@@ -23,9 +23,11 @@ const { RETIREMENTS } = await import(join(root, 'src/data/canon/retirements.js')
 const { OBLIGATIONS } = await import(join(root, 'src/data/canon/obligations.js'));
 const { runCanonValidation } = await import(join(root, 'src/simulation/CanonValidator.js'));
 const { runPlanningAnalysis } = await import(join(root, 'src/simulation/PlanningEngine.js'));
+const { runEvidenceCompositionAnalysis } = await import(join(root, 'src/simulation/EvidenceCompositionEngine.js'));
 
 const v = runCanonValidation();
 const plan = runPlanningAnalysis();
+const evidence = runEvidenceCompositionAnalysis();
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 // ---------- CANON.md ----------
@@ -92,6 +94,13 @@ ${esc(plan.result.schedule.value.ceiling)}
 
 Schema invariants: ${plan.invariants.map((i) => `${i.pass ? '✅' : '❌'} ${i.id}`).join(' · ')}.
 Frozen convention set C (Cor. 2.4 — Ii is established by freezing, not scheduling): ${plan.result.independence.value.frozenConventions.frozen.map((f) => esc(f)).join('; ')}.
+
+## Evidence composition (Lemma Composition and Introduction-Order Formalism)
+"The order in which evidence enters the claim may change the claim." Ground truth per instance is order-invariant **by construction** (meet is commutative); the falsifiable check is whether every prefix of the declared introduction order already forbids what the complete evidence forbids.
+
+| Instance | Intent | Ground truth | Unsafe prefixes | Result |
+|---|---|---|---|---|
+${evidence.map((r) => `| ${esc(r.instance.title)} | ${r.instance.intent} | ${r.full.label} | ${r.unsafePositions.map((u) => `k=${u.k}`).join(', ') || 'none'} | ${r.intentSatisfied ? '✅' : '❌'} |`).join('\n')}
 
 ## Validator findings (${v.findings.length})
 ${v.findings.length === 0 ? '_None._' : v.findings.map((f) => `- **${f.severity.toUpperCase()}** \`${f.id}\` — ${esc(f.message)}`).join('\n')}

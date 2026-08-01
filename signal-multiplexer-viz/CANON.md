@@ -101,6 +101,7 @@
 | P3 | Review charter with the contradiction register as its first matter. | governance (external) | open | — |
 | P2 | WCET of the simplex projection: resolved architecturally — projection off the hard real-time path; only the latched S_parity-bit read is on it. | architecture | closed | O-4 |
 | P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | this repo | closed | O-9 |
+| P1 | Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license 'proceed' when the complete evidence would not. | this repo | closed | opening challenge (session dialogue, 2026-07-28): "which evidence components are independent and exchangeable, and which must be introduced before others" |
 | P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | this repo | closed | Void V-3 |
 
 ## Planning module (Rigorous Planning Framework, instantiated)
@@ -122,6 +123,15 @@ speed-up ceiling is min(K, Π) = min(K, 2.04) — agents beyond Π cannot repay 
 
 Schema invariants: ✅ V4 · ✅ V11 · ✅ V12.
 Frozen convention set C (Cor. 2.4 — Ii is established by freezing, not scheduling): symbol collision register (canon/symbols.js) — one glyph, one type; claim-standing ladder (canon/standing.js) — five rungs, fixed authority; number-card schema (canon/numbers.js) — kind/configuration/uncertainty mandatory; gate-contract shape (canon/gates.js) — interface/invariant/provenance/reason-code.
+
+## Evidence composition (Lemma Composition and Introduction-Order Formalism)
+"The order in which evidence enters the claim may change the claim." Ground truth per instance is order-invariant **by construction** (meet is commutative); the falsifiable check is whether every prefix of the declared introduction order already forbids what the complete evidence forbids.
+
+| Instance | Intent | Ground truth | Unsafe prefixes | Result |
+|---|---|---|---|---|
+| "The lane is safe to enter" — bare assertion, override introduced late | demonstration-unsafe | stop | k=1, k=2 | ✅ |
+| "The lane is safe to enter" — Formation-qualified: same facts, same order, no hazard | well-formed | stop | none | ✅ |
+| Bounded Autonomy Stack — sensor claim vs. the analog veto, narrated | demonstration-unsafe | stop | k=1 | ✅ |
 
 ## Validator findings (2)
 - **WARNING** `C6:hz.device_nonideality` — ORPHAN HAZARD (no mechanism): Real memristor non-ideality (drift, read noise, retention loss) re-admits forbidden commands on physical hardware.

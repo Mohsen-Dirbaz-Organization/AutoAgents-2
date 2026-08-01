@@ -139,6 +139,15 @@ export const OBLIGATIONS = [
     absorbs: ['O-9']
   },
   {
+    obligation_id: 'ob.evidence_order_safety',
+    priority: 'P1',
+    text: 'Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license \'proceed\' when the complete evidence would not.',
+    owner: 'this repo',
+    status: 'closed',
+    closure: 'Lemma Composition and Introduction-Order Formalism instantiated (canon/evidence.js, EvidenceCompositionEngine.js). Ground truth is order-invariant by construction (meet is commutative); the falsifiable check is per-prefix safety, verified live for 3 registered instances and enforced by CanonValidator C10 (a well-formed instance regressing to unsafe, or a demonstration instance losing its hazard, both block release — confirmed by deliberate corruption in both directions).',
+    absorbs: ['opening challenge (session dialogue, 2026-07-28): "which evidence components are independent and exchangeable, and which must be introduced before others"']
+  },
+  {
     obligation_id: 'ob.multiplexer_lifecycle',
     priority: 'P2',
     text: 'Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background).',

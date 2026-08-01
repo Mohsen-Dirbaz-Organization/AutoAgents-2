@@ -17,7 +17,7 @@ The app ships with a view switcher in the header:
 - **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
 - **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
 - **Event Fabric (F26)** — the **F26 Autonomous-Driving Event-Fabric Integration Plan** rendered as a doctrine dashboard (see [`F26_Autonomous_Driving_Event_Fabric_Plan.md`](./F26_Autonomous_Driving_Event_Fabric_Plan.md); data in `src/data/eventFabric.js`). A **single timeline spine + twelve operational canvases** where the base unit is a *synchronized interaction trace*, not a pixel; the full **F1–F26** → autonomous-driving mapping; an **S01–S29 source-standing ledger** (established / proposed / projected / notional / open, with *projected/notional/open may not expand runtime authority*); and an honest **latency reconciliation** that keeps the "144 unique latencies" claim **unconfirmed** (parsed: 248 records / 237 exact / 84 unique numeric endpoints / 68 exact values). The 248 individual latency cards are represented by their summary counts (honest stub).
-- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
+- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. It also carries a **planning module** (the Rigorous Planning Management Framework, instantiated live on the open obligations — work/span/Π, Brent–Graham bands, hazard census, the Ic/Ir independence matrix) and an **evidence-composition module** (the Lemma Composition and Introduction-Order Formalism: ground truth is order-invariant *by construction*, and every registered claim's introduction order is checked so that no partial reading of the evidence licenses more than the complete evidence would — the "officer overrides the green light" hazard, made mechanical). Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
 
 The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
@@ -899,6 +899,7 @@ Void-Map V-1…V-4 lists. Current state — generated, not hand-maintained:
 | P3 | Review charter with the contradiction register as its first matter. | open |
 | P2 | WCET of the simplex projection: resolved architecturally — projection off the hard real-time path; only the latched S_parity-bit read is on it. | closed |
 | P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | closed |
+| P1 | Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license 'proceed' when the complete evidence would not. | closed |
 | P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | closed |
 
 <!-- CANON:OBLIGATIONS:END -->
@@ -918,6 +919,39 @@ and the speed-up ceiling min(K, Π) means **a third agent cannot pay for itself*
 binding constraint is the 67.5 pd gap-closure critical path. Conventions are frozen, not scheduled
 (Cor. 2.4): the frozen convention set C *is* the canon (symbol register, standing ladder, card schemas).
 Rendered live in the **Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md).
+
+### Evidence composition — Lemma Composition and Introduction-Order Formalism
+
+*"The order in which evidence enters the claim may change the claim."* A claim Φ is assembled from a
+tuple P = ⟨C, G, π, D, S, Φ⟩ — component inventory, grouping, introduction order, dependency/override
+relation, scope map, resulting claim. `src/data/canon/evidence.js` + `EvidenceCompositionEngine.js`
+make this mechanical: **ground truth is order-invariant by construction** (composition is a meet —
+most-restrictive-wins over `['proceed','caution','stop']` — which is commutative, so it cannot fail;
+labelled `constructed`, not verified, per the same §3.4 no-op discipline already applied to the CRL).
+The **falsifiable** content is *prefix safety*: does every partial reading of the declared introduction
+order already forbid what the complete evidence forbids? A component that unconditionally asserts
+`'proceed'` when a later component will override it creates an unsafe window — the officer/light
+hazard the framework opens with ("the light is green; therefore proceed" is true and dangerous read
+alone). Three registered instances demonstrate the mechanism end-to-end:
+
+- **`ev.lane_entry_naive`** — the literal officer/light example, bare assertion + late override: unsafe
+  at k=1 and k=2 (licenses "proceed" before the officer is known), safe once the override lands.
+- **`ev.lane_entry_well_formed`** — *same facts, same order* (officer still introduced second), but the
+  light component declares `dependsOn: ['scope.signal']`. Fix is **Formation, not reordering**: it
+  contributes `'caution'` instead of `'proceed'` until its own dependency is resolvable, closing the
+  unsafe window without touching π — exactly "Formation control → Semantic control → Proposer-quality
+  control."
+- **`ev.stack_refusal`** — the same hazard reproduced in this project's own runtime domain ("sensors
+  report clear" vs. `gate.analog_veto`), explaining why the real veto is a standing, always-recomputed
+  override rather than a fact narrated once.
+
+`CanonValidator` check **C10** enforces both directions live: a `well-formed` instance that regresses to
+an unsafe prefix, or a `demonstration-unsafe` instance that stops exhibiting its hazard (pedagogical
+drift), both block release — verified by deliberately corrupting each and confirming the validator
+catches it, then restoring. Exchangeability is answered structurally, not by permutation search: two
+components are exchangeable iff they touch no common scope (Def. of the opening challenge's own
+question) — reused for both toy instances and for pairs in the runtime domain. Rendered live in the
+**Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md).
 
 ### Right of Contestability
 

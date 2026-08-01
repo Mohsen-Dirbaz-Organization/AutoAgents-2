@@ -128,3 +128,26 @@
 .cn-plan-inv { margin-left: auto; display: flex; gap: 0.45rem; font-size: 0.72rem; font-weight: 800; }
 .cn-plan-inv .ok { color: #22a06b; }
 .cn-plan-inv .bad { color: #c0392b; }
+
+/* Evidence composition */
+.cn-evidence { font-size: 0.82rem; }
+.cn-ev-card { border: 1px solid #eef0f4; border-left: 3px solid #ccc; border-radius: 6px; background: #fafbfc; padding: 0.6rem 0.75rem; margin-top: 0.6rem; }
+.cn-ev-card.ok { border-left-color: #22a06b; }
+.cn-ev-card.bad { border-left-color: #c0392b; }
+.cn-ev-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
+.cn-ev-title { font-weight: 700; color: #333; flex: 1; }
+.cn-ev-intent { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; padding: 0.08rem 0.5rem; border-radius: 999px; white-space: nowrap; }
+.cn-ev-intent.ok { background: #e8f7ee; color: #1e5631; }
+.cn-ev-intent.bad { background: #fdecea; color: #9b2c2c; }
+.cn-ev-truth { color: #555; font-size: 0.78rem; margin-bottom: 0.45rem; display: flex; align-items: center; gap: 0.4rem; }
+.cn-ev-trace { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+.cn-ev-step { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; border-radius: 6px; padding: 0.3rem 0.55rem; min-width: 72px; }
+.cn-ev-step.safe { background: #f2faf5; border: 1px solid #cdeada; }
+.cn-ev-step.unsafe { background: #fdecea; border: 1px solid #f0b8ad; }
+.cn-ev-step-k { font-size: 0.62rem; color: #999; font-weight: 700; }
+.cn-ev-step-id { font-size: 0.66rem; color: #555; text-align: center; }
+.cn-ev-step-label { font-weight: 800; font-size: 0.76rem; }
+.cn-ev-note { color: #666; font-size: 0.75rem; line-height: 1.45; margin-bottom: 0.35rem; }
+.cn-ev-smell { color: #8a6d1f; font-size: 0.75rem; line-height: 1.4; background: #fdf6e3; border-left: 3px solid #DAA520; padding: 0.3rem 0.55rem; border-radius: 0 4px 4px 0; margin-bottom: 0.35rem; }
+.cn-ev-exch { color: #888; font-size: 0.72rem; }
+.cn-ev-exch code { font-size: 0.68rem; background: #f1ecfb; color: #6b46c1; padding: 0.05rem 0.3rem; border-radius: 4px; }

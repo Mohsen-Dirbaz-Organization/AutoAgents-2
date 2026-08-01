@@ -37,6 +37,7 @@ import { OBLIGATIONS } from '../data/canon/obligations.js';
 import { SUBCATEGORIES } from '../data/programCoverage.js';
 import { maskingProbe, tolConserve } from './ConservationRenormalizationLayer.js';
 import { runPlanningAnalysis } from './PlanningEngine.js';
+import { runEvidenceCompositionAnalysis } from './EvidenceCompositionEngine.js';
 
 const finding = (check, severity, subject, message, remedy) =>
   ({ id: `${check}:${subject}`, check, severity, subject, message, remedy });
@@ -254,6 +255,38 @@ function checkPlanning(out) {
   }
 }
 
+// ---- C10 — evidence composition / introduction-order safety ----
+// Lemma Composition and Introduction-Order Formalism (canon/evidence.js): a
+// registered 'well-formed' instance must have ZERO unsafe prefixes (proves
+// the Formation fix works, not merely asserted); a 'demonstration-unsafe'
+// instance must have AT LEAST ONE (proves the hazard is real — a demo that
+// stops failing is pedagogical drift, and is flagged exactly like a proof
+// that stopped holding).
+function checkEvidenceOrder(out) {
+  let results;
+  try {
+    results = runEvidenceCompositionAnalysis();
+  } catch (e) {
+    out.push(finding('C10', 'blocking', 'evidence-composition',
+      `Evidence-composition analysis failed to run: ${e.message}.`, 'Fix EvidenceCompositionEngine.js / canon/evidence.js.'));
+    return;
+  }
+  for (const r of results) {
+    if (!r.intentSatisfied) {
+      out.push(finding('C10', 'blocking', r.instance.id,
+        r.instance.intent === 'well-formed'
+          ? 'Declared well-formed but exhibits an unsafe prefix: a partial reading would license \'proceed\' when the complete evidence forbids it.'
+          : 'Declared as a hazard demonstration but exhibits no unsafe prefix — the pedagogical example no longer demonstrates introduction-order risk.',
+        'Fix the instance data in canon/evidence.js (components, order, or dependsOn declarations).'));
+    }
+    if (r.instance.intent === 'well-formed' && r.formationSmells.length > 0) {
+      out.push(finding('C10', 'warning', r.instance.id,
+        `Formation smell in a well-formed instance: ${r.formationSmells[0].message}`,
+        'Declare dependsOn on the component, or reorder it after the override.'));
+    }
+  }
+}
+
 /** Run the full validation. Deterministic; safe to call from render handlers. */
 export function runCanonValidation() {
   const findings = [];
@@ -265,6 +298,7 @@ export function runCanonValidation() {
   checkNoOps(findings);
   checkStanding(findings);
   checkPlanning(findings);
+  checkEvidenceOrder(findings);
 
   const counts = {
     blocking: findings.filter((f) => f.severity === 'blocking').length,
