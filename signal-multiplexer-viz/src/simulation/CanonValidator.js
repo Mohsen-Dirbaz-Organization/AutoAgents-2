@@ -36,6 +36,10 @@ import { RETIREMENTS } from '../data/canon/retirements.js';
 import { OBLIGATIONS } from '../data/canon/obligations.js';
 import { SUBCATEGORIES } from '../data/programCoverage.js';
 import { maskingProbe, tolConserve } from './ConservationRenormalizationLayer.js';
+import { runPlanningAnalysis } from './PlanningEngine.js';
+import { runEvidenceCompositionAnalysis } from './EvidenceCompositionEngine.js';
+import { runLevelAnalysis } from './LevelEngine.js';
+import { runPcgArchiveAudit } from './PcgEngine.js';
 
 const finding = (check, severity, subject, message, remedy) =>
   ({ id: `${check}:${subject}`, check, severity, subject, message, remedy });
@@ -226,6 +230,141 @@ function checkStanding(out) {
   }
 }
 
+// ---- C9 — planning-module invariants (Rigorous Planning Framework, Part X) ----
+// The PlanningResult's own invariants (V4/V11/V12) become canon findings: a
+// planning field without a method+grade, a Π that does not equal W1/W∞, or a
+// silent-completeness debts register is a blocking release defect.
+function checkPlanning(out) {
+  let analysis;
+  try {
+    analysis = runPlanningAnalysis();
+  } catch (e) {
+    out.push(finding('C9', 'blocking', 'planning-engine',
+      `Planning analysis failed to run: ${e.message}.`, 'Fix PlanningEngine/canon/planning.js.'));
+    return;
+  }
+  for (const inv of analysis.invariants) {
+    if (!inv.pass) {
+      out.push(finding('C9', 'blocking', `planning.${inv.id}`,
+        `Planning schema invariant ${inv.id} violated: ${inv.text}.`,
+        'A field with no method is inadmissible (Part X §10.1).'));
+    }
+  }
+  if (!analysis.result.structure.value || analysis.result.structure.value.maxScc > 1) {
+    out.push(finding('C9', 'warning', 'planning.structure',
+      'The obligations digraph contains feedback (non-singleton SCC) — tearing (A6) is required before sequencing.',
+      'Select tears within components (Prop. 3.3), each with an assumption and a verifier task.'));
+  }
+}
+
+// ---- C10 — evidence composition / introduction-order safety ----
+// Lemma Composition and Introduction-Order Formalism (canon/evidence.js): a
+// registered 'well-formed' instance must have ZERO unsafe prefixes (proves
+// the Formation fix works, not merely asserted); a 'demonstration-unsafe'
+// instance must have AT LEAST ONE (proves the hazard is real — a demo that
+// stops failing is pedagogical drift, and is flagged exactly like a proof
+// that stopped holding).
+function checkEvidenceOrder(out) {
+  let results;
+  try {
+    results = runEvidenceCompositionAnalysis();
+  } catch (e) {
+    out.push(finding('C10', 'blocking', 'evidence-composition',
+      `Evidence-composition analysis failed to run: ${e.message}.`, 'Fix EvidenceCompositionEngine.js / canon/evidence.js.'));
+    return;
+  }
+  for (const r of results) {
+    if (!r.intentSatisfied) {
+      out.push(finding('C10', 'blocking', r.instance.id,
+        r.instance.intent === 'well-formed'
+          ? 'Declared well-formed but exhibits an unsafe prefix: a partial reading would license \'proceed\' when the complete evidence forbids it.'
+          : 'Declared as a hazard demonstration but exhibits no unsafe prefix — the pedagogical example no longer demonstrates introduction-order risk.',
+        'Fix the instance data in canon/evidence.js (components, order, or dependsOn declarations).'));
+    }
+    if (r.instance.intent === 'well-formed' && r.formationSmells.length > 0) {
+      out.push(finding('C10', 'warning', r.instance.id,
+        `Formation smell in a well-formed instance: ${r.formationSmells[0].message}`,
+        'Declare dependsOn on the component, or reorder it after the override.'));
+    }
+  }
+}
+
+// ---- C12 — level & locality discipline (Multi-Level Policy) ----
+// MLP-5 (multiplication licence): the two independently-authored scope
+// namespaces (canon/planning.js, canon/evidence.js) must not collide.
+// Gate-level inheritance (5.4): R-level gates need a basis, C-level gates
+// need a registry; a G-level gate carrying an apparatusNote is a warning.
+// MLP-7 (demotion, not mutation): scenario-tested against
+// ConstitutionalTruthEngine, with a self-check that the detector itself is
+// falsifiable (not a disguised no-op).
+function checkLevelDiscipline(out) {
+  let level;
+  try {
+    level = runLevelAnalysis();
+  } catch (e) {
+    out.push(finding('C12', 'blocking', 'level-engine',
+      `Level analysis failed to run: ${e.message}.`, 'Fix LevelEngine.js.'));
+    return;
+  }
+  if (!level.multiplication.disjoint) {
+    for (const c of level.multiplication.collisions) {
+      out.push(finding('C12', 'blocking', `scope:${c.id}`,
+        `Multiplication licence violated (MLP-5): scope id "${c.id}" is used by both ${c.sourceA} and ${c.sourceB} — the two axes are not disjoint.`,
+        'Rename one of the colliding scope ids.'));
+    }
+  }
+  for (const f of level.gateInheritance.findings) {
+    out.push(finding('C12', f.severity, f.gate, f.message,
+      f.severity === 'blocking' ? 'Declare the missing basis/registry in canon/gates.js.' : 'Declare a basis/registry to promote this gate\'s level, or accept the gap explicitly.'));
+  }
+  if (!level.noOpAudit.detected) {
+    out.push(finding('C12', 'blocking', 'demotion-detector',
+      'The demotion-not-mutation DETECTOR did not catch a synthetic violation — it would be a guaranteed-pass no-op.',
+      'Fix runScenario\'s comparison logic in LevelEngine.js.'));
+  }
+  if (!level.demotion.pass) {
+    for (const s of level.demotion.scenarios) {
+      for (const v of s.violations) {
+        out.push(finding('C12', 'blocking', `demotion:${s.label}`,
+          `MLP-7 violated: ${v}`, 'Trace ConstitutionalTruthEngine\'s challenge/_adjudicate path for a promotion-on-weakening bug.'));
+      }
+    }
+  }
+}
+
+// ---- C13 — archive record format (Process Characterization Grammar) ----
+// "Versioned events in the archive should follow the attached record
+// format." Drives ConstitutionalTruthEngine through a scenario and validates
+// every resulting archive event's attached PCG record (CC1–CC4, W1/W2/W4),
+// after proving the record validator itself can catch a synthetic violation.
+function checkArchiveRecordFormat(out) {
+  let audit;
+  try {
+    audit = runPcgArchiveAudit();
+  } catch (e) {
+    out.push(finding('C13', 'blocking', 'pcg-engine',
+      `Archive record audit failed to run: ${e.message}.`, 'Fix PcgEngine.js/PcgRecords.js.'));
+    return;
+  }
+  if (!audit.noOpAudit.detected) {
+    out.push(finding('C13', 'blocking', 'record-validator',
+      'The PCG record validator did not catch a synthetic ill-formed record — it would be a guaranteed-pass no-op.',
+      'Fix validateRecord in PcgRecords.js.'));
+  }
+  for (const v of audit.validations) {
+    if (!v.pass) {
+      out.push(finding('C13', 'blocking', v.event.record.id,
+        `Archive record ill-formed: ${v.violations.join('; ')}`,
+        'Fix the record builder for this event type in PcgRecords.js.'));
+    }
+  }
+  if (audit.gateLiveness.dead) {
+    out.push(finding('C13', 'warning', audit.gateLiveness.gate,
+      'A3 (§8.5): gate.challenge has zero instance-of occurrences in the audited window — a dead rule.',
+      'Confirm the audit scenario still exercises this gate.'));
+  }
+}
+
 /** Run the full validation. Deterministic; safe to call from render handlers. */
 export function runCanonValidation() {
   const findings = [];
@@ -236,6 +375,10 @@ export function runCanonValidation() {
   checkTraceability(findings);
   checkNoOps(findings);
   checkStanding(findings);
+  checkPlanning(findings);
+  checkEvidenceOrder(findings);
+  checkLevelDiscipline(findings);
+  checkArchiveRecordFormat(findings);
 
   const counts = {
     blocking: findings.filter((f) => f.severity === 'blocking').length,

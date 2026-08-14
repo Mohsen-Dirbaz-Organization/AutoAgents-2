@@ -20,7 +20,8 @@ export const GATES = [
     failureSemantics: 'Count + emit monotonicity_violation event; discipline ON prevents by construction, OFF surfaces device non-ideality.',
     reasonCode: 'MONO-EXPAND',
     testVector: { input: { prevR: 0.3, R: 0.5, prevAdmitted: 3, admitted: 4 }, expect: 'violation = true' },
-    artifact: 'src/simulation/BoundedAutonomyStack.js#_checkMonotonicity'
+    artifact: 'src/simulation/BoundedAutonomyStack.js#_checkMonotonicity',
+    level: 'G' // raw count comparison, no basis or registry cited
   },
   {
     gate_id: 'gate.analog_veto',
@@ -31,7 +32,8 @@ export const GATES = [
     failureSemantics: 'Fail-closed: veto asserts toward the minimum-risk condition (STOP always admissible).',
     reasonCode: 'VETO-SPIKE',
     testVector: { input: { dR: 0.25, R: 0.5 }, expect: 'armed = true' },
-    artifact: 'src/simulation/BoundedAutonomyStack.js#_maybeAnalogVeto'
+    artifact: 'src/simulation/BoundedAutonomyStack.js#_maybeAnalogVeto',
+    level: 'G' // dR/R thresholds are chosen constants, no basis cited
   },
   {
     gate_id: 'gate.conservation',
@@ -42,7 +44,9 @@ export const GATES = [
     failureSemantics: 'A breach is a rounding/implementation FAULT (standing constructed); freeze the reservoir, do not continue.',
     reasonCode: 'CONS-RESIDUAL',
     testVector: { input: { residual: 1e-6 }, expect: 'conserved = false' },
-    artifact: 'src/simulation/ConservationRenormalizationLayer.js#step + tolConserve'
+    artifact: 'src/simulation/ConservationRenormalizationLayer.js#step + tolConserve',
+    level: 'R',
+    basis: 'tolConserve(M) — IEEE-754 binary64 Number.EPSILON, multiplet size, and the maximum gain bound (a stated, reproducible formula, not a chosen constant)'
   },
   {
     gate_id: 'gate.masking_probe',
@@ -53,7 +57,9 @@ export const GATES = [
     failureSemantics: 'masked=true is a live safety-check failure surfaced in the CRL panel (⚠ MASKED (violation!)).',
     reasonCode: 'MASK-EVADE',
     testVector: { input: { readShape: false }, expect: 'pass = false (raw band is fooled — the check CAN fail)' },
-    artifact: 'src/simulation/ConservationRenormalizationLayer.js#maskingProbe'
+    artifact: 'src/simulation/ConservationRenormalizationLayer.js#maskingProbe',
+    level: 'G',
+    apparatusNote: 'ε = 0.05 is chosen, not derived from a stated basis or registry — an honest MLP "retro-fitted gate" candidate (a gate whose apparatus is not yet frozen). The FALSIFIABILITY of the check (established-in-sim) is not in question; its threshold\'s level is.'
   },
   {
     gate_id: 'gate.llc_quarantine',
@@ -64,7 +70,9 @@ export const GATES = [
     failureSemantics: 'Drop the freshest digitized entry from the strategic tier; log llc_quarantine (challengeable).',
     reasonCode: 'LLC-JUMP',
     testVector: { input: { prevLlc: 1.0, llc: 1.3 }, expect: 'quarantine = true' },
-    artifact: 'src/simulation/BoundedAutonomyStack.js#_governDrift'
+    artifact: 'src/simulation/BoundedAutonomyStack.js#_governDrift',
+    level: 'G',
+    apparatusNote: 'Δllc > 0.25 is chosen, not derived — the same honest apparatus gap as gate.masking_probe\'s ε.'
   },
   {
     gate_id: 'gate.requantize',
@@ -75,7 +83,9 @@ export const GATES = [
     failureSemantics: 'Entry ages out instead of promoting (erasure by eps_correlation / alpha_tau bounds; lineage in evictions counter).',
     reasonCode: 'TAU-CROSS',
     testVector: { input: { residence: 6, deltaJ: 0.4, cost: 0.8 }, expect: 'promoted = false (ΔJ/C = 0.5 < 1.0)' },
-    artifact: 'src/simulation/BoundedAutonomyStack.js#_ageMemory/_promote'
+    artifact: 'src/simulation/BoundedAutonomyStack.js#_ageMemory/_promote',
+    level: 'C',
+    registry: 'Numerical Substrate Partition ADR (num.tau_boundary_s, canon/numbers.js) — a ratified governance decision, cited as this gate\'s classifying apparatus for the τ = 5 s boundary'
   },
   {
     gate_id: 'gate.challenge',
@@ -86,6 +96,8 @@ export const GATES = [
     failureSemantics: 'No path mutates canon without an Archive event; collapse (evidence < 0.25) retracts.',
     reasonCode: 'CHAL-ADJ',
     testVector: { input: { strength: 0.9, resistance: 0.5 }, expect: 'demotion + archived event' },
-    artifact: 'src/simulation/ConstitutionalTruthEngine.js#challenge/_transition'
+    artifact: 'src/simulation/ConstitutionalTruthEngine.js#challenge/_transition',
+    level: 'C',
+    registry: 'RELIANCE ladder (ConstitutionalTruthEngine.js) + per-claim warrant.challengeResistance — the gate classifies against this registry, never against a bare threshold'
   }
 ];

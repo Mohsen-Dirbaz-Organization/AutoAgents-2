@@ -22,8 +22,16 @@ const { GATES } = await import(join(root, 'src/data/canon/gates.js'));
 const { RETIREMENTS } = await import(join(root, 'src/data/canon/retirements.js'));
 const { OBLIGATIONS } = await import(join(root, 'src/data/canon/obligations.js'));
 const { runCanonValidation } = await import(join(root, 'src/simulation/CanonValidator.js'));
+const { runPlanningAnalysis } = await import(join(root, 'src/simulation/PlanningEngine.js'));
+const { runEvidenceCompositionAnalysis } = await import(join(root, 'src/simulation/EvidenceCompositionEngine.js'));
+const { runLevelAnalysis } = await import(join(root, 'src/simulation/LevelEngine.js'));
+const { runPcgArchiveAudit } = await import(join(root, 'src/simulation/PcgEngine.js'));
 
 const v = runCanonValidation();
+const plan = runPlanningAnalysis();
+const evidence = runEvidenceCompositionAnalysis();
+const lvl = runLevelAnalysis();
+const pcg = runPcgArchiveAudit();
 const esc = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
 // ---------- CANON.md ----------
@@ -70,6 +78,47 @@ ${RETIREMENTS.map((r) => `- **${esc(r.construct)}** — ${esc(r.reason)} *Dispos
 | Pri | Obligation | Owner | Status | Absorbs |
 |---|---|---|---|---|
 ${OBLIGATIONS.map((o) => `| ${o.priority} | ${esc(o.text)} | ${esc(o.owner)} | ${o.status} | ${o.absorbs.join(', ') || '—'} |`).join('\n')}
+
+## Planning module (Rigorous Planning Framework, instantiated)
+Instance: ${plan.result.instance.value.tasks} open tasks · ${plan.result.instance.value.artifacts} artifacts · ${plan.result.instance.value.causalArcs} genuine causal arcs. Efforts are **modelled** person-days; every bound inherits that grade.
+
+| Field | Value | Method · grade |
+|---|---|---|
+| Work W₁ | ${plan.result.bounds.value.W1} pd | ${plan.result.bounds.method} · ${plan.result.bounds.grade} |
+| Span W∞ | ${plan.result.bounds.value.Winf} pd (critical path: ${plan.result.bounds.value.criticalPath.join(' → ')}) | ${plan.result.bounds.method} · ${plan.result.bounds.grade} |
+| Parallelism Π | ${plan.result.bounds.value.Pi.toFixed(2)} (blanket P0–P3 ladder would give ${plan.result.bounds.value.ladderPi.toFixed(2)}) | ${plan.result.bounds.method} · ${plan.result.bounds.grade} |
+| Hazards | RAW ${plan.result.hazards.value.RAW} · WAW ${plan.result.hazards.value.WAW} · WAR ${plan.result.hazards.value.WAR} | ${plan.result.hazards.method} · ${plan.result.hazards.grade} |
+| Dominant contention | \`${plan.result.contention.value.dominant?.scope}\` (${Math.round(plan.result.contention.value.dominantShare * 100)}%) | ${plan.result.contention.method} · ${plan.result.contention.grade} |
+| Structure | ${esc(plan.result.structure.value.feedback)} | ${plan.result.structure.method} · ${plan.result.structure.grade} |
+| Ic∧¬Ir pairs | ${plan.result.independence.value.icNotIr.length} (reorderable, not concurrent without arbitration) | ${plan.result.independence.method} · ${plan.result.independence.grade} |
+| Debts | ${plan.result.registers.value.debts.map((d) => `\`${d.task}\``).join(', ') || 'asserted empty'} | ${plan.result.registers.method} · ${plan.result.registers.grade} |
+
+Brent/Graham band (free assignment): ${plan.result.schedule.value.bands.map((b) => `K=${b.K}: [${b.lower.toFixed(1)}, ${b.upper.toFixed(1)}] pd`).join(' · ')}.
+${esc(plan.result.schedule.value.ceiling)}
+
+Schema invariants: ${plan.invariants.map((i) => `${i.pass ? '✅' : '❌'} ${i.id}`).join(' · ')}.
+Frozen convention set C (Cor. 2.4 — Ii is established by freezing, not scheduling): ${plan.result.independence.value.frozenConventions.frozen.map((f) => esc(f)).join('; ')}.
+
+## Evidence composition (Lemma Composition and Introduction-Order Formalism)
+"The order in which evidence enters the claim may change the claim." Ground truth per instance is order-invariant **by construction** (meet is commutative); the falsifiable check is whether every prefix of the declared introduction order already forbids what the complete evidence forbids.
+
+| Instance | Intent | Ground truth | Unsafe prefixes | Result |
+|---|---|---|---|---|
+${evidence.map((r) => `| ${esc(r.instance.title)} | ${r.instance.intent} | ${r.full.label} | ${r.unsafePositions.map((u) => `k=${u.k}`).join(', ') || 'none'} | ${r.intentSatisfied ? '✅' : '❌'} |`).join('\n')}
+
+## Level & locality (Multi-Level Policy)
+Level (G≺R≺C, derivation depth) is orthogonal to locus (level ⫫ locus).
+
+- Multiplication licence (MLP-5): ${lvl.multiplication.planningScopeCount} planning scopes vs ${lvl.multiplication.evidenceScopeCount} evidence scopes — ${lvl.multiplication.disjoint ? 'disjoint (PASS)' : 'COLLISION: ' + esc(JSON.stringify(lvl.multiplication.collisions))}.
+- Gate-level inheritance (5.4): ${lvl.gateInheritance.gates.map((g) => `${g.id}=${g.level}`).join(', ')}.
+- Demotion, not mutation (MLP-7): standing \`${lvl.demotion.standing}\`, ${lvl.demotion.scenarios.length} scenarios, pass=${lvl.demotion.pass}. Detector self-check: ${lvl.noOpAudit.detected ? 'falsifiable' : 'BROKEN'}.
+
+## Archive record format (Process Characterization Grammar)
+record = 〈Aspect·Modality·Level〉 + value + U + provenance. Every ConstitutionalTruthEngine.archive event now carries a well-formed \`.record\`.
+
+- Driven scenario: ${pcg.archiveLength} archive events, ${pcg.recordedCount} carrying records, ${pcg.allValid ? 'all well-formed (PASS)' : 'ILL-FORMED RECORDS PRESENT'}.
+- gate.challenge liveness (A3): ${pcg.gateLiveness.dead ? 'DEAD' : `${pcg.gateLiveness.occurrences} instance-of occurrences`}.
+- Record-validator self-check: ${pcg.noOpAudit.detected ? 'falsifiable' : 'BROKEN'}.
 
 ## Validator findings (${v.findings.length})
 ${v.findings.length === 0 ? '_None._' : v.findings.map((f) => `- **${f.severity.toUpperCase()}** \`${f.id}\` — ${esc(f.message)}`).join('\n')}

@@ -79,7 +79,8 @@ export const OBLIGATIONS = [
     owner: 'formal analysis (open)',
     status: 'open',
     closure: null,
-    absorbs: ['O-1', 'O-2', 'O-5', 'O-7', 'O-8', 'Void V-1 (proof slice)']
+    absorbs: ['O-1', 'O-2', 'O-5', 'O-7', 'O-8', 'Void V-1 (proof slice)'],
+    note: 'In-sim evidence exists (ValidationHarness / Validation Frontier): O-2 Monte-Carlo non-expansiveness bound and O-8 measured t_conv reach verified-in-sim (their stated exit conditions); O-1/O-5/O-7 advanced (TPD-01 cross-validation for O-5). The FORMAL proofs remain owed — in-sim evidence does not close them.'
   },
   {
     obligation_id: 'ob.gap_closure',
@@ -136,6 +137,43 @@ export const OBLIGATIONS = [
     status: 'closed',
     closure: 'Defined: Euclidean conserved metric on gauge-fixed shapes; log-gain is the zero-sum gauge coordinate (CRL §3.1).',
     absorbs: ['O-9']
+  },
+  {
+    obligation_id: 'ob.evidence_order_safety',
+    priority: 'P1',
+    text: 'Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license \'proceed\' when the complete evidence would not.',
+    owner: 'this repo',
+    status: 'closed',
+    closure: 'Lemma Composition and Introduction-Order Formalism instantiated (canon/evidence.js, EvidenceCompositionEngine.js). Ground truth is order-invariant by construction (meet is commutative); the falsifiable check is per-prefix safety, verified live for 3 registered instances and enforced by CanonValidator C10 (a well-formed instance regressing to unsafe, or a demonstration instance losing its hazard, both block release — confirmed by deliberate corruption in both directions).',
+    absorbs: ['opening challenge (session dialogue, 2026-07-28): "which evidence components are independent and exchangeable, and which must be introduced before others"']
+  },
+  {
+    obligation_id: 'ob.level_locality_discipline',
+    priority: 'P1',
+    text: 'Every consequential quantity\'s derivation level (G/R/C) is explicit; R needs a cited basis, C a cited registry; scope namespaces used as independence axes must not collide; and weakening evidence must never promote a claim\'s standing (demotion, not mutation).',
+    owner: 'this repo',
+    status: 'closed',
+    closure: 'Multi-Level Policy instantiated (canon/level.js, LevelEngine.js). Multiplication licence (MLP-5) verified disjoint across canon/planning.js and canon/evidence.js scope namespaces (falsified by deliberate collision, restored). Gate-level inheritance (5.4) applied to all 7 gates.js entries — 2 honest apparatus-not-frozen warnings surfaced (gate.masking_probe epsilon, gate.llc_quarantine delta), not silently passed. Demotion-not-mutation (MLP-7) scenario-tested against ConstitutionalTruthEngine (3 scenarios, 10 steps, 0 violations), with the detector\'s own falsifiability proven against a synthetic violation before trusting its pass on the real engine.',
+    absorbs: ['session dialogue, 2026-07-28: MLP_visual_abstract.html incorporation request']
+  },
+  {
+    obligation_id: 'ob.archive_record_format',
+    priority: 'P1',
+    text: 'Versioned events in ConstitutionalTruthEngine.archive follow a well-formed PCG record: 〈Aspect·Modality·Level〉 + value + U + provenance, checked against CC1–CC4 / W1 / W2 / W4.',
+    owner: 'this repo',
+    status: 'closed',
+    closure: 'Process Characterization Grammar instantiated (canon/pcg.js, PcgRecords.js, PcgEngine.js). Every archive event now additionally carries `.record`: reliance transitions are FL·DID·C (registry RELIANCE, instance-of gate.challenge — mirroring the spec\'s own R05 example); erasure is AT·DID·C against a new archive.disposition registry (not RELIANCE — `erased` is not a RELIANCE member, which was the pre-existing bug this retrofit fixes). CanonValidator C13 validates every record from a driven scenario (11 events, 5 event types, 0 ill-formed), with the record validator\'s own falsifiability proven first. Additive only — existing archive/lineage fields and ConstitutionalLog.jsx are unchanged; the PCG address is now also shown inline there.',
+    absorbs: ['session dialogue, 2026-07-28: process_characterization_grammar.pdf incorporation request']
+  },
+  {
+    obligation_id: 'ob.retraction_churn_engine_note',
+    priority: 'P3',
+    text: 'A claim already at reliance=retracted, hit with a further strong challenge, is silently re-adjudicated to `hypothesis` (a rank increase, MLP-7-relevant) with UNCHANGED evidence before the retraction check re-fires it back to `retracted` within the same challenge() call — because _adjudicate does not treat `retracted` as terminal.',
+    owner: 'this repo (engine)',
+    status: 'open',
+    closure: null,
+    absorbs: [],
+    note: 'Discovered while driving the PCG archive audit scenario (ob.archive_record_format); both resulting archive records are individually well-formed PCG records, so this is not a record-format defect — it is a pre-existing engine-behavior nuance, out of scope for this incorporation. The demo scenario caps repeated challenges at 2 hits to avoid exercising the churn.'
   },
   {
     obligation_id: 'ob.multiplexer_lifecycle',

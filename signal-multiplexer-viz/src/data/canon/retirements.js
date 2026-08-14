@@ -14,7 +14,7 @@ export const RETIREMENTS = [
     reason: 'Undefined: the Cauchy stress tensor is DERIVED from mass density, traction, momentum and subbody balance — none of which exist on a state manifold. What the idea actually uses is the active-constraint Jacobian, i.e. a polytope, which MPC already provides. The trace needs a metric never given; the determinant is not a polytope volume; the "yield surface" is generically empty.',
     disposition: 'REMOVED from the backlog (was "not yet built" in the README). Do not rebuild a stress-field panel.',
     source: 'EPU Companion, Deck B retirement #2',
-    appliedInRepo: 'README T5 row struck through and marked RETIRED; no stress-field code exists.'
+    appliedInRepo: 'README T5 row struck through and marked RETIRED. A branch merge later restored a pre-retirement StressFieldPanel component; it was removed again (the retirement holds against re-imports — negative results are preserved exactly so the same overclaim cannot re-enter).'
   },
   {
     retirement_id: 'ret.landauer',

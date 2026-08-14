@@ -8,7 +8,6 @@ import TrustedScalars from './TrustedScalars';
 import ConservationRenormalizationPanel from './ConservationRenormalizationPanel';
 import EvidentiaryLedger from './EvidentiaryLedger';
 import ValidationFrontier from './ValidationFrontier';
-import StressFieldPanel from './StressFieldPanel';
 import StackControlPanel from './StackControlPanel';
 import './StackView.css';
 
@@ -120,11 +119,6 @@ function StackView() {
           <section className="section">
             <h2>Conservation-Renormalization Layer (Q = 0)</h2>
             <ConservationRenormalizationPanel crl={state.crl} />
-          </section>
-
-          <section className="section">
-            <h2>Stress-Field Constraints (Part V)</h2>
-            <StressFieldPanel state={state} />
           </section>
         </div>
 

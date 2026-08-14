@@ -38,7 +38,13 @@
  * =========================================================================
  */
 
-export const RELIANCE = ['hypothesis', 'provisional', 'warranted', 'retracted'];
+// RELIANCE is canonically defined in canon/pcg.js (it is the registry PCG
+// archive records cite — see PcgRecords.js) and re-exported here so existing
+// `import { RELIANCE } from './ConstitutionalTruthEngine.js'` call sites are
+// unaffected.
+import { RELIANCE } from '../data/canon/pcg.js';
+import { buildTransitionRecord, buildErasureRecord } from './PcgRecords.js';
+export { RELIANCE };
 export const POWERS = [
   { id: 'archive', name: 'The Archive', mandate: 'Versioned custody of canon; no erasure without lineage (Art. IX)' },
   { id: 'proposer', name: 'The Proposers', mandate: 'Generate hypotheses; no authority to canonize own output (Art. X)' },
@@ -169,6 +175,10 @@ export class ConstitutionalTruthEngine {
         : 'reclassification'
     };
     claim.lineage.push({ v: this.version, t: this.simTime, event: ev.type, reliance: next, reason });
+    // PCG record retrofit: "versioned events in the archive follow the
+    // record format" — every transition event now carries a well-formed
+    // FL·DID·C record (PcgRecords.js), additive to the fields above.
+    ev.record = buildTransitionRecord(ev);
     this.archive.push(ev);
     if (this.archive.length > 60) this.archive.shift();
     this.emit('constitutional_event', ev);
@@ -217,11 +227,13 @@ export class ConstitutionalTruthEngine {
     // The attempt cannot be silent: it is logged as a constitutional event and
     // routed to adjudication rather than mutating canon directly.
     this.powerActivity.auditor = this.tick;
-    this.archive.push({
+    const surfacedEv = {
       v: ++this.version, t: this.simTime, claimId: target.id, statement: target.statement,
       from: target.reliance, to: target.reliance, type: 'drift-surfaced',
       reason: 'silent revision attempted → forced to constitutional event (Art. XIX)'
-    });
+    };
+    surfacedEv.record = buildTransitionRecord(surfacedEv);
+    this.archive.push(surfacedEv);
     this.challenge(target.id, 0.7, 'anti-silent-drift audit');
     this.emit('drift_surfaced', { claimId: target.id });
   }
@@ -334,10 +346,15 @@ export class ConstitutionalTruthEngine {
   _erase(claim, reason) {
     // Erasure with lineage (Art. IX): the claim leaves Ground Truth but the
     // reason persists in the Archive — never silent.
-    this.archive.push({
+    const ev = {
       v: ++this.version, t: this.simTime, claimId: claim.id, statement: claim.statement,
       from: claim.reliance, to: 'erased', type: 'erasure', reason
-    });
+    };
+    // Erasure is a DISPOSITION change, not a RELIANCE transition — 'erased' is
+    // not a RELIANCE member, so its PCG record cites archive.disposition
+    // instead (buildErasureRecord), not RELIANCE (would be W4-ill-formed).
+    ev.record = buildErasureRecord(ev);
+    this.archive.push(ev);
     if (this.archive.length > 60) this.archive.shift();
     this.claims.delete(claim.id);
   }

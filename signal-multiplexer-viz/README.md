@@ -17,7 +17,7 @@ The app ships with a view switcher in the header:
 - **Program Coverage Map** — the **GHOST Autonomy** *Research Subcategory → Document Section Mapping* (Feb 2026) rendered as an interactive dashboard: **56 research subcategories** across 6 domains, mapped onto `main(8).tex` chapters and colored by source-material coverage (**15 FULL · 20 HIGH · 10 PARTIAL · 11 GAP**), with a strategic gap analysis (~55–80 person-days across 11 gaps) and a source-file → subcategory cross-reference. Data lives in `src/data/programCoverage.js`. *Coverage = source-material availability in the design corpus, **not** fabricated or measured silicon* — this is the concrete answer to "how complete is the substrate?": a thorough specification corpus (27% fully sourced, 36% substantially sourced) with explicit, prioritized gaps, not built hardware.
 - **Constitution of Truth** — the correctability layer (Source #3, *Temporal State Management* Part VI). A `ConstitutionalTruthEngine` governs a live Bounded-Autonomy substrate: Ground Truth is the canon of *warranted* claims with degrees of reliance; separation of epistemic powers (Archive / Proposers / Verifiers / Adjudicators / Auditor); **Correction Supremacy** (stronger evidence beats canon consistency); **Anti-Silent-Drift** (every truth change is a logged constitutional event); a versioned Archive with **temporal rollback**; realis/irrealis modality; and the Unknown Register. The operator can challenge any canon claim and watch it get **corrected**.
 - **Event Fabric (F26)** — the **F26 Autonomous-Driving Event-Fabric Integration Plan** rendered as a doctrine dashboard (see [`F26_Autonomous_Driving_Event_Fabric_Plan.md`](./F26_Autonomous_Driving_Event_Fabric_Plan.md); data in `src/data/eventFabric.js`). A **single timeline spine + twelve operational canvases** where the base unit is a *synchronized interaction trace*, not a pixel; the full **F1–F26** → autonomous-driving mapping; an **S01–S29 source-standing ledger** (established / proposed / projected / notional / open, with *projected/notional/open may not expand runtime authority*); and an honest **latency reconciliation** that keeps the "144 unique latencies" claim **unconfirmed** (parsed: 248 records / 237 exact / 84 unique numeric endpoints / 68 exact values). The 248 individual latency cards are represented by their summary counts (honest stub).
-- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
+- **Canon &amp; Integrity** — the EPU Companion set (docs 07–17) made runnable: canonical registers under `src/data/canon/` (claims with falsifiers, **mandatory number cards** that *recompute in the validator*, the symbol collision register, typed **gate contracts** with hazard-derived thresholds, the **retirement register**, and the P0–P3 obligations ledger that supersedes O-1…O-11/V-1…V-4) plus `CanonValidator.js`, which mechanically enforces the **Definition of Done** — including a **no-op audit** that runs every gate against its own violation vector and fails release on any guaranteed-pass check. It also carries a **planning module** (the Rigorous Planning Management Framework, instantiated live on the open obligations — work/span/Π, Brent–Graham bands, hazard census, the Ic/Ir independence matrix) and an **evidence-composition module** (the Lemma Composition and Introduction-Order Formalism: ground truth is order-invariant *by construction*, and every registered claim's introduction order is checked so that no partial reading of the evidence licenses more than the complete evidence would — the "officer overrides the green light" hazard, made mechanical) and a **level &amp; locality module** (Multi-Level Policy: an ordinal derivation axis `G ≺ R ≺ C`, orthogonal to storage location — `level ⫫ locus` — enforcing that ratio-level gates cite a *basis*, classification-level gates cite a *registry*, independent scope-namespaces don't collide, and weakening evidence never promotes a claim's standing) and an **archive-record module** (the Process Characterization Grammar: `record = 〈Aspect·Modality·Level〉 + value + U + provenance`, retrofitted onto `ConstitutionalTruthEngine.archive` so every versioned constitutional event is now a well-formed, mechanically-validated record — additive, so the existing Archive UI is unchanged). Rendered docs (`CANON.md`, the obligations table below) are *generated* from the registers (`node scripts/render-canon.mjs`): one ledger, many renderings.
 
 The **Bounded Autonomy Stack** view is a runnable simulation of the **entire eight-thread bounded-autonomy stack** (Lanes A–H) integrated via the EVD assessment of *Bounded Autonomy on a Memristive Substrate* (see `EVD_Assessment_Source_01_Memristive_Substrate.md`) and the Conservation-Renormalization Layer (Source #2). It renders, live:
   - the **eight-thread stack** with the authority law (top-down) and the consequence law (bottom-up) meeting at the **EPU**;
@@ -874,6 +874,155 @@ corpus or a *measured* silicon device are not faked, they are reported **owed**.
 > true of physical silicon. Device-monotonicity (**O-10**) and φ transfer (**O-11**)
 > remain **owed** — they need measured-device models and an automotive corpus the harness
 > deliberately will not fabricate.
+
+The table above is the **harness evidence** rendering. The canonical *status* ledger is the
+obligations register, generated below — the O-numbers are absorbed into `ob.*` entries with lineage:
+
+<!-- CANON:OBLIGATIONS:BEGIN (generated by scripts/render-canon.mjs — do not edit) -->
+
+The single obligations ledger lives in `src/data/canon/obligations.js` (rendered live in the
+**Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md)); it absorbs the earlier O-1…O-11 and
+Void-Map V-1…V-4 lists. Current state — generated, not hand-maintained:
+
+| Pri | Obligation | Status |
+|---|---|---|
+| P0 | Retire the retired vocabulary everywhere; apply the errata at source. | closed |
+| P0 | Withdraw "achieved" phrasing from any claim lacking an artifact identifier; every number carries kind + configuration. | closed |
+| P1 | Threshold provenance for every gate, derived from hazards. | closed-in-sim |
+| P1 | Conservation tolerance per check, derived from the arithmetic format. | closed |
+| P1 | Monotone admission must survive device non-ideality on MEASURED memristor models (violation rate → 0 under discipline). | open |
+| P1 | φ-compiler transfer gasification → automotive: cross-domain correlation r > 0.7 + deterministic-surrogate rank corr ≥ 0.85. | open |
+| P2 | Formal bounds still owed: one-sided bound for xi_feature (O-1); Lyapunov/convergence for the CQR flow (O-2); rigorous finite-N invariant for S_parity (O-5); impulsive stability (O-7); finite-time ergodic guarantee (O-8). | open |
+| P2 | Close the 11 GAP subcategories of the coverage map (num.gap_effort_pd_lo–hi person-days of source acquisition). | open |
+| P2 | Canonical counting convention + reconciled ledger for the bundle's latency records (the "144" claim stays NOT CONFIRMED until then); itemize the 248 cards. | open |
+| P3 | Registry hygiene for Source #1–#3 assessments (identity anchors, constraint scoring) — now as register EXTENSIONS, not new documents. | open |
+| P3 | Review charter with the contradiction register as its first matter. | open |
+| P2 | WCET of the simplex projection: resolved architecturally — projection off the hard real-time path; only the latched S_parity-bit read is on it. | closed |
+| P2 | Discrete channel-space geometry: define the metric or flag as heuristic. | closed |
+| P1 | Introduction order of evidence backing a claim must not create an unsafe reading: no prefix of the declared order may license 'proceed' when the complete evidence would not. | closed |
+| P1 | Every consequential quantity's derivation level (G/R/C) is explicit; R needs a cited basis, C a cited registry; scope namespaces used as independence axes must not collide; and weakening evidence must never promote a claim's standing (demotion, not mutation). | closed |
+| P1 | Versioned events in ConstitutionalTruthEngine.archive follow a well-formed PCG record: 〈Aspect·Modality·Level〉 + value + U + provenance, checked against CC1–CC4 / W1 / W2 / W4. | closed |
+| P3 | A claim already at reliance=retracted, hit with a further strong challenge, is silently re-adjudicated to `hypothesis` (a rank increase, MLP-7-relevant) with UNCHANGED evidence before the retraction check re-fires it back to `retracted` within the same challenge() call — because _adjudicate does not treat `retracted` as terminal. | open |
+| P2 | Multiplexer simulation must be view-scoped (was App-scoped, kept ticking in the background). | closed |
+
+<!-- CANON:OBLIGATIONS:END -->
+
+### Planning module — Rigorous Planning Management Framework
+
+The open obligations are also a **formal planning instance** P = (T, A, S, φ, effort, phase, R, W, Ec)
+(`src/data/canon/planning.js`), analysed by `src/simulation/PlanningEngine.js` per the *Rigorous
+Planning Management Framework V1*: hazard census (A2), scope/contention audit (A4), Tarjan SCCs (A5),
+work–span bounds W₁/W∞/Π with the critical path (A7), Brent/Graham scheduling bands (A11), and the
+Ic-vs-Ir independence matrix (Thm 2.2 — causal and resource independence are incomparable). Every
+emitted field carries ⟨value, method A1–A12, grade⟩ and the Part X schema invariants (V4/V11/V12) are
+enforced by the canon validator (check C9). Efforts are **modelled** person-days — every bound
+inherits that grade. Two live findings worth stating in prose: the blanket P0→P3 phase ladder would
+cut the plan's parallelism from Π≈2.0 to ≈1.5 (Remark 4.4 — the ladder, not the work, serialises),
+and the speed-up ceiling min(K, Π) means **a third agent cannot pay for itself** on this backlog; the
+binding constraint is the 67.5 pd gap-closure critical path. Conventions are frozen, not scheduled
+(Cor. 2.4): the frozen convention set C *is* the canon (symbol register, standing ladder, card schemas).
+Rendered live in the **Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md).
+
+### Evidence composition — Lemma Composition and Introduction-Order Formalism
+
+*"The order in which evidence enters the claim may change the claim."* A claim Φ is assembled from a
+tuple P = ⟨C, G, π, D, S, Φ⟩ — component inventory, grouping, introduction order, dependency/override
+relation, scope map, resulting claim. `src/data/canon/evidence.js` + `EvidenceCompositionEngine.js`
+make this mechanical: **ground truth is order-invariant by construction** (composition is a meet —
+most-restrictive-wins over `['proceed','caution','stop']` — which is commutative, so it cannot fail;
+labelled `constructed`, not verified, per the same §3.4 no-op discipline already applied to the CRL).
+The **falsifiable** content is *prefix safety*: does every partial reading of the declared introduction
+order already forbid what the complete evidence forbids? A component that unconditionally asserts
+`'proceed'` when a later component will override it creates an unsafe window — the officer/light
+hazard the framework opens with ("the light is green; therefore proceed" is true and dangerous read
+alone). Three registered instances demonstrate the mechanism end-to-end:
+
+- **`ev.lane_entry_naive`** — the literal officer/light example, bare assertion + late override: unsafe
+  at k=1 and k=2 (licenses "proceed" before the officer is known), safe once the override lands.
+- **`ev.lane_entry_well_formed`** — *same facts, same order* (officer still introduced second), but the
+  light component declares `dependsOn: ['scope.signal']`. Fix is **Formation, not reordering**: it
+  contributes `'caution'` instead of `'proceed'` until its own dependency is resolvable, closing the
+  unsafe window without touching π — exactly "Formation control → Semantic control → Proposer-quality
+  control."
+- **`ev.stack_refusal`** — the same hazard reproduced in this project's own runtime domain ("sensors
+  report clear" vs. `gate.analog_veto`), explaining why the real veto is a standing, always-recomputed
+  override rather than a fact narrated once.
+
+`CanonValidator` check **C10** enforces both directions live: a `well-formed` instance that regresses to
+an unsafe prefix, or a `demonstration-unsafe` instance that stops exhibiting its hazard (pedagogical
+drift), both block release — verified by deliberately corrupting each and confirming the validator
+catches it, then restoring. Exchangeability is answered structurally, not by permutation search: two
+components are exchangeable iff they touch no common scope (Def. of the opening challenge's own
+question) — reused for both toy instances and for pairs in the runtime domain. Rendered live in the
+**Canon &amp; Integrity** view and in [`CANON.md`](./CANON.md).
+
+### Level &amp; locality — Multi-Level Policy
+
+**Level is derivation depth, not storage location: `level ⫫ locus`.** `src/data/canon/level.js` +
+`LevelEngine.js` instantiate a sibling formalism to the Planning module above (it reuses the same
+Π = W₁/W∞ vocabulary and generalizes Cor. 2.4 — "apparatus precedes architecture, like informational
+independence it cannot be scheduled into existence"). Three levels, each with its own required
+apparatus: **G** (Ground — `v_G`, no apparatus, native units), **R** (Referenced — `v_R = f(v_G, B)`,
+requires a stated *basis* `B`), **C** (Classified — `v_C = g(v_R|v_G, registry@ver)`, requires a
+versioned *registry*). The satisfaction identity `EO(φ) = Lev_spec ⊖ min(Lev_evidence, Lev_horizon)`
+governs whether a record may **issue** or must **defer** — the gap itself is the typed evidence
+obligation, not something closed by asserting the higher level.
+
+The sharpest generalization for this project is **MLP-7, demotion not mutation**:
+`E′ ⪯ E ⟹ Auth(x;E′) ⊆ Auth(x;E)` — weaker evidence may only narrow authority, never widen it. This is
+`clm.antitone` (canon/claims.js), restated as a law over evidence strength in general rather than one
+risk scalar. `LevelEngine.js` doesn't just assert this — it **scenario-tests it against
+`ConstitutionalTruthEngine`** (3 scenarios, 10 challenge/corroborate steps, 0 violations), and proves
+its own detector is falsifiable first (a synthetic evidence-weakens-but-reliance-promotes case is
+confirmed caught before the real-engine PASS is trusted — the same discipline as the CRL's masking
+probe, applied to a stateful engine instead of a pure function).
+
+Two more audits, both real (not decorative): **gate-level inheritance (5.4)** — every gate in
+`canon/gates.js` now declares its level; the two chosen-not-derived thresholds
+(`gate.masking_probe`'s ε = 0.05, `gate.llc_quarantine`'s Δllc &gt; 0.25) are honestly flagged as
+G-level "apparatus not yet frozen" warnings rather than silently passed — exactly the "retro-fitted
+gate" MLP warns against. **The multiplication licence (MLP-5)** — an axis is independent iff its
+registry space is disjoint — checked as a real regression guard: the two independently-authored scope
+namespaces (`canon/planning.js`, `canon/evidence.js`) must never collide; verified by deliberately
+injecting a collision, confirming `CanonValidator` check **C12** blocks release, then restoring.
+
+The source document's own MP-01…MP-12 mini-plan taxonomy is retained as **reference data**
+(`MP_FAMILIES`, standing *external-reference*) rather than force-fitted onto this repo's actual module
+structure — no false correspondence is claimed. Rendered live in the **Canon &amp; Integrity** view and
+in [`CANON.md`](./CANON.md).
+
+### Archive record format — Process Characterization Grammar
+
+**"Versioned events in the archive should follow the [attached] record format."** PCG 1.0 is the base
+specification the Multi-Level Policy module above sits on (its G/R/C level ladder *is* PCG's §5, imported
+not redefined). Its grammar: `record = 〈Aspect·Modality·Level〉 + value + U + provenance` — six closed
+aspects (AT/ST/FL/TM/FB/BH), four modalities with total precedence `DID ≻ GATE ≻ MUST ≻ IS`, and the
+familiar three levels. The one append-only, versioned event log in this repo is
+`ConstitutionalTruthEngine.archive` (Art. IX: "no erasure without lineage") — exactly PCG's own DID
+archetype ("events, logs, realized durations, executed decisions"), previously shaped ad hoc.
+
+Every archive event now additionally carries a `.record` field (`src/simulation/PcgRecords.js`,
+purely additive — existing fields and `ConstitutionalLog.jsx` are unchanged, which now also shows the
+PCG address inline):
+
+- **Reliance transitions** (canonization / reclassification / retraction / drift-surfaced) are
+  **FL·DID·C**, registry `RELIANCE@1`, linked `instance-of gate.challenge` — mirroring the spec's own
+  calibrating example precisely ("admission was blocked at 09:14" = FL·DID·G, `instance-of` the gate
+  record; a DID record realizing a GATE shifts aspect to FL).
+- **Erasure** is **AT·DID·C** against a new `archive.disposition` registry (`{active, erased,
+  unclassified}`) — *not* RELIANCE, because `'erased'` was never a RELIANCE member. That mismatch was
+  the actual pre-existing bug this retrofit fixes: the old ad hoc event wrote `to: 'erased'` against no
+  registry at all — exactly the W4 violation ("a label outside the registry is ill-formed") PCG exists to
+  catch.
+
+`CanonValidator` check **C13** drives a scenario (11 events across all 5 archived types) and validates
+every resulting record against CC1–CC4/W1/W2/W4, after proving the validator itself catches a synthetic
+ill-formed record first. **Honest byproduct of actually driving the scenario**, not swept under the rug:
+repeatedly challenging an already-`retracted` claim briefly promotes it to `hypothesis` (unchanged
+evidence) before the retraction check re-fires it — a real, pre-existing engine nuance, tracked as an
+**open** obligation (`ob.retraction_churn_engine_note`) rather than silently fixed, since it is out of
+scope for a record-*format* retrofit. Rendered live in the **Canon &amp; Integrity** view and in
+[`CANON.md`](./CANON.md).
 
 ### Right of Contestability
 

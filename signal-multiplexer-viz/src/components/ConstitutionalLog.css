@@ -20,5 +20,6 @@
 .clog-ev-v { font-size: 0.68rem; font-weight: 800; color: #94a3b8; font-variant-numeric: tabular-nums; min-width: 30px; }
 .clog-ev-body { display: flex; flex-direction: column; gap: 0.05rem; }
 .clog-ev-label { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; }
+.clog-ev-addr { font-family: ui-monospace, monospace; font-size: 0.62rem; color: #6b46c1; background: #f1ecfb; padding: 0.04rem 0.35rem; border-radius: 4px; }
 .clog-ev-stmt { font-size: 0.78rem; color: #1e293b; }
 .clog-ev-reason { font-size: 0.68rem; color: #94a3b8; font-style: italic; }
