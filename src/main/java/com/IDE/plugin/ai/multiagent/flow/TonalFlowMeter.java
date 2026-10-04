@@ -36,6 +36,7 @@ public final class TonalFlowMeter {
     private final List<FlowEvent> events = new CopyOnWriteArrayList<>();
     private final List<PromptShift> promptShifts = new CopyOnWriteArrayList<>();
     private final AtomicLong sequence = new AtomicLong();
+    private final Set<String> inFlight = ConcurrentHashMap.newKeySet();
 
     public TonalFlowMeter(
         @NotNull PromptDistributionContract promptContract,
@@ -60,6 +61,11 @@ public final class TonalFlowMeter {
         if (response.authority().isEmpty()) {
             throw new IllegalArgumentException("Every response must declare an authority class");
         }
+        if (!responses.containsKey(response.id()) && inFlight.size() >= streamContract.maxBoard()) {
+            recordFlow(FlowAction.BACKPRESSURE, response.id(),
+                "Maximum board reached; admission denied.");
+            throw new IllegalStateException("Maximum board reached");
+        }
         if (responses.size() >= streamContract.maxResponses() &&
             !responses.containsKey(response.id())) {
             recordFlow(FlowAction.BACKPRESSURE, response.id(),
@@ -68,6 +74,7 @@ public final class TonalFlowMeter {
         }
 
         responses.put(response.id(), response);
+        inFlight.add(response.id());
         assignToMinimumSufficientClass(response);
         recordFlow(FlowAction.ADMIT, response.id(), "Response admitted with provenance.");
     }
@@ -150,6 +157,21 @@ public final class TonalFlowMeter {
             "Merge accepted with bounded non-decision-changing erosion.");
     }
 
+    public void completeResponse(@NotNull String responseId) {
+        if (inFlight.remove(responseId)) {
+            recordFlow(FlowAction.ADMIT, responseId, "Response processing completed; board slot released.");
+        }
+    }
+
+    public void discardResponse(@NotNull String responseId, @NotNull String reason) {
+        inFlight.remove(responseId);
+        recordFlow(FlowAction.DISCARD, responseId, reason);
+    }
+
+    public int getInFlightCount() {
+        return inFlight.size();
+    }
+
     public void recordFlow(
         @NotNull FlowAction action,
         @NotNull String subjectId,
@@ -221,6 +243,7 @@ public final class TonalFlowMeter {
             List.copyOf(promptShifts),
             List.copyOf(events),
             admitted,
+            inFlight.size(),
             examined,
             coverageGap,
             deadlineReached,
@@ -426,6 +449,7 @@ public final class TonalFlowMeter {
         @NotNull List<FlowEvent> flowEvents,
         int admittedResponses,
         int examinedResponses,
+        int inFlightResponses,
         int coverageGap,
         boolean deadlineReached,
         boolean stoppingRuleReached
