@@ -159,7 +159,7 @@ public final class TonalFlowMeter {
 
     public void completeResponse(@NotNull String responseId) {
         if (inFlight.remove(responseId)) {
-            recordFlow(FlowAction.ADMIT, responseId, "Response processing completed; board slot released.");
+            recordFlow(FlowAction.COMPLETE, responseId, "Response processing completed; board slot released.");
         }
     }
 
@@ -303,7 +303,7 @@ public final class TonalFlowMeter {
     }
 
     public enum FlowAction {
-        ADMIT, PAUSE, BACKPRESSURE, MERGE, DISCARD, ESCALATE, PROMPT_SHIFT
+        ADMIT, COMPLETE, PAUSE, BACKPRESSURE, MERGE, DISCARD, ESCALATE, PROMPT_SHIFT
     }
 
     public enum CertificateState {
