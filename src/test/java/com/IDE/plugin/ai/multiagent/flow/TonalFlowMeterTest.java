@@ -70,6 +70,21 @@ class TonalFlowMeterTest {
     }
 
     @Test
+    void boardLimitAppliesUntilResponseCompletes() {
+        TonalFlowMeter meter = meter();
+        meter.observe(response("r1", "A"));
+        meter.observe(response("r2", "B"));
+
+        assertEquals(2, meter.getInFlightCount());
+        assertThrows(IllegalStateException.class, () -> meter.observe(response("r3", "C")));
+
+        meter.completeResponse("r1");
+        assertEquals(1, meter.getInFlightCount());
+        meter.observe(response("r3", "C"));
+        assertEquals(2, meter.getInFlightCount());
+    }
+
+    @Test
     void certificationNeedsUniversalBound() {
         TonalFlowMeter meter = meter();
 
